@@ -1,0 +1,38 @@
+site_name: Languages
+dev_addr: 0.0.0.0:8000
+theme:
+  name: material
+plugins:
+  - search
+  - macros
+  - your-plugin
+markdown_extensions:
+  - attr_list
+  - pymdownx.highlight:
+      use_pygments: false
+  - pymdownx.inlinehilite
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_div_format
+
+  - pymdownx.tabbed
+  - admonition
+  - pymdownx.details
+  - pymdownx.snippets
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - mymkextension
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+
+extra_javascript:
+  - //unpkg.com/@highlightjs/cdn-assets@10.5.0/highlight.min.js
+  - https://unpkg.com/mermaid@8.6.4/dist/mermaid.min.js
+  - override/js/main.js
+
+extra_css:
+  - //unpkg.com/@highlightjs/cdn-assets@10.5.0/styles/vs.min.css
+  - override/css/main.css

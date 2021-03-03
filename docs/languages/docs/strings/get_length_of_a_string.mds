@@ -1,0 +1,74 @@
+### Second
+
+=== "C"
+
+    ``` c
+    #include <stdio.h>
+
+    int main(void) {
+      printf("Hello world!\n");
+      return 0;
+    }
+    ```
+
+=== "C++"
+
+    ``` c++
+    #include <iostream>
+
+    int main(void) {
+      std::cout << "Hello world!" << std::endl;
+      return 0;
+    }
+    ```
+
+=== "PHP"
+
+    ``` php
+    <?php
+      var_dump("This is a php function");
+      var_dump(json_decode('{"name": "John", "age": 31, "city": "New York"}', true));
+    ?>
+    ```
+
+=== "Python"
+    ``` python
+    string = "Lorem ipsum dolor sit amet."
+    print(len(string))
+    ```
+
+=== "Javascript"
+    ``` javascript
+      var string = 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum deleniti laudantium praesentium.';
+      console.log(string.replace('Lorem', 'Hello'));
+    ```
+
+=== "Go"
+    ``` go
+      package main
+
+      import (
+        "fmt"
+        "strings"
+      )
+      func main() {
+	      string := " Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim, sed. "
+	      fmt.Println(strings.Replace(string, "Lorem", "Hello", 1))
+      }
+    ```
+
+=== "Java"
+    ``` java
+    public class Main {
+      public static void main(String[] args) {
+          System.out.printf("Hello %s!%n", "World");
+      }
+    }
+    ```
+
+=== "Ruby"
+    ``` ruby
+    string = "Lorem ipsum dolor sit amet consectetur adipisicing elit. Id, provident."
+    print string.length
+    ```
+

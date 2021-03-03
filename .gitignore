@@ -1,0 +1,9 @@
+*.class
+build/
+dist/
+*.egg-info
+node_modules/
+.vscode/
+.gradle/
+.pytest_cache/
+vscode/
