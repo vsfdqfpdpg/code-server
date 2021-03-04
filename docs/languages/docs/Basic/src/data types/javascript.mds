@@ -1,0 +1,11 @@
+
+        === "String"
+            ``` javascript
+            // [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type)
+                console.log("js")
+            ```
+
+        === "Array"
+            ``` javascript
+                console.log("js")
+            ```

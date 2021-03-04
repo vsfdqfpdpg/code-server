@@ -5,12 +5,13 @@ theme:
 plugins:
   - search
   - macros
-  - your-plugin
+  - language-plugin
 markdown_extensions:
   - attr_list
   - pymdownx.highlight:
       use_pygments: false
   - pymdownx.inlinehilite
+  - pymdownx.magiclink
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid
@@ -23,7 +24,7 @@ markdown_extensions:
   - pymdownx.snippets
   - pymdownx.tasklist:
       custom_checkbox: true
-  - mymkextension
+  - marker.fence_link
   - pymdownx.emoji:
       emoji_index: !!python/name:materialx.emoji.twemoji
       emoji_generator: !!python/name:materialx.emoji.to_svg

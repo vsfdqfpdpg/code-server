@@ -3,7 +3,7 @@ from markdown.inlinepatterns import SimpleTagPattern
 
 DEL_RE = r'(--)(.*?)--'
 
-class MyExtension(Extension):
+class DelTagExtension(Extension):
     def extendMarkdown(self, md):
         # Create the del pattern
         del_tag = SimpleTagPattern(DEL_RE, 'del')

@@ -26,6 +26,3 @@
 - [X] giftsforu.com 可购买价格5000
 - [ ] <del>giftshopping.com</del>
 - [ ] <del>giftsidea.com</del>
-
-
-{% include "strings/get_length_of_a_string.mds" %}
