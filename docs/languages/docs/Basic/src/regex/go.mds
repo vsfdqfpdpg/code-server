@@ -1,0 +1,9 @@
+
+        === "Cheat sheet"
+            {% include "Basic/src/regex/go/cheat sheet.mds" %}
+
+        === "Functions"
+            {% include "Basic/src/regex/go/functions.mds" %}
+
+        === "Common"
+            {% include "Basic/src/regex/go/common.mds" %}

@@ -1,0 +1,83 @@
+
+            === "Functions"
+                ``` php
+                <?php
+                    $str = "h111\nh2222\nh3333";
+                    // m modifier will match content of each line.
+                    $reg = "/^h\d+$/m";
+                    preg_match_all($reg, $str, $match);
+                    print_r($match);
+                ```
+
+                ``` php
+                <?php
+                    $str = "h111\nh2222\nh3333";
+                    // m modifier will match content of each line only affect [^$],
+                    // not working on \A \a \Z \z
+                    $reg = "/\Ah\d+$/m";
+                    preg_match_all($reg, $str, $match);
+                    print_r($match);
+                ```
+
+                ``` php
+                <?php
+                    $str = "h111\nh2222\nh3333\n";
+                    // m modifier will match content of each line only affect [^$],
+                    // not working on \A \a \Z \z
+                    // \Z \A is not affected by \n
+                    $reg = "/h\d+\Z/m";
+                    preg_match_all($reg, $str, $match);
+                    print_r($match);
+                ```
+
+                ``` php
+                <?php
+                    $str = "h111\nh2222\nh3333";
+                    // m modifier will match content of each line only affect [^$],
+                    // \a \z will affected by the end of \n
+                    $reg = "/h\d+\z/m";
+                    preg_match_all($reg, $str, $match);
+                    print_r($match);
+                ```
+
+                ```php
+                <?php
+                    $str = "https://github.com/vsfdqfpdpg";
+                    $reg = "/(?<=\/.).*(?=\/)/";
+                    preg_match_all($reg,$str,$match);
+                    print_r($match);
+                ```
+
+                ```php
+                <?php
+                    $str = "https://github.com/vsfdqfpdpg";
+                    $reg = "/(?<!\/.).*(?=\/)/";
+                    preg_match_all($reg,$str,$match);
+                    print_r($match);
+                ```
+
+                ```php
+                <?php
+                    $str = "php python pear";
+                    $reg = "/\bp(?=h)\w+\b/";
+                    preg_match_all($reg,$str,$match);
+                    print_r($match);
+                ```
+
+                ```php
+                <?php
+                    $str = "php python pear";
+                    $reg = "/\bp(?!h)\w+\b/";
+                    preg_match_all($reg,$str,$match);
+                    print_r($match);
+                ```
+
+                ``` php
+                <?php
+                // x 忽略正则表达式中的空格
+                // U 贪婪匹配
+                // A 从头开始匹配
+                // D 结束不能有换行符
+                // e 把替换字符串当表达式使用,相当于eval
+
+                ```

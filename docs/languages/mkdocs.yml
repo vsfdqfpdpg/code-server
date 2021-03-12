@@ -22,6 +22,10 @@ markdown_extensions:
   - admonition
   - pymdownx.details
   - pymdownx.snippets
+  - pymdownx.caret
+  - pymdownx.mark
+  - pymdownx.critic
+  - pymdownx.tilde
   - pymdownx.tasklist:
       custom_checkbox: true
   - marker.fence_link

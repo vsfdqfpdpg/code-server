@@ -1,0 +1,71 @@
+
+            === "Char"
+                ``` go
+                package main
+                import ( 
+                    "fmt"
+                    "unicode/utf16"
+                )
+                func main() {
+                    var decimal int = 65;
+                    var octal int = 0101;
+                    var hexadecimal int = 0x41;
+                    var binary int = 0b1000001;
+
+                    // [string](https://golang.org/pkg/builtin/#string)
+                    for _,value := range([]int{decimal, octal, hexadecimal, binary}) {
+                        fmt.Println(string(value))
+                    }
+
+                    // Convert the first byte of a string to a value between 0 and 255
+                    var char byte = 'A'
+                    fmt.Println(char)
+
+                    var byteArr []byte = []byte("A")
+                    fmt.Println(byteArr)
+
+                    // Building a UTF-8 string from individual bytes
+                    var elephant []byte = []byte{240, 159, 144, 152}
+                    fmt.Println(string(elephant))
+
+                    // Examining the individual bytes of a UTF-8 string
+                    var str string = "🐘";
+                    for pos := 0; pos < len(str); pos++ {
+                        fmt.Printf("Byte %d of " + str + " has value => %d \n", pos, str[pos])
+                    }
+
+                    // A chinese character contains 3 byte
+                    fmt.Println(len("中"))
+
+                    var chinese_character string = "中";
+                    for pos := 0; pos < len(chinese_character); pos++ {
+                        var byteCode byte = chinese_character[pos];
+                        // [strconv.FormatInt](https://golang.org/pkg/strconv/#FormatInt)
+                        // Convert Decimal to Binary Using fmt
+                        fmt.Printf("Byte %d of %s has value %d => %b \n", pos, chinese_character, byteCode, byteCode)
+                    }
+
+                    runeByte:= []rune("🐘")
+                    fmt.Println(len(runeByte))
+                    encodedByte := utf16.Encode(runeByte)
+                    fmt.Println(string(utf16.Decode(encodedByte)))
+                }
+                
+                ```
+            
+            === "String"
+                ``` go
+                package main
+                import "fmt"
+                func main() {
+                    // [String_types](https://golang.org/ref/spec#String_types)
+
+                    var str = "Hello world!\n"
+                    fmt.Print(str)
+
+                    str = ` Hello world!\n 
+                    Multiple line strings
+                    `
+                    fmt.Print(str)
+                }
+                ```

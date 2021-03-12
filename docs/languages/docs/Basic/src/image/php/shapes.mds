@@ -1,0 +1,618 @@
+
+            === "Shape"
+                ``` php
+                <?php
+                    $img = imagecreatetruecolor(500, 500);
+                    $color = imagecolorallocate($img, 24, 177, 121);
+
+                    $white = imagecolorallocate($img, 255, 255, 255);
+                    $red = imagecolorallocate($img, 255,0,0);
+
+                    imagefill($img, 0, 0, $color);
+
+                    imageline($img, 0, 0, 500,500 ,$white);
+
+                    imageline($img, 500, 0, 0, 500, $white);
+
+                    imageline($img, 50, 250, 450, 250, $red);
+
+                    header("content-type: image/jpeg");
+                    imagejpeg($img);
+                    imagedestroy($img); 
+                ```
+
+                ``` php
+                <?php
+                    $img = imagecreatetruecolor(500, 500);
+                    $red = imagecolorallocate($img, 250,0,0 );
+                    imagedashedline($img, 0, 0,300,500, $red);
+
+                    header("content-type: image/jpeg");
+                    imagejpeg($img);
+                    imagedestroy($img);
+                ```
+
+                ``` php 
+                <?php
+                    $img = imagecreatetruecolor(500, 500);
+                    $red = imagecolorallocate($img, 255,0,0 );
+                    $white = imagecolorallocate($img, 255,255,255 );
+                    $blue = imagecolorallocate($img, 0,255,80 );
+
+                    $style = [$red,$red,$red,$red,$white,$white,$white,$blue,$blue,$blue,$blue];
+                    imagesetstyle($img, $style);
+                    imagesetthickness($img, 3);
+
+                    imageline($img,0,0,500,500,IMG_COLOR_STYLED);
+                    header("content-type: image/jpeg");
+                    imagejpeg($img);
+                    imagedestroy($img);
+
+                ```
+
+                ``` php 
+                <?php
+                    $img = imagecreatetruecolor(500, 500);
+
+                    $block = imagecreatetruecolor(20, 20);
+                    $yellow = imagecolorallocate($block, 255, 255, 0);
+                    imagefill($block, 0, 0, $yellow);
+                    imagesetbrush($img, $block);
+
+                    imageline($img, 0, 0, 600 ,600, IMG_COLOR_BRUSHED);
+
+                    header("content-type: image/jpeg");
+                    imagejpeg($img);
+                    imagedestroy($img);
+
+                ```
+
+                ``` php
+                <?php 
+                    $img = imagecreatetruecolor(100, 30);
+                    $width = imagesx($img);
+                    $height = imagesy($img);
+
+                 
+                    $white = imagecolorallocate($img, 255, 255, 255 );
+                    imagefill($img, 0, 0,$white);
+
+                    $color_line = imagecolorallocate($img, 180,180,180);
+                    imageline($img, 0, 0, $width -1, 0, $color_line);
+                    imageline($img, $width -1, 0, $width -1, $height -1, $color_line);
+                    imageline($img, 0, $height -1, $width -1, $height -1, $color_line);
+                    imageline($img, 0, 0, 0, $height -1, $color_line);
+
+
+                    for($i = 0; $i < 30; $i++){
+                        $color = imagecolorallocate($img, mt_rand(0,255), mt_rand(0,255), mt_rand(0,255) );
+                        $alpha = imagecolorallocatealpha($img, mt_rand(0,255), mt_rand(0,255),mt_rand(0,255),mt_rand(50,110));
+                        for($j = 0; $j <10; $j++){
+                            imagesetpixel($img, mt_rand(0,$width), mt_rand(0,$height), $color);
+
+                        }
+                        imageline($img, mt_rand(0, $width), mt_rand(0, $height), mt_rand(0, $width), mt_rand(0, $height), $alpha);
+                    }
+
+                    header("content-type: image/jpeg");
+                    imagejpeg($img);
+                    imagedestroy($img);
+
+                ```
+
+                ``` php 
+                <?php
+                    $img = imagecreatetruecolor(500, 500);
+                    $black = imagecolorallocate($img, 0, 0, 0 );
+
+                    $yellow = imagecolorallocate($img, 255, 255, 0);
+                    imagefill($img,0,0,$yellow);
+
+                    $width = imagesx($img);
+                    $height = imagesy($img);
+                    imagerectangle($img, 0, 0, $width-1, $height-1,$black);
+
+                    for($i = 0; $i< 50; $i++){
+                        imagesetthickness($img,mt_rand(1,5));
+                        $alpha = imagecolorallocatealpha($img, mt_rand(0,255), mt_rand(0,255),mt_rand(0,255),mt_rand(50,110));
+                        imagerectangle($img, mt_rand(0,$width), mt_rand(0,$height), mt_rand(0,$width), mt_rand(0,$height), $alpha);
+                    }
+
+
+                    header("content-type: image/jpeg");
+                    imagejpeg($img);
+                    imagedestroy($img);
+                ```
+
+                ``` php 
+                <?php 
+                    $filename = "green.jpg";
+                    $img = imagecreatefromjpeg($filename);
+                    $imgInfo = getimagesize($filename);
+
+                    // $blue = imagecolorallocate($img, 0, 0, 200);
+                    // imagefilledrectangle($img, 0, 0, 100, 100, $blue);
+
+                    for($i = 0; $i < 20; $i++){
+                        $alpha = imagecolorallocatealpha($img, mt_rand(0,255), mt_rand(0,255),mt_rand(0,255),mt_rand(50,110));
+                        imagefilledrectangle($img, mt_rand(0,$imgInfo[0]), mt_rand(0,$imgInfo[1]), mt_rand(0,$imgInfo[0]), mt_rand(0,$imgInfo[1]), $alpha);
+                    }
+                    header("content-type: image/jpeg");
+                    imagejpeg($img);
+                    imagedestroy($img);
+                ```
+
+                ```php 
+                <?php 
+                    $color = "#3e37de";
+                    $red = hexdec(substr($color,1,2));
+                    $green = hexdec(substr($color,3,2));
+                    $blue = hexdec(substr($color,5,2));
+
+                    $img = imagecreatetruecolor(500,500);
+
+                    $apply = imagecolorallocate($img, $red, $green, $blue);
+                    imagefill($img,0,0,$apply);
+                    header("content-type: image/jpeg");
+                    imagejpeg($img);
+                    imagedestroy($img);
+                ```
+
+                ``` php
+                <?php
+                    $img = imagecreatefrompng("favicon.png");
+
+                    $index = imagecolorat($img, 16, 16);
+                    echo dechex($index), PHP_EOL;
+
+                    $color = imagecolorsforindex($img,$index);
+                    print_r($color);
+                ```
+
+                ``` php
+                <?php
+                    $img = imagecreatefrompng("favicon.png");
+
+                    for($x = 0; $x < imagesx($img); $x++){
+                        for($y = 0; $y < imagesy($img); $y++){
+                            $oldColor = imagecolorat($img, $x, $y);
+                            $newColor = (~$oldColor) & 0xfffff;
+                            imagesetpixel($img, $x, $y, $newColor);
+                        }
+                    }
+
+                    header("content-type: image/png");
+                    imagepng($img);
+                    imagedestroy($img);
+                ```
+
+                ``` php
+                <?php
+                    $img = imagecreatetruecolor(500, 500);
+                    $red = imagecolorallocate($img, 255, 0, 0);
+                    $blue = imagecolorallocate($img, 0, 0, 255);
+                    $white = imagecolorallocate($img, 255, 255, 255 );
+
+                    imagefill($img, 0, 0, $white);
+                    imageellipse($img, 250, 250, 200, 200, $blue);
+
+
+                    for($i = 0; $i < 50; $i++){
+                        $alpha = imagecolorallocatealpha($img, mt_rand(0,255), mt_rand(0,255),mt_rand(0,255),mt_rand(50,110));
+                        imagefilledellipse($img, mt_rand(0, imagesx($img)),mt_rand(0, imagesy($img)), mt_rand(0, imagesx($img)),mt_rand(0, imagesy($img)),$alpha);
+                    }
+                    header("content-type: image/jpeg");
+                    imagejpeg($img);
+                    imagedestroy($img);
+
+                ```
+
+                ``` php 
+                <?php
+                    $img = imagecreatetruecolor(500, 500);
+                    $red = imagecolorallocate($img, 255, 0, 0);
+                    $blue = imagecolorallocate($img, 0, 0, 255);
+                    $white = imagecolorallocate($img, 255, 255, 255 );
+
+                    imagefill($img, 0, 0, $white);
+
+                    imagearc($img,0,0,400,400,0,90,$red);
+
+                    imagefilledarc($img,0,0,400,400,0,90,$red,IMG_ARC_PIE);
+
+                    imagefilledarc($img,250,250,40,40,0,90,$red,IMG_ARC_EDGED + IMG_ARC_NOFILL);
+
+                    imagefilledarc($img,300,30,40,40,0,90,$red,IMG_ARC_CHORD + IMG_ARC_NOFILL);
+
+                    imagefilledarc($img,30,300,50,50,0,90,$red,IMG_ARC_CHORD);
+                  
+                    header("content-type: image/jpeg");
+                    imagejpeg($img);
+                    imagedestroy($img);
+                ```
+
+                ``` php
+                <?php
+                    $img = imagecreatetruecolor(500, 500);
+                    $white = imagecolorallocate($img, 255, 255, 255 );
+                    imagefill($img, 0, 0, $white);
+                    for($i = 0;$i < 20; $i++){
+                        $red = imagecolorallocate($img, 255 - $i*2, 0, 0);
+
+                        imagefilledarc($img, 300, 300-$i,400,60,220,50,$red,IMG_ARC_PIE);
+                    }
+
+                    header("content-type: image/jpeg");
+                    imagejpeg($img);
+                    imagedestroy($img);
+                ```
+
+                ``` php 
+                <?php
+                    $img = imagecreatetruecolor(500, 500);
+                    $white = imagecolorallocate($img, 255, 255, 255 );
+                    imagefill($img, 0, 0, $white);
+
+
+
+                    for($i = 0;$i < 20; $i++){
+                        imagefilledarc($img, 300, 300-$i, 300, 60, 0, 60, imagecolorallocate($img, 255, 0, 0) ,IMG_ARC_PIE);
+                        imagefilledarc($img, 300, 300-$i, 300, 60, 60, 260, imagecolorallocate($img, 200, 50, 0) ,IMG_ARC_PIE);
+                        imagefilledarc($img, 300, 300-$i, 300, 60, 260, 360, imagecolorallocate($img, 120, 168, 0) ,IMG_ARC_PIE);
+                    }
+
+                    header("content-type: image/jpeg");
+                    imagejpeg($img);
+                    imagedestroy($img);
+                ```
+
+                ``` php 
+                <?php
+                    $img = imagecreatetruecolor(300, 300);
+                    $white = imagecolorallocate($img, 255, 255, 255 );
+                    imagefill($img, 0, 0, $white);
+
+                    $ip = ["baidu" => 500, "google" => 2000, "sohu"=>800, "sina" => 1200,"youdao"=>520];
+                    asort($ip);
+
+                    
+                    for($i = 0; $i < 10; $i++){
+                        $colorArr[] = imagecolorallocate($img, mt_rand(0,255), mt_rand(0,255),mt_rand(0,255));
+                    }
+
+                    
+                    $r1 = $r2 = $j = 0;
+                    $arc_str = "";
+
+                    foreach($ip as $k => $v){
+                        $r1 = $j == 0 ? 0 : $r2;
+                        $r2 = $j == 0 ? $v /array_sum($ip) * 360 : $v / array_sum($ip) * 360 + $r1;
+                        $r2 = min(360, ceil($r2));
+                        $arc_str .= "imagefilledarc(\$img, imagesx(\$img) /2, imagesy(\$img)/2 - \$i, 300, 60, {$r1}, {$r2}, {$colorArr[$j]}, IMG_ARC_PIE);\n";
+                        $j++;
+                    }
+
+                    for($i = 0; $i < 20; $i++){
+                        eval($arc_str );
+                    }
+
+                    header("content-type: image/jpeg");
+                    imagejpeg($img);
+                    imagedestroy($img);
+
+                ```
+
+                ``` php
+                <?php
+                    $img = imagecreate(500, 500);
+                    $white = imagecolorallocate($img, 121, 32, 123 );
+                    $white = imagecolorallocate($img, 255, 255, 255 );
+
+                    $points = [10,10,490,10,490,490,10,490];
+
+                    imagepolygon($img,$points,4,$white);
+
+                    imagepolygon($img,$points, 3 ,$white);
+
+                    $points = [250,10,490,490,10,490];
+                    imagefilledpolygon($img,$points, 3 ,$white);
+                    
+                    header("content-type: image/jpeg");
+                    imagejpeg($img);
+                    imagedestroy($img);
+                ```
+
+                ``` php 
+                <?php
+                    $img = imagecreate(500, 500);
+                    $white = imagecolorallocate($img, 121, 32, 123 );
+                    $white = imagecolorallocate($img, 255, 255, 255 );
+                    $string = "github repo: https://github.com/vsfdqfpdpg";
+                    for($i= 0; $i < strlen($string); $i++){
+                        $char = substr($string, $i,1);
+                        imagechar($img, 5, 10 + $i* 10, 10, $char ,$white);
+                    }
+
+                    for($i= 0; $i < strlen($string); $i++){
+                        $char = substr($string, $i,1);
+                        imagecharup($img, 5, 10 , 500 - $i* 10, $char ,$white);
+                    }
+
+                    header("content-type: image/jpeg");
+                    imagejpeg($img);
+                    imagedestroy($img);
+
+                ```
+
+                ``` php 
+                <?php
+                    $img = imagecreate(500, 500);
+                    $white = imagecolorallocate($img, 121, 32, 123 );
+                    $white = imagecolorallocate($img, 255, 255, 255 );
+                    $string = "github repo: https://github.com/vsfdqfpdpg";
+
+                    imagestring($img, 5, 10 , 10, $string  ,$white);
+
+                    header("content-type: image/jpeg");
+                    imagejpeg($img);
+                    imagedestroy($img);
+
+                ```
+
+                ``` php 
+                <?php 
+                    $img = imagecreatefromjpeg("green.jpg");
+                    $black = imagecolorallocate($img, 0, 0, 0 );
+                    imagestring($img, 5, 30 , 30, "github repo: https://github.com/vsfdqfpdpg"  ,$black);
+
+                    imagestringup($img, 5, 30 , ceil(imagesy($img)/2), "github repo: https://github.com/vsfdqfpdpg"  ,$black);
+
+                    header("content-type: image/jpeg");
+                    imagejpeg($img);
+                    imagedestroy($img);
+
+                ```
+
+                ``` php
+                <?php 
+                    $img = imagecreatetruecolor(500, 500);
+                    $white = imagecolorallocate($img, 122, 122,122);
+                    imagefill($img,10,0,$white);
+
+                    $string = "https://github.com/vsfdqfpdpg";
+
+                    $w = imagefontwidth(5) * strlen($string);
+                    $h = imagefontheight(5);
+
+                    $color = imagecolorallocate($img, 0, 0,0);
+                    imagestring($img, 5, 0, 0, $string, $color);
+
+                    header("content-type: image/jpeg");
+                    imagejpeg($img);
+                    imagedestroy($img);
+                ```
+
+                ``` php 
+                <?php
+                    function water($r_img, $d_img = "", $pos = 1, $percent = 80, $str = "https://github.com/vsfdqfpdpg", $color = "#00ff00", $f_size = 5)
+                    {
+                        if (extension_loaded("gd") && file_exists($r_img) && getimagesize($r_img)) {
+                            $str_len = strlen($str);
+                            $w = imagefontwidth($f_size) * $str_len;
+                            $h = imagefontheight($f_size);
+
+                            $i_info = getimagesize($r_img);
+
+                            if ($i_info[0] < $w && $i_info[1] < $h) {
+                                return false;
+                            }
+
+                            // eval("$img = imagecreatefrom".substr($i_info,1)."($r_img);");
+
+                            switch ($i_info[2]) {
+                                case 1:
+                                    $img = imagecreatefromgif($r_img);
+                                    break;
+                                case 2:
+                                    $img = imagecreatefromjpeg($r_img);
+                                    break;
+                                case 3:
+                                    $img = imagecreatefrompng($r_img);
+                                    break;
+                                default:
+                                    return false;
+                            }
+                            if (strlen($color) != 7) return false;
+
+                            $f_color = imagecolorallocate($img, hexdec(substr(1, 2)), hexdec(substr(3, 2)), hexdec(substr(5, 2)));
+
+                            switch ($pos) {
+                                case 1:
+                                    $x = 8;
+                                    $y = 8;
+                                    break;
+                                case 2:
+                                    $x = ($i_info[0] - $w) / 2;
+                                    $y = 8;
+                                    break;
+                                case 3:
+                                    $x = $i_info[0] - $w;
+                                    $y = 8;
+                                    break;
+                                case 4:
+                                    $x = 8;
+                                    $y = $i_info[1] / 2;
+                                    break;
+                                case 5:
+                                    $x = ($i_info[0] - $w) / 2;
+                                    $y = $i_info[1] / 2;
+                                    break;
+                                default:
+                                    $x = mt_rand(8, $i_info[0] - $w);
+                                    $y = mt_rand(8, $i_info[1] - $h);
+                            }
+                            imagestring($img, $f_size, $x, $y, $str, $f_color);
+
+                            $d_img = $d_img != "" ? $d_img : null;
+
+                            header("content-type: image/jpeg");
+
+                            switch ($i_info[2]) {
+                                case 1:
+                                    imagegif($img, $d_img);
+                                    break;
+                                case 2:
+                                    imagejpeg($img, $d_img, $percent);
+                                    break;
+                                case 3:
+                                    imagepng($img, $d_img);
+                                    break;
+                            }
+
+                            imagedestroy($img);
+                            return true;
+                        }
+
+                        return false;
+                    }
+
+                    if (water("green.jpg",null,2)) {
+
+                    } else {
+                        echo "Something went wrong";
+                    }
+
+                ```
+
+                ``` php 
+                <?php 
+                    $img = imagecreatetruecolor(500, 500);
+                    $bg_color = imagecolorallocate($img, 124, 212, 111);
+                    imagefill($img, 0, 0, $bg_color);
+
+                    $black = imagecolorallocate($img, 0, 0, 0);
+
+                    $fontfile = "font/simkai.ttf";
+                    imagettftext($img, 15, -10, 5, 40, $black, $fontfile, "多语言编程");
+
+                    header("content-type: image/jpeg");
+                    imagejpeg($img);
+                    imagedestroy($img);
+                ```
+
+                ``` php 
+                <?php
+                    $fontfile = "font/simkai.ttf";
+                    $c = imagettfbbox(20, 0, $fontfile, "多语言编程");
+                    echo "Width: ", $c[2] - $c[6], PHP_EOL;
+                    echo "Height: ", abs($c[3] - $c[7]), PHP_EOL;
+                ```
+
+                ``` php
+                <?php
+                    class CheckCode
+                    {
+                        private $img;
+
+                        public $width = 85;
+
+                        public $height = 25;
+
+                        public $backgroundColor = '#ccebcf';
+
+                        public $fontColor = '#305887';
+
+                        public $code = "";
+
+                        public $codeString = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIGHKLMNOPQRSTUVWXYZ";
+
+                        public $codeLength = 4;
+
+                        public $font;
+
+                        public $fontSize = 16;
+
+
+                        private $fontColorObject = null;
+
+                        public function __construct()
+                        {
+                            $this->font = './font' . DIRECTORY_SEPARATOR . "arial.ttf";
+                        }
+
+                        private function generateCode()
+                        {
+                            $code = "";
+                            for ($i = 0; $i < $this->codeLength; $i++) {
+                                $code .= $this->codeString[mt_rand(0, strlen($this->codeString) - 1)];
+                            }
+                            $this->code = $code;
+                        }
+
+                        public function getCode()
+                        {
+                            return strtolower($this->code);
+                        }
+
+
+                        public function getImage()
+                        {
+                            if (!$this->checkGd()) return false;
+
+                            $this->img = imagecreatetruecolor($this->width, $this->height);
+                            imagefill($this->img, 0, 0, $this->getColor($this->backgroundColor));
+
+                            $this->createFont();
+                            $this->createLines();
+                            $this->show();
+                        }
+
+                        private function getColor($hex)
+                        {
+                            return imagecolorallocate($this->img, hexdec(substr($hex, 1, 2)), hexdec(substr($hex, 3, 2)), hexdec(substr($hex, 5, 2)));
+                        }
+                        private function createFont()
+                        {
+                            $this->generateCode();
+
+                            $fontColor = $this->getColor($this->fontColor);
+
+                            $x = $this->width / $this->codeLength;
+
+                            for ($i = 0; $i < $this->codeLength; $i++) {
+                                imagettftext($this->img, $this->fontSize, mt_rand(-30, 30), $x * $i + mt_rand(3, 6), mt_rand($this->height / 1.2, $this->height - 5), $fontColor, $this->font, $this->code[$i]);
+                            }
+
+                            $this->fontColorObject = $fontColor;
+                        }
+
+                        private function createLines()
+                        {
+                            for ($i = 0; $i < 100; $i++) {
+                                imagesetpixel($this->img, mt_rand(0, $this->width), mt_rand(0, $this->height), $this->fontColorObject);
+                            }
+                            for ($j = 0; $j < 2; $j++) {
+                                imagesetthickness($this->img, mt_rand(1, 2));
+                                imageline($this->img, mt_rand(0, $this->width), mt_rand(0, $this->height), mt_rand(0, $this->width), mt_rand(0, $this->height), $this->fontColorObject);
+                            }
+                        }
+
+                        private function checkGd()
+                        {
+                            return extension_loaded('gd') && function_exists('imagepng');
+                        }
+
+                        private function show()
+                        {
+                            header('Content-Type: image/png');
+                            imagepng($this->img);
+                            imagedestroy($this->img);
+                        }
+                    }
+
+
+                    $code = new CheckCode();
+                    $code->getImage();
+
+                ```
+

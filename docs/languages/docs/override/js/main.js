@@ -62,6 +62,19 @@ const copyInlineCode = () => {
   });
 };
 
+function hexToBase64(str) {
+  return btoa(
+    String.fromCharCode.apply(
+      null,
+      str
+        .replace(/\r|\n/g, '')
+        .replace(/([\da-fA-F]{2}) ?/g, '0x$1 ')
+        .replace(/ +$/, '')
+        .split(' ')
+    )
+  );
+}
+
 const runApi = () => {
   let codes = document.querySelectorAll('pre code');
   Array.from(codes)
@@ -80,35 +93,40 @@ const runApi = () => {
       button.addEventListener('click', (e) => {
         let loading = document.createElement('div');
         loading.classList = 'lds-dual-ring';
-        let result = e.target.closest('.tabbed-content').querySelector('.md-result');
+        let result = e.target.closest('pre').querySelector('.md-result');
         result.classList = 'md-result middle';
         result.innerHTML = '';
         result.appendChild(loading, item.target);
         let target = e.target.closest('.md-play').dataset.apiTarget;
         let code = document.querySelector(target);
-        if (code.closest('.tabbed-content')) {
-          let languageType = 'unknown type';
-          let filtered = Array.from(code.classList).filter((i) => i.indexOf('language') !== -1);
-          if (filtered.length > 0) {
-            languageType = filtered[0].replace('language-', '');
-          }
-          console.log();
-          fetch('http://localhost:5000', {
-            method: 'post',
-            headers: {
-              'Content-Type': 'application/json;charset=UTF-8',
-            },
-            body: JSON.stringify({ type: languageType, code: code.innerText }),
-          })
-            .then((data) => data.json())
-            .then((data) => {
-              resultDiv.classList = 'md-result';
-              result.innerHTML = data.msg;
-            })
-            .catch((e) => {
-              console.log(e);
-            });
+        let languageType = 'unknown type';
+        let filtered = Array.from(code.classList).filter((i) => i.indexOf('language') !== -1);
+        if (filtered.length > 0) {
+          languageType = filtered[0].replace('language-', '');
         }
+        console.log();
+        fetch('http://localhost:5000', {
+          method: 'post',
+          headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+          },
+          body: JSON.stringify({ type: languageType, code: code.innerText }),
+        })
+          .then((data) => data.json())
+          .then((data) => {
+            resultDiv.classList = 'md-result';
+            if (data.mimeType && data.mimeType.startsWith('image')) {
+              let img = document.createElement('img');
+              img.src = data.msg;
+              result.innerHTML = '';
+              result.appendChild(img);
+            } else {
+              result.innerHTML = data.msg;
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
       });
     });
 };

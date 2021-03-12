@@ -1,0 +1,707 @@
+
+            === "Operation"
+                ``` php
+                <?php
+                    $img = imagecreatefromjpeg("green.jpg");
+                    $backgroundColor = imagecolorallocate($img, 255, 255, 0);
+                    $jpg = imagerotate($img, 30, $backgroundColor); 
+
+                    header("content-type: image/jpeg");
+                    imagejpeg($jpg);
+                    imagedestroy($jpg);
+                ```
+
+                ``` php
+                <?php
+                    $img = imagecreatefrompng("logo.png");
+                    $backgroundColor = imagecolorallocate($img, 255, 255, 0);
+                    $jpg = imagerotate($img, 30, $backgroundColor); 
+
+                    header("content-type: image/png");
+                    imagepng($jpg);
+                    imagedestroy($jpg);
+                ```
+
+                ``` php 
+                <?php
+                    $img = imagecreatefromgif("logo.gif");                    
+                    $backgroundColor = imagecolorallocate($img, 255, 0, 0);
+                    $index = imagecolortransparent($img);
+
+                    if($index >= 0){
+                        $rgb = imagecolorsforindex($img, $index);
+                        // imagecolorset($img, $index, 255,0,0);
+                    }
+
+                    $jpg = imagerotate($img, 30, $backgroundColor); 
+
+                    header("content-type: image/gif");
+                    imagegif($jpg);
+                    imagedestroy($jpg);
+                ```
+
+                ``` php 
+                <?php
+                    $jpg = imagecreatefromjpeg("green.jpg");
+                    $logo = imagecreatefrompng("logo.png");
+
+                    imagecopy($jpg, $logo, 20, 20, 0, 0, imagesx($logo),imagesy($logo));
+
+                    header("content-type: image/jpeg");
+                    imagegif($jpg);
+                    imagedestroy($jpg);
+                ```
+
+                ``` php 
+                <?php
+                    $jpg = imagecreatefromjpeg("green.jpg");
+                    $logo = imagecreatefromgif("logo.gif");
+
+                    imagecopymerge($jpg, $logo, (imagesx($jpg) - imagesx($logo))/2,(imagesy($jpg) - imagesy($logo))/2, 0, 0, imagesx($logo), imagesy($logo), 50);
+
+                    header("content-type: image/jpeg");
+                    imagegif($jpg);
+                    imagedestroy($jpg);
+                ```
+
+                ``` php 
+                <?php
+                    $img = imagecreatefromjpeg("green.jpg");
+                    $logo = imagecreatefromjpeg("green.jpg");
+
+                    imagecopymergegray($img, $logo, 0,0,0,0,imagesx($logo), imagesy($logo),0);
+
+                    header("content-type: image/jpeg");
+                    imagegif($img);
+                    imagedestroy($img);
+                ```
+
+                ``` php 
+                <?php
+                    $img = imagecreatetruecolor(500, 500);
+                    $logo = imagecreatefromjpeg("green.jpg");
+
+                    imagecopyresampled($img, $logo,0,0,0,0,300,300,imagesx($logo),imagesy($logo));
+
+                    header("content-type: image/jpeg");
+                    imagegif($img);
+                    imagedestroy($img);
+
+                ```
+
+                ``` php 
+                <?php
+                    function resize($filename, $out, $width = 200, $height = 200)
+                    {
+                        $jpg = imagecreatefromjpeg($filename);
+                        $s_width = imagesx($jpg);
+                        $s_height = imagesy($jpg);
+                        if ($s_height > $s_width) {
+                            $new_height = $height;
+                            $new_width = ceil(($height / $s_height) * $s_width);
+                        } else {
+                            $new_width = $width;
+                            $new_height  = ceil(($width / $s_width) * $s_height);
+                        }
+
+                        $o = imagecreatetruecolor($new_width, $new_height);
+                        imagecopyresampled($o, $jpg, 0, 0, 0, 0, $new_width, $new_height, $s_width, $s_height);
+                        header("content-type: image/jpeg");
+                        imagejpeg($o, $out);
+                        imagedestroy($jpg);
+                        imagedestroy($o);
+                    }
+
+                    resize("./green.jpg", null);
+                ```
+
+                ``` php 
+                <?php   
+                    $jpg = imagecreatefromjpeg("green.jpg");
+                    echo imageistruecolor($jpg) ? "true" : "false", PHP_EOL;
+                    imagedestroy($jpg);
+
+
+                    $gif = imagecreatefromgif("logo.gif");
+                    echo imageistruecolor($gif) ? "true" : "false", PHP_EOL;
+                    imagedestroy($gif);
+                ```
+
+                ``` php
+                <?php
+                    $jpg = imagecreatefromjpeg("1.jpg");
+                    if(imageistruecolor($jpg)){
+                        imagetruecolortopalette($jpg, true, 255);
+                    }
+                    header("content-type: image/gif");
+                    imagegif($jpg);
+                    imagedestroy($jpg);
+                ```
+
+                ``` php 
+                <?php
+                    $gif = imagecreatefromgif("logo.gif");
+                    $index = imagecolortransparent($gif);
+
+                    var_dump(imagecolorsforindex($gif,$index));
+                    var_dump(imagecolorstotal($gif));
+
+
+                    $jpg = imagecreatefromjpeg("green.jpg");
+                    $color = imagecolorat($jpg, 10, 10);
+                    var_dump(imagecolorsforindex($jpg, $color));
+
+                    imagedestroy($gif);
+                    imagedestroy($jpg);
+                ```
+
+                ``` php 
+                <?php
+
+                    $jpg = imagecreatefromjpeg("green.jpg");
+                    $jpgInfo = getimagesize("green.jpg");
+
+                    imagetruecolortopalette($jpg, true, 5);
+                    imagecolortransparent($jpg, 2);
+
+                    $img = imagecreatetruecolor($jpgInfo[0], $jpgInfo[1]);
+                    imagefill($img, 1,2, imagecolorallocate($img, 255, 0, 0));
+
+                    imagecopy($img, $jpg,0,0,0,0,$jpgInfo[0],$jpgInfo[1]);
+
+                    header("content-type: image/gif");
+                    imagegif($jpg);
+                    imagedestroy($jpg);
+                ```
+
+                ``` php
+                <?php
+                    $logo = imagecreatefromgif("logo.gif");
+                    $img = imagecreatetruecolor(400,400);
+                    $bg_color = imagecolorallocate($img, 112, 112, 112);
+                    imagefill($img,0,0,$bg_color);
+                    imagecopyresampled($img,$logo,0,0,0,0,400,400,imagesx($logo), imagesy($logo));
+                    imagecolortransparent($img,$bg_color);
+
+                    header("content-type: image/gif");
+                    imagegif($img);
+                    imagedestroy($img);
+                ```
+
+                ``` php
+                <?php
+                    $gif = imagecreatefromgif("logo.gif");
+                    $img = imagecreate(500, 500);
+
+                    $bg_color = imagecolorallocate($img, 121, 121, 121);
+
+                    imagecopyresampled($img,$gif,0,0,0,0,500,500,imagesx($gif),imagesy($gif));
+                    imagecolortransparent($img, $bg_color);
+
+                    header("content-type: image/gif");
+                    imagegif($img);
+                    imagedestroy($img);
+                ```
+
+                ``` php
+                <?php
+                    $gif = imagecreatefromgif("logo.gif");
+                    echo imagecolorexact($gif, 0,0,0), PHP_EOL;
+
+                    echo imagecolorexactalpha($gif,0,0,0, 127), PHP_EOL;
+                ```
+
+                ``` php 
+                <?php
+                    $img = imagecreatefromjpeg("green.jpg");
+
+                    for($i =0; $i < 20; $i++){
+                        imagefilter($img,IMG_FILTER_GAUSSIAN_BLUR);
+                    }
+
+                    header("content-type: image/jpeg");
+                    imagejpeg($img);
+                    imagedestroy($img);
+                ```
+
+                ``` php 
+                <?php
+                    $img = imagecreatefromjpeg("green.jpg");
+
+                    imagefilter($img, IMG_FILTER_NEGATE);
+
+                    header("content-type: image/jpeg");
+                    imagejpeg($img);
+                    imagedestroy($img);
+                ```
+
+                ``` php 
+                <?php
+                    $img = imagecreatefromjpeg("green.jpg");
+
+                    imagefilter($img, IMG_FILTER_GRAYSCALE);
+
+                    header("content-type: image/jpeg");
+                    imagejpeg($img);
+                    imagedestroy($img);
+                ```
+
+                ``` php 
+                <?php
+                    $img = imagecreatefromjpeg("green.jpg");
+
+                    imagefilter($img, IMG_FILTER_COLORIZE, 255,0, 0);
+
+                    header("content-type: image/jpeg");
+                    imagejpeg($img);
+                    imagedestroy($img);
+                ```
+
+                ``` php 
+                <?php
+                    $img = imagecreatefromjpeg("green.jpg");
+
+                    imagefilter($img, IMG_FILTER_BRIGHTNESS, 100);
+
+                    header("content-type: image/jpeg");
+                    imagejpeg($img);
+                    imagedestroy($img);
+                ```
+
+                ``` php 
+                <?php
+                    $img = imagecreatefromjpeg("green.jpg");
+
+                    imagefilter($img, IMG_FILTER_EMBOSS, 100);
+
+                    header("content-type: image/jpeg");
+                    imagejpeg($img);
+                    imagedestroy($img);
+                ```
+
+                ``` php
+                <?php
+
+                    class Image
+                    {
+                        public $waterImage = "./logo.png";
+                        public $waterOn = true;
+                        public $position = 1;
+                        public $pct = 80;
+                        public $quality = 80;
+                        public $text = "http://github.com/vsfdqfpdpg";
+
+                        public $textSize = 24;
+                        public $textColor = "#000000";
+                        public $font = "./font/arial.ttf";
+                        public function __construct()
+                        {
+                        }
+
+                        public function watermark($img, $out = "", $waterImage = "", $pos = 1, $text = "", $pct = "")
+                        {
+                            if (!$this->check($img) || !$this->waterOn) return false;
+                            $out = $out ? $out : null;
+                            $pos = $pos ? $pos : $this->position;
+                            $text = $text ? $text : $this->text;
+                            $waterImage = $waterImage ? $waterImage : $this->waterImage;
+                            $waterImgOn = $this->check($waterImage) ? true : false;
+                            $pct = $pct ? $pct : $this->pct;
+
+                            $imgInfo = getimagesize($img);
+                            $imgWidth = $imgInfo[0];
+                            $imgHeight = $imgInfo[1];
+
+                            if ($waterImgOn) {
+                                $waterInfo = getimagesize($waterImage);
+                                $wWidth = $waterInfo[0];
+                                $wHeight = $waterInfo[1];
+                                switch ($waterInfo[2]) {
+                                    case 1:
+                                        $wImg = imagecreatefromgif($waterImage);
+                                        break;
+                                    case 2:
+                                        $wImg = imagecreatefromjpeg($waterImage);
+                                        break;
+                                    case 3:
+                                        $wImg = imagecreatefrompng($waterImage);
+                                        break;
+                                    default:
+                                        return false;
+                                }
+                            } else {
+                                if (empty($text) || strlen($this->textColor) != 7) return false;
+
+                                $text_info = imagettfbbox($this->textSize, 0, $this->font, $text);
+                                $wWidth = $text_info[2] - $text_info[6];
+                                $wHeight = $text_info[3] - $text_info[7];
+                            }
+
+                            if ($imgHeight < $wHeight || $imgWidth < $wWidth) {
+                                return false;
+                            }
+
+                            switch ($imgInfo[2]) {
+                                case 1:
+                                    $rImg = imagecreatefromgif($img);
+                                    break;
+                                case 2:
+                                    $rImg = imagecreatefromjpeg($img);
+                                    break;
+                                case 3:
+                                    $rImg = imagecreatefrompng($img);
+                                    break;
+                                default:
+                                    return false;
+                            }
+
+                            switch ($pos) {
+                                case 1:
+                                    $x = $y = 25;
+                                    break;
+                                case 2:
+                                    $x = ($imgWidth - $wWidth) / 2;
+                                    $y = 25;
+                                    break;
+                                case 3:
+                                    $x = $imgWidth - $wWidth;
+                                    $y = 25;
+                                    break;
+                                case 4:
+                                    $x = 25;
+                                    $y = ($imgHeight - $wHeight) / 2;
+                                    break;
+                                case 5:
+                                    $x = ($imgWidth - $wWidth) / 2;
+                                    $y = ($imgHeight - $wHeight) / 2;
+                                    break;
+                                case 6:
+                                    $x = $imgWidth - $wWidth;
+                                    $y = ($imgHeight - $wHeight) / 2;
+                                    break;
+                                case 7:
+                                    $x = 25;
+                                    $y = $imgHeight - $wHeight;
+                                    break;
+                                case 8:
+                                    $x = ($imgWidth - $wWidth) / 2;
+                                    $y = $imgHeight - $wHeight;
+                                    break;
+                                case 9:
+                                    $x = $imgWidth - $wWidth;
+                                    $y = $imgHeight - $wHeight;
+                                    break;
+                                default:
+                                    $x = mt_rand(25, $imgWidth - $wWidth);
+                                    $y = mt_rand(25, $imgHeight - $wHeight);
+                            }
+
+                            if ($waterImgOn) {
+                                if ($waterInfo[2] == 3) {
+                                    imagecopy($rImg, $wImg, $x, $y, 0, 0, $wWidth, $wHeight);
+                                } else {
+                                    imagecopymerge($rImg, $wImg, $x, $y, 0, 0, $wWidth, $wHeight, $pct);
+                                }
+                                imagecopymerge($rImg, $wImg, $x, $y, 0, 0, $wWidth, $wHeight, $pct);
+                            } else {
+                                $color = imagecolorallocate($rImg, hexdec(substr($this->textColor, 1, 2)), hexdec(substr($this->textColor, 1, 2)), hexdec(substr($this->textColor, 1, 2)));
+                                imagettftext($rImg, $this->textSize, 0, $x, $y, $color, $this->font, $text);
+                            }
+                            switch ($imgInfo[2]) {
+                                case 1:
+                                    header("content-type: image/gif");
+                                    imagegif($rImg, $out);
+                                    break;
+                                case 2:
+                                    header("content-type: image/jpeg");
+                                    imagejpeg($rImg, $out, $pct);
+                                    break;
+                                case 3:
+                                    header("content-type: image/png");
+                                    imagepng($rImg, $out);
+                                    break;
+                            }
+
+                            if (isset($rImg)) {
+                                imagedestroy($rImg);
+                            }
+
+                            if (isset($wImg)) {
+                                imagedestroy($wImg);
+                            }
+
+                            return true;
+                        }
+
+                        private function check($img)
+                        {
+                            $type = ['.jpg', 'jpeg', '.png', '.gif'];
+                            $imgType = strtolower(strrchr($img, '.'));
+                            return extension_loaded("gd") && file_exists($img) && in_array($imgType, $type);
+                        }
+                    }
+
+
+                    $img = new Image();
+                    $img->textColor = "#ff0000";
+                    $img->watermark("./green.jpg", null, null, 2, null, 30);
+                ```
+
+                ``` php 
+                <?php
+
+                    class Image
+                    {
+                        public $waterImage = "./logo.png";
+                        public $waterOn = true;
+                        public $position = 1;
+                        public $pct = 80;
+                        public $quality = 80;
+                        public $text = "http://github.com/vsfdqfpdpg";
+
+                        public $textSize = 24;
+                        public $textColor = "#000000";
+                        public $font = "./font/arial.ttf";
+
+                        public $thumbnailOn = true;
+                        public $thumbnailType = 1;
+                        public $thumbnailWidth = 200;
+                        public $thumbnailHeight = 200;
+                        public $thumbnailPostfix = "vsfdqfpdpg";
+
+                        public function __construct()
+                        {
+                        }
+
+                        public function thumbnail($img, $out = "", $type = "", $width = "", $height = "")
+                        {
+                            if (!$this->thumbnailOn || !$this->check($img)) return false;
+
+                            $type = $type ? $type : $this->thumbnailType;
+                            $width = $width ? $width : $this->thumbnailWidth;
+                            $height = $height ? $height : $this->thumbnailHeight;
+
+                            $imgInfo = getimagesize($img);
+                            $imgWidth = $imgInfo[0];
+                            $imgHeight = $imgInfo[1];
+                            $imgType = image_type_to_extension($imgInfo[2]);
+
+                            $thumbPoints = $this->thumbSize($imgWidth, $imgHeight, $width, $height, $type);
+
+                            $func = "imagecreatefrom" . substr($imgType, 1);
+                            $resImg = $func($img);
+
+                            if ($imgType == ".gif" || $imgType == ".png") {
+                                $thumbImg = imagecreate($thumbPoints[0], $thumbPoints[1]);
+                                $color = imagecolorallocate($resImg, 255, 0, 0);
+                            } else {
+                                $thumbImg = imagecreatetruecolor($thumbPoints[0], $thumbPoints[1]);
+                            }
+
+                            imagecopyresampled($thumbImg, $resImg, 0, 0, 0, 0, $thumbPoints[0], $thumbPoints[1], $thumbPoints[2], $thumbPoints[3]);
+
+                            if ($imgType == ".gif" || $imgType == ".png") {
+                                imagecolortransparent($thumbImg, $color);
+                            }
+
+                            $out = $out ? $out : substr($img, 0, strpos($img, ".")) . $this->thumbnailPostfix . $imgType;
+
+                            $func = "image" . substr($imgType, 1);
+                            header("Content-Type: image/" . substr($imgType, 1));
+                            $func($thumbImg, null);
+                            isset($thumbImg) && imagedestroy($thumbImg);
+                            isset($resImg) && imagedestroy($resImg);
+                            return $out;
+                        }
+
+                        private function thumbSize($imgWidth, $imgHeight, $width, $height, $type)
+                        {
+                            $w = $width;
+                            $h = $height;
+
+                            $cut_w = $imgWidth;
+                            $cut_h = $imgHeight;
+
+                            if ($imgWidth <= $width && $imgHeight <= $height) {
+                                $w = $imgWidth;
+                                $h = $imgHeight;
+                            } else {
+                                switch ($type) {
+                                    case 1:
+                                        $h = ($width / $imgWidth) * $imgHeight;
+                                        break;
+                                    case 2:
+                                        $w = ($height / $imgHeight) * $imgWidth;
+                                        break;
+                                    case 3:
+                                        $cut_h = $imgWidth / $width * $height;
+                                        break;
+                                    case 4:
+                                        $cut_w = $imgHeight / $height * $width;
+                                        break;
+                                    default:
+                                        if ($imgWidth / $width > $imgHeight / $height) {
+                                            $h = $width / $imgWidth * $imgHeight;
+                                        } elseif ($imgWidth / $width < $imgHeight / $height) {
+                                            $w = $height / $imgHeight * $imgWidth;
+                                        } else {
+                                            $w = $width;
+                                            $h = $height;
+                                        }
+                                }
+                            }
+
+                            return [$w, $h, $cut_w, $cut_h];
+                        }
+
+                        public function watermark($img, $out = "", $waterImage = "", $pos = 1, $text = "", $pct = "")
+                        {
+                            if (!$this->check($img) || !$this->waterOn) return false;
+                            $out = $out ? $out : null;
+                            $pos = $pos ? $pos : $this->position;
+                            $text = $text ? $text : $this->text;
+                            $waterImage = $waterImage ? $waterImage : $this->waterImage;
+                            $waterImgOn = $this->check($waterImage) ? true : false;
+                            $pct = $pct ? $pct : $this->pct;
+
+                            $imgInfo = getimagesize($img);
+                            $imgWidth = $imgInfo[0];
+                            $imgHeight = $imgInfo[1];
+
+                            if ($waterImgOn) {
+                                $waterInfo = getimagesize($waterImage);
+                                $wWidth = $waterInfo[0];
+                                $wHeight = $waterInfo[1];
+                                switch ($waterInfo[2]) {
+                                    case 1:
+                                        $wImg = imagecreatefromgif($waterImage);
+                                        break;
+                                    case 2:
+                                        $wImg = imagecreatefromjpeg($waterImage);
+                                        break;
+                                    case 3:
+                                        $wImg = imagecreatefrompng($waterImage);
+                                        break;
+                                    default:
+                                        return false;
+                                }
+                            } else {
+                                if (empty($text) || strlen($this->textColor) != 7) return false;
+
+                                $text_info = imagettfbbox($this->textSize, 0, $this->font, $text);
+                                $wWidth = $text_info[2] - $text_info[6];
+                                $wHeight = $text_info[3] - $text_info[7];
+                            }
+
+                            if ($imgHeight < $wHeight || $imgWidth < $wWidth) {
+                                return false;
+                            }
+
+                            switch ($imgInfo[2]) {
+                                case 1:
+                                    $rImg = imagecreatefromgif($img);
+                                    break;
+                                case 2:
+                                    $rImg = imagecreatefromjpeg($img);
+                                    break;
+                                case 3:
+                                    $rImg = imagecreatefrompng($img);
+                                    break;
+                                default:
+                                    return false;
+                            }
+
+                            switch ($pos) {
+                                case 1:
+                                    $x = $y = 25;
+                                    break;
+                                case 2:
+                                    $x = ($imgWidth - $wWidth) / 2;
+                                    $y = 25;
+                                    break;
+                                case 3:
+                                    $x = $imgWidth - $wWidth;
+                                    $y = 25;
+                                    break;
+                                case 4:
+                                    $x = 25;
+                                    $y = ($imgHeight - $wHeight) / 2;
+                                    break;
+                                case 5:
+                                    $x = ($imgWidth - $wWidth) / 2;
+                                    $y = ($imgHeight - $wHeight) / 2;
+                                    break;
+                                case 6:
+                                    $x = $imgWidth - $wWidth;
+                                    $y = ($imgHeight - $wHeight) / 2;
+                                    break;
+                                case 7:
+                                    $x = 25;
+                                    $y = $imgHeight - $wHeight;
+                                    break;
+                                case 8:
+                                    $x = ($imgWidth - $wWidth) / 2;
+                                    $y = $imgHeight - $wHeight;
+                                    break;
+                                case 9:
+                                    $x = $imgWidth - $wWidth;
+                                    $y = $imgHeight - $wHeight;
+                                    break;
+                                default:
+                                    $x = mt_rand(25, $imgWidth - $wWidth);
+                                    $y = mt_rand(25, $imgHeight - $wHeight);
+                            }
+
+                            if ($waterImgOn) {
+                                if ($waterInfo[2] == 3) {
+                                    imagecopy($rImg, $wImg, $x, $y, 0, 0, $wWidth, $wHeight);
+                                } else {
+                                    imagecopymerge($rImg, $wImg, $x, $y, 0, 0, $wWidth, $wHeight, $pct);
+                                }
+                                imagecopymerge($rImg, $wImg, $x, $y, 0, 0, $wWidth, $wHeight, $pct);
+                            } else {
+                                $color = imagecolorallocate($rImg, hexdec(substr($this->textColor, 1, 2)), hexdec(substr($this->textColor, 1, 2)), hexdec(substr($this->textColor, 1, 2)));
+                                imagettftext($rImg, $this->textSize, 0, $x, $y, $color, $this->font, $text);
+                            }
+                            switch ($imgInfo[2]) {
+                                case 1:
+                                    header("content-type: image/gif");
+                                    imagegif($rImg, $out);
+                                    break;
+                                case 2:
+                                    header("content-type: image/jpeg");
+                                    imagejpeg($rImg, $out, $pct);
+                                    break;
+                                case 3:
+                                    header("content-type: image/png");
+                                    imagepng($rImg, $out);
+                                    break;
+                            }
+
+                            if (isset($rImg)) {
+                                imagedestroy($rImg);
+                            }
+
+                            if (isset($wImg)) {
+                                imagedestroy($wImg);
+                            }
+
+                            return true;
+                        }
+
+                        private function check($img)
+                        {
+                            $type = ['.jpg', 'jpeg', '.png', '.gif'];
+                            $imgType = strtolower(strrchr($img, '.'));
+                            return extension_loaded("gd") && file_exists($img) && in_array($imgType, $type);
+                        }
+                    }
+
+
+                    $img = new Image();
+                    $img->textColor = "#ff0000";
+                    // $img->watermark("../green.jpg", null, null, 2, null, 30);
+
+                    $img->thumbnail("./green.jpg");
+
+                ```

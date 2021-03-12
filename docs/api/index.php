@@ -5,6 +5,7 @@ header('Access-Control-Allow-Methods: GET, POST');
 
 header("Access-Control-Allow-Headers: *");
 
+error_reporting(E_ALL);
 
 $contentType = isset($_SERVER["CONTENT_TYPE"]) ? trim($_SERVER["CONTENT_TYPE"]) : '';
 
@@ -21,15 +22,26 @@ $languages = [
 
 class Response
 {
-    public static function success($msg)
+    public static function success($output)
     {
-        header("Content_Type", "application/json");
-        echo json_encode(["code" => 200, "msg" => $msg]);
+        // JSON_INVALID_UTF8_IGNORE
+        header("Content-Type", "application/json;charset=UTF-8");
+
+        // FILEINFO_MIME_TYPE
+        $finfo = new finfo(FILEINFO_MIME);
+        $fileInfo =  $finfo->buffer($output);
+        list($mimeType, $charset) =  explode("; charset=", $fileInfo);
+        if ('text/plain' == $mimeType) {
+            $code = iconv($charset, "UTF-8", $output);
+            echo json_encode(["code" => 200, "msg" => $code, "mimeType" => $mimeType]);
+        } else {
+            echo json_encode(["code" => 200, "msg" => "data:$mimeType;base64," . base64_encode($output), "mimeType" => $mimeType]);
+        }
     }
 
     public static function error($msg)
     {
-        header("Content_Type", "application/json");
+        header("Content-Type", "application/json;charset=UTF-8");
         echo json_encode(["code" => 500, "msg" => $msg]);
     }
 }
@@ -48,53 +60,67 @@ if (stripos($contentType, "application/json") != -1 && $_SERVER['REQUEST_METHOD'
         exit;
     }
 
+    $languageType = strtolower($decoded['type']);
 
-    if (!$config['output']) {
+    if (!isset($config['output'])) {
         $tmpfile = tmpfile();
         $path = stream_get_meta_data($tmpfile)['uri'];
-        fwrite($tmpfile, $decoded['code']);
-        $cmd = $config['executor'] . ' ' . $path . ' 2>&1';
-    } else {
-        $languageType = strtolower($decoded['type']);
-        $path = sys_get_temp_dir() . '/' .  $config['output'];
-        $tmpfile = $path . $config['ext'];
-        if ($languageType != 'java') {
-            file_put_contents($tmpfile, $decoded['code']);
-        }
-        $cmd = $config['executor'] . ' ' . $tmpfile . ' -o ' . $path . ' 2>&1 && chmod +x ' . $path . ' && ' . $path . ' 2>&1';
-        if ($languageType == 'go') {
-            $sysTempPath = sys_get_temp_dir();
-            if (!file_exists($sysTempPath . '/go.mod')) {
-                shell_exec("cd " . $sysTempPath . " && go mod init example.com");
+
+        if ($languageType == 'php') {
+            if (!preg_match("/header\(\"content-type:\s+(.*?)\"\)/i", $decoded['code'], $match)) {
+                $decoded['code'] = preg_replace("/<\?php/", "<?php\n    header('Content-Type: text/plain; charset=UTF-8');\n", $decoded['code'], 1);
             }
-            $cmd = $config['executor'] . ' ' . $tmpfile . ' 2>&1';
-        } elseif ($languageType == 'java') {
-            if (preg_match("/public\s+class\s+(.*?)\s+{/", $decoded['code'], $matches)) {
-                $path = sys_get_temp_dir() . '/' .  $matches[1];
-                $tmpfile = $path . $config['ext'];
+            fwrite($tmpfile, $decoded['code']);
+            $cmd = $config['executor'] . ' ' . $path . ' 2>&1';
+        } else {
+            $path = sys_get_temp_dir() . '/' .  $config['output'];
+            $tmpfile = $path . $config['ext'];
+            if ($languageType != 'java') {
                 file_put_contents($tmpfile, $decoded['code']);
-                $cmd = $config['executor'] . ' ' . $tmpfile . ' 2>&1 && cd /tmp && java ' . $matches[1] . ' 2>&1';
-            } else {
-                Response::error(implode("\n", $output));
-                exit;
+            }
+            $cmd = $config['executor'] . ' ' . $tmpfile . ' -o ' . $path . ' 2>&1 && chmod +x ' . $path . ' && ' . $path . ' 2>&1';
+            if ($languageType == 'go') {
+                $sysTempPath = sys_get_temp_dir();
+                if (!file_exists($sysTempPath . '/go.mod')) {
+                    shell_exec("cd " . $sysTempPath . " && go mod init example.com");
+                }
+                $cmd = $config['executor'] . ' ' . $tmpfile . ' 2>&1';
+            } elseif ($languageType == 'java') {
+                if (preg_match("/public\s+class\s+(.*?)\s+{/", $decoded['code'], $matches)) {
+                    $path = sys_get_temp_dir() . '/' .  $matches[1];
+                    $tmpfile = $path . $config['ext'];
+                    file_put_contents($tmpfile, $decoded['code']);
+                    $cmd = $config['executor'] . ' ' . $tmpfile . ' 2>&1 && cd /tmp && java ' . $matches[1] . ' 2>&1';
+                } else {
+                    Response::error(implode("\n", $output));
+                    exit;
+                }
             }
         }
-    }
-    exec($cmd, $output, $return);
-    if (is_resource($tmpfile)) {
-        fclose($tmpfile);
-    }
-    if (file_exists($tmpfile)) {
-        unlink($tmpfile);
-    }
 
-    if (file_exists(str_replace("java", "class", $tmpfile))) {
-        unlink(str_replace("java", "class", $tmpfile));
-    }
+        $output = null;
+        $return = null;
+        ob_start();
+        passthru($cmd, $return);
+        // exec($cmd, $output, $return);
+        $output = ob_get_contents();
+        ob_end_clean(); //Use this instead of ob_flush()
 
-    if ($return !== 0) {
-        Response::error(implode("\n", $output));
-    } else {
-        Response::success(implode("\n", $output));
+
+        if (is_resource($tmpfile)) {
+            fclose($tmpfile);
+        } else if (file_exists($tmpfile)) {
+            unlink($tmpfile);
+        }
+
+        if (file_exists(str_replace("java", "class", $tmpfile))) {
+            unlink(str_replace("java", "class", $tmpfile));
+        }
+
+        if ($return !== 0) {
+            Response::error($output);
+        } else {
+            Response::success($output);
+        }
     }
 }

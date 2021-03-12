@@ -1,0 +1,79 @@
+
+            === "Char"
+                ``` javascript
+                let decimal = 65;
+                let octal = 0101;
+                let hexadecimal = 0x41;
+                let binary = 0b1000001;
+
+                // [fromCharCode](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCharCode)
+                // // Generate a single-byte string from a number
+                for(let i of [decimal,octal, hexadecimal, binary]){
+                    console.log(String.fromCharCode(i));
+                }
+
+                // [charCodeAt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charCodeAt)
+                // Convert the first byte of a string to a value between 0 and 65535
+                console.log('A'.charCodeAt(0));
+
+                // Building a UTF-16 string from individual bytes
+                $str = String.fromCharCode(55357,56344);
+                console.log($str);
+
+                // Examining the individual bytes of a UTF-16 string
+                str = '🐘';
+                for(let pos=0; pos < str.length; pos++){
+                    let byte = str.charCodeAt(pos);
+                    console.log(`Byte ${pos} of ${str} has value => ${byte}`);
+                }
+
+                // A chinese character 
+                console.log('中'.length);
+
+                let chinese_character = '中';
+                for(let pos=0; pos < chinese_character.length; pos++){
+                    let byte = chinese_character.charCodeAt(pos);
+                    // Convert Decimal to Binary Using toString([radix])
+                    console.log(`Byte ${pos} of ${chinese_character} has value ${byte} => ${byte.toString(2)}`);
+                }
+
+                ```
+
+                
+            === "String"
+                ``` javascript
+                // [string_type](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#string_type)
+
+                // [string_literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Grammar_and_types#string_literals)
+
+                // [Global_Objects/String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)
+                
+                let a = 'foo';
+                let b = "bar";
+                let c = '1234';
+                let d = 'one line \n another line';
+                let e = "John's cat";
+
+                // Basic literal string creation
+                let f = `In JavaScript '\n' is a line-feed.`;
+
+                // Multiple line strings
+                let g = `In JavaScript, template strings can run
+                over multiple lines, but double and single
+                quoted strings cannot.`
+
+                // String interpolation
+                var name = 'Bob', time = 'today';
+                let h = `Hello ${name}, how are you ${time}?`
+
+                let i = 'this string \
+                is broken \
+                across multiple \
+                lines.'
+
+                var quote = "He read \"The Cremation of Sam McGee\" by R.W. Service.";
+
+                for(i of [a,b,c,d,e,f,g,h,i,quote]){
+                    console.log(i);
+                }
+                ```

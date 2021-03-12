@@ -1,0 +1,9 @@
+
+        === "Jpeg"
+            {% include "Basic/src/image/python/jpeg.mds" %}
+
+        === "Png"
+            {% include "Basic/src/image/python/png.mds" %}
+
+        === "Gif"
+            {% include "Basic/src/image/python/gif.mds" %}

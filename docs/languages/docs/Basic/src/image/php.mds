@@ -1,0 +1,9 @@
+
+        === "Jpeg"
+            {% include "Basic/src/image/php/jpeg.mds" %}
+
+        === "Shapes"
+            {% include "Basic/src/image/php/shapes.mds" %}
+
+        === "Operation"
+            {% include "Basic/src/image/php/operation.mds" %}

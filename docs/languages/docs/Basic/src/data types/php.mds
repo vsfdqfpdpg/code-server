@@ -1,43 +1,20 @@
         
         === "String"
-            ``` php
-            <?php
-                $expand = "apple";
-                // [single quoted](https://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.single)
-                echo 'this is a simple single quote string'.PHP_EOL;
-                echo 'Variables do not $expand'.PHP_EOL;
+            {% include "Basic/src/data types/php/string.mds" %}    
 
-                // [double quoted](https://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.double)
-                echo "He drank some $expand juice.".PHP_EOL;
-
-                // [heredoc syntax](https://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.heredoc)
-                $hereDoc = <<<EOF
-                    HereDoc syntax will output string as it original content and
-                also will parse variables like '$expand' variable;
-                EOF;
-                echo $hereDoc.PHP_EOL;
-
-                // [nowdoc syntax](https://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.nowdoc)
-                $nowDoc = <<<'EOT'
-                    NowDoc is similar to hereDoc but not parse variables like '$expand'
-                EOT;
-                echo $nowDoc.PHP_EOL;
-            ```    
-
-        === "Integer"
+        === "Numeric"
             ``` php
             <?php
                 // [integer](https://www.php.net/manual/en/language.types.integer.php)
-                $a = 1234; // decimal number
-                echo $a.PHP_EOL;
-                $a = 0123; // octal number (equivalent to 83 decimal)
-                echo $a.PHP_EOL;
-                $a = 0x1A; // hexadecimal number (equivalent to 26 decimal)
-                echo $a.PHP_EOL;
-                $a = 0b11111111; // binary number (equivalent to 255 decimal)
-                echo $a.PHP_EOL;
-                $a = 1_234_567; // decimal number (as of PHP 7.4.0)
-                echo $a.PHP_EOL;
+
+                $decimal =  123456789123456789;       // (decimal, base 10)
+                $octal   =  0777777777777;           // (octal, base 8)
+                $hex     =  0x123456789ABCDEF;        // (hexadecimal, "hex" or base 16)
+                $binary =  0b11101001010101010101;   // (binary, base 2)
+
+                foreach([$decimal,$octal, $hex, $binary] as $value){
+                    echo $value.PHP_EOL;
+                }
             ```         
 
         === "Boolean"
@@ -59,64 +36,10 @@
                 -1 is considered true, like any other non-zero (whether negative or positive) number!
 
         ===  "Array"
-            ``` php
-            <?php
-                // [array](https://www.php.net/manual/en/language.types.array.php)
-                $array = $array = array(
-                    1    => "a",
-                    "1"  => "b",
-                    1.5  => "c",
-                    true => "d",
-                    100   => -100,
-                    -100  => 100,
-                    "multi" => array(
-                        "dimensional" => array(
-                            "array" => "foo"
-                        )
-                    )
-                );
-                var_dump($array);
-
-                // Using the short array syntax
-                $array = [
-                    "foo" => "bar",
-                    "bar" => "foo",
-                ];
-                var_dump($array);
-
-                // Indexed arrays without key
-                $array = array("foo", "bar", "hello", "world");
-                var_dump($array);
-            ``` 
+            {% include "Basic/src/data types/php/array.mds" %} 
 
         ===  "Object"
-            ``` php
-            <?php
-                // [object](https://www.php.net/manual/en/language.types.object.php)
-                class foo
-                {
-                    function do_foo()
-                    {
-                        echo "Doing foo.".PHP_EOL; 
-                    }
-                }
-
-                $bar = new foo;
-                $bar->do_foo();
-
-                $obj = (object) array('1' => 'foo');
-                var_dump(isset($obj->{'1'})); // outputs 'bool(true)' as of PHP 7.2.0; 'bool(false)' previously
-                var_dump($obj->{'1'});
-                var_dump(key($obj)); // outputs 'string(1) "1"' as of PHP 7.2.0; 'int(1)' previously
-
-                $newobj = new stdClass();//create a new
-                $newobj->name = "India";
-                $newobj->work = "Development";
-                $newobj->address="patna";
-                var_dump($newobj);
-                $new = (array)$newobj;//convert stdClass to array
-                var_dump($new); //print new object
-            ``` 
+            {% include "Basic/src/data types/php/object.mds" %} 
 
         ===  "NULL"
             ``` php

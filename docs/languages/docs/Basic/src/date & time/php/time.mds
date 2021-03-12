@@ -1,0 +1,32 @@
+
+            === "Time"
+                ``` php
+                <?php
+                    date_default_timezone_set("PRC");
+
+                    $start = microtime(true);
+                    
+                    echo array_sum(range(0,100)), PHP_EOL;
+                    
+                    echo microtime(true) - $start, PHP_EOL;
+
+                    echo date("Y-m-d H:i:s A"), PHP_EOL;
+
+                    echo date("D"), " ",date("l"), PHP_EOL;
+
+                    echo gmdate("Y-m-d H:i:s A"), PHP_EOL;
+
+                    print_r(getdate());
+                    echo PHP_EOL;
+                ```
+
+                ```php 
+                <?php
+                    date_default_timezone_set("PRC");
+                    setlocale(LC_ALL, "chinese");
+                    echo strftime("%c"), PHP_EOL;
+
+                    print_r(gettimeofday());
+
+                    print_r(checkdate("2","28","2011"));
+                ```

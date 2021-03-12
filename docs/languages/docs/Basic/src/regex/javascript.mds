@@ -1,0 +1,9 @@
+
+        === "Cheat sheet"
+            {% include "Basic/src/regex/javascript/cheat sheet.mds" %}
+
+        === "Functions"
+            {% include "Basic/src/regex/javascript/functions.mds" %}
+
+        === "Common"
+            {% include "Basic/src/regex/javascript/common.mds" %}

@@ -1,0 +1,39 @@
+
+            === "Date"
+                [datetime](https://www.php.net/manual/en/ref.datetime.php){: target=_blink}   
+                [formats](https://www.php.net/manual/en/datetime.formats.php){: target=_blink}     
+                [formats.relative](https://www.php.net/manual/en/datetime.formats.relative.php){: target=_blink}     
+
+
+                ``` php
+                <?php
+                    // UTC 通用协调时间, 格林威治时间 GMT, 英国伦敦本地时间
+
+                    // PRC, Asia/Shanghai, Asia/HongKong, Asia/Chongqing
+
+                    echo date("Y-m-d H:i:s"), PHP_EOL;
+                    
+                    echo ini_get("date.timezone"), PHP_EOL;
+
+                    date_default_timezone_set("PRC");
+
+                    echo date("Y-m-d H:i:s"), PHP_EOL;
+
+                    echo date_default_timezone_get(), PHP_EOL;
+
+                    echo strtotime("2008/1/1"), PHP_EOL;
+
+                    echo strtotime("+3 days"), PHP_EOL;
+                    echo strtotime("+3 weeks"), PHP_EOL;
+                    echo strtotime("-3 days"), PHP_EOL;
+                    echo strtotime("+1 minute"), PHP_EOL;
+                    echo time(), PHP_EOL;
+
+                    // 时, 分, 秒, 日, 月, 年 [受时区影响]
+                    echo mktime(0, 0, 0, 1, 1, 2008), PHP_EOL;
+
+                    // 时, 分, 秒, 日, 月, 年 [格林威治时区,不受时区影响]
+                    echo gmmktime(0, 0, 0, 1, 1, 2008), PHP_EOL;
+
+                
+                ```

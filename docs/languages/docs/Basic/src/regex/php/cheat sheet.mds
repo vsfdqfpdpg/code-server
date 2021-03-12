@@ -1,0 +1,55 @@
+
+            === "Cheat sheet"
+                * [pcre](https://www.php.net/manual/en/book.pcre.php){: target=_blink}
+
+                * [regexp.reference.meta](https://www.php.net/manual/en/regexp.reference.meta.php#regexp.reference.meta){: target=_blink}   
+                
+                | Meta-character     | Description                          |
+                | ----------- | ------------------------------------ |
+                | \           | 	general escape character with several uses |
+                | ^           | 	assert start of subject (or line, in multiline mode) |
+                | $           | 	assert end of subject or before a terminating newline (or end of line, in multiline mode) |
+                | .           | 	match any character except newline (by default) |
+                | [           | 	start character class definition |
+                | ]           | 	end character class definition |
+                | |           | 	start of alternative branch |
+                | (           | 	start subpattern |
+                | )           | 	end subpattern |
+                | ?           | 	extends the meaning of (, also 0 or 1 quantifier, also makes greedy quantifiers lazy (see repetition) |
+                | *           | 	0 or more quantifier |
+                | +           | 	1 or more quantifier |
+                | {           | 	start min/max quantifier |
+                | }           | 	end min/max quantifier |
+
+                * Meta-characters inside square brackets (character classes)   
+
+                | Meta-character     | Description                          |
+                | ----------- | ------------------------------------ |
+                | \          | 	general escape character |
+                | ^          | 	negate the class, but only if the first character |
+                | -          | 	indicates character range |
+
+
+                | Escape sequences      | Description                          |
+                | ----------- | ------------------------------------ |
+                | \w       | any "word" character  |
+                | \W       | any "non-word" character |
+                | \d       | any decimal digit        |
+                | \D       | any character that is not a decimal digit |
+                | \s       | any whitespace character |
+                | \S       | any character that is not a whitespace character |
+                | \b       | word boundary |
+                | \B       | not a word boundary |
+
+                | Sub patterns       | Description                          |
+                | ----------- | ------------------------------------ |
+                | (?:red\|white) | the subpattern `?:` does not do any capturing |
+                | (?#comment) | write a comment |
+                | (?<name\>...) | name a subpattern |
+
+                | assertions | regex  | result |
+                | ----------- | -- | -- |
+                | (?=) | foo(?=bar) | foobar foobaz |
+                | (?!) | foo(?!bar) | foobar ==foo== baz |
+                | (?<=) | (?<=not )foo | foo not ==foo== but  |
+                | (?<!）|  (?<!not )foo | ==foo== not foo but  |   

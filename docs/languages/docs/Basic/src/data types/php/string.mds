@@ -1,0 +1,343 @@
+
+            === "Char"
+                ``` php
+                <?php
+                    // [ascii](https://www.man7.org/linux/man-pages/man7/ascii.7.html)
+
+                    echo "ini_get('default_charset') ". ini_get('default_charset').PHP_EOL;
+
+                    // 1 byte = 0 - 255
+
+                    $decimal = 65;
+                    $octal = 0101;
+                    $hexadecimal = 0x41;
+                    $binary = 0b1000001;
+
+                    // [chr](https://www.php.net/manual/en/function.chr.php)
+                    // Generate a single-byte string from a number
+                    foreach([$decimal, $octal, $hexadecimal, $binary] as $value){
+                        echo $value. " => " .chr($value).PHP_EOL;
+                    }
+
+                    // [ord](https://www.php.net/manual/en/function.ord.php)
+                    // Convert the first byte of a string to a value between 0 and 255
+                    echo ord('A').PHP_EOL;
+
+                    // Building a UTF-8 string from individual bytes
+                    $str = chr(240) . chr(159) . chr(144) . chr(152);
+                    echo $str.PHP_EOL;
+                    
+                    // Examining the individual bytes of a UTF-8 string
+                    $str = '🐘';
+                    for($pos=0; $pos < strlen($str); $pos++){
+                        $byte = substr($str, $pos);
+                        echo 'Byte ' . $pos . " of $str has value " . ' => '. ord($byte) . PHP_EOL;
+                    }
+
+                    // A chinese character contains 3 byte
+                    echo strlen('中').PHP_EOL;
+
+                    $chinese_character = '中';
+                    for($pos=0; $pos < strlen($chinese_character); $pos++){
+                        $byte = substr($chinese_character, $pos);
+                        // Convert Decimal to Binary Using decbin
+                        echo 'Byte ' . $pos . " of $chinese_character has value " . ord($byte) . ' => '. decbin(ord($byte)) . PHP_EOL;
+                    }
+
+                    $u16 = iconv("utf-8", "utf-16", $str);
+                    echo strlen($u16).PHP_EOL;
+                    for($pos=0; $pos < strlen($u16); $pos++){
+                        $byte = substr($u16, $pos);
+                        // Convert Decimal to Binary Using decbin
+                        echo 'Byte ' . $pos . " of $str has value " . ord($byte) . ' => '. decbin(ord($byte)) . PHP_EOL;
+                    }
+
+                    echo iconv("utf-16", "utf-8", $u16).PHP_EOL;
+
+                ```
+
+            === "String"
+                * [String Functions](https://www.php.net/manual/en/ref.strings.php){: target=_blink }        
+                * [String type](https://www.php.net/manual/en/language.types.string.php){: target=_blink }  
+                ``` php
+                <?php
+                    $expand = "apple";
+                    // [single quoted](https://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.single)
+                    echo 'this is a simple single quote string'.PHP_EOL;
+                    echo 'Variables do not $expand'.PHP_EOL;
+
+                    // [double quoted](https://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.double)
+                    echo "He drank some $expand juice.".PHP_EOL;
+
+                    // [heredoc syntax](https://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.heredoc)
+                    $hereDoc = <<<EOF
+                        HereDoc syntax will output string as it original content and
+                    also will parse variables like '$expand' variable;
+                    EOF;
+                    echo $hereDoc.PHP_EOL;
+
+                    // [nowdoc syntax](https://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.nowdoc)
+                    $nowDoc = <<<'EOT'
+                        NowDoc is similar to hereDoc but not parse variables like '$expand'
+                    EOT;
+                    echo $nowDoc.PHP_EOL;
+                ```
+
+                * Remove whitespace
+                ``` php
+                <?php
+                    $string = "         Hello  World!          ";
+                    echo trim($string). " => length: " .strlen(trim($string)).PHP_EOL;
+                    echo ltrim($string). " => length: " .strlen(ltrim($string)).PHP_EOL;
+                    echo rtrim($string). " => length: " .strlen(rtrim($string)).PHP_EOL;
+
+                ```
+
+                * Uppercase and lowercase a string
+                ``` php 
+                <?php
+                    $string = "github repo: https://github.com/vsfdqfpdpg";
+
+                    // [strtoupper](https://www.php.net/manual/en/function.strtoupper.php)
+                    // Transform all character to uppercase                    
+                    echo strtoupper($string).PHP_EOL;
+
+                    // [strtolower](https://www.php.net/manual/en/function.strtolower.php)
+                    // Transform all character to lowercase
+                    echo strtolower(strtoupper($string)).PHP_EOL;
+
+                    // [ucfirst](https://www.php.net/manual/en/function.ucfirst.php)
+                    // Capitalize the first word
+                    echo ucfirst($string).PHP_EOL;
+
+                    // [ucwords](https://www.php.net/manual/en/function.ucwords.php)
+                    // Capitalize each word in a string
+                    echo ucwords($string).PHP_EOL;
+                
+                ```
+
+                * Padding a string
+                ``` php 
+                <?php 
+                    // [str_pad](https://www.php.net/manual/en/function.str-pad.php)
+                    // str_pad ( string $string , int $length , string $pad_string = " " , int $pad_type = STR_PAD_RIGHT ) : string
+                    echo str_pad("100.0",10,"0").PHP_EOL;
+                    echo str_pad("100.0",10,"0",STR_PAD_LEFT).PHP_EOL;
+                    echo str_pad("100.0",10,"0",STR_PAD_BOTH).PHP_EOL;
+                ```
+
+                * Reverse a string
+                ``` php 
+                <?php 
+                    // [strrev](https://www.php.net/manual/en/function.strrev)
+                    $string = "Hello PHP!";
+                    echo strrev($string).PHP_EOL;
+                ```
+
+                * md5
+                ``` php
+                <?php 
+                    // [md5](https://www.php.net/manual/en/function.md5.php)
+                    $secret = "password";
+                    echo md5($secret); 
+                ```
+
+                * Format a number with grouped thousands 
+                ``` php
+                <?php 
+                    // [number-format](https://www.php.net/manual/en/function.number-format.php)
+                    // number_format ( float $num , int $decimals = 0 , string|null $decimal_separator = "." , string|null $thousands_separator = "," ) : string
+                    echo number_format("123456789", 3).PHP_EOL;
+                    echo number_format("123456789", 3, "+", "-").PHP_EOL;
+
+                ```
+
+                * Split a string by a string and Join array elements with a string
+                ``` php 
+                <?php 
+                    // [explode](https://www.php.net/manual/en/function.explode.php)
+                    $string = "github repo: https://github.com/vsfdqfpdpg";
+                    print_r(explode("/", $string));
+
+                    // [implode](https://www.php.net/manual/en/function.implode.php)
+                    $pieces = [
+                        "github repo: https:",
+                        "",
+                        "github.com",
+                        "vsfdqfpdpg"
+                    ];
+                    echo implode("/",$pieces).PHP_EOL;
+
+                    // [strtok](https://www.php.net/manual/en/function.strtok.php)
+                    $languages = "php,javascript,java,python,0,go";
+                    $tokenize = strtok($languages, ",");
+                    while($tokenize !== false){
+                        echo $tokenize.PHP_EOL;
+                        $tokenize = strtok(",");
+                    }
+
+                    // [chunk-split](https://www.php.net/manual/en/function.chunk-split.php)
+                    echo chunk_split($languages, 2, "|").PHP_EOL;
+                ```
+
+                * echo a string
+                ``` php 
+                <?php                
+                    $string = "github repo: https://github.com/vsfdqfpdpg";
+                    $number = "123456";
+                    // [echo](https://www.php.net/manual/en/function.echo.php)
+                    echo $string, $number, PHP_EOL;
+
+                    //[print](https://www.php.net/manual/en/function.print.php)
+                    print($string).PHP_EOL;
+
+                    // [printf](https://www.php.net/manual/en/function.printf.php)
+                    printf("%s %.2f %d", $string, $number, $number).PHP_EOL;
+
+                ```
+
+                * Return part of a string
+                ``` php 
+                <?php 
+                    $string = "github repo: https://github.com/vsfdqfpdpg";
+
+                    // [substr](https://www.php.net/manual/en/function.substr.php)
+
+                    // substr ( string $string , int $offset , int|null $length = null ) : string
+                    echo substr($string, 13).PHP_EOL;
+
+                    echo substr($string, 0, -11).PHP_EOL;
+                    echo substr($string, -11, 10).PHP_EOL;
+
+                    echo substr("中", 0 , 2), PHP_EOL;
+                ```
+
+                * Find the occurrence of a string
+                ``` php 
+                <?php
+                    $string = "github repo: https://github.com/vsfdqfpdpg";
+
+                    // [strstr](https://www.php.net/manual/en/function.strstr.php)
+                    // [strstr strchr] Find the first occurrence of a string and return the string from the string to the end
+                    echo strstr($string, "t").PHP_EOL;
+
+                    // [stristr](https://www.php.net/manual/en/function.stristr.php)
+                    echo stristr($string, "V").PHP_EOL;
+
+                    // [strrchr](https://www.php.net/manual/en/function.strrchr.php)
+                    echo strrchr($string, "t").PHP_EOL;
+
+                    // [strpos](https://www.php.net/manual/en/function.strpos.php)
+                    echo strpos($string, "t").PHP_EOL;
+
+                    // [stripos](https://www.php.net/manual/en/function.stripos.php)
+                    echo stripos($string, "T").PHP_EOL;
+
+                    // [strrpos](https://www.php.net/manual/en/function.strrpos.php)
+                    echo strrpos($string, "t").PHP_EOL;
+
+                    // [strripos](https://www.php.net/manual/en/function.strripos.php)
+                    echo strripos($string, "T").PHP_EOL;
+
+                    // [substr-count](https://www.php.net/manual/en/function.substr-count.php)
+                    echo substr_count($string, "github").PHP_EOL;
+
+                ```
+
+                * Parses the string into variables 
+                ``` php 
+                <?php 
+                    // [parse-str](https://www.php.net/manual/en/function.parse-str.php)
+                    $url = "https://github.com/vsfdqfpdpg?page=1&line=123";
+                    $parameters = substr(strrchr($url,"?"), 1);
+                    parse_str($parameters, $output);
+                    echo $parameters.PHP_EOL;
+                    echo $output['page'].PHP_EOL;
+                    echo $output['line'].PHP_EOL;
+                    // print_r(get_defined_vars());
+
+                    // [parse-url](https://www.php.net/manual/en/function.parse-url.php)
+                    print_r(parse_url($url));
+
+                    // [urlencode](https://www.php.net/manual/en/function.urlencode.php)
+                    $parameters = "?c=中文";
+                    echo urlencode($parameters).PHP_EOL;
+
+                    // [urldecode](https://www.php.net/manual/en/function.urldecode.php)
+                    $parameters = "%3Fc%3D%E4%B8%AD%E6%96%87";
+                    echo urldecode($parameters).PHP_EOL;
+
+                    // [htmlentities](https://www.php.net/manual/en/function.htmlentities.php)
+                    $link = '<a href="https://github.com/vsfdqfpdpg" target="_blink">Github 仓库</a>';
+                    echo $link.PHP_EOL;
+                    echo htmlentities($link).PHP_EOL;
+
+                    // [htmlspecialchars](https://www.php.net/manual/en/function.htmlspecialchars.php)
+                    echo htmlspecialchars($link).PHP_EOL;
+
+                    //[htmlspecialchars_decode](https://www.php.net/manual/en/function.htmlspecialchars-decode.php)
+                    echo htmlspecialchars_decode('&lt;a href="https://github.com/vsfdqfpdpg" target="_blink"&gt;Github 仓库&lt;/a&gt;').PHP_EOL;
+
+                    // [addslashes](https://www.php.net/manual/en/function.addslashes.php)
+                    // magic_quotes_gpc = on 
+                    echo ini_get("magic_quotes_gpc") ? "true" : "false", PHP_EOL;
+                    echo get_magic_quotes_gpc() ? "true" : "false", PHP_EOL;
+                    $string = "Jack's jacket!";
+                    echo addslashes($string).PHP_EOL;
+
+                    // [stripslashes](https://www.php.net/manual/en/function.stripslashes.php)
+                    $string = "Jack\'s jacket!";
+                    echo stripslashes($string).PHP_EOL; 
+
+                    // print_r(ini_get_all());  
+
+                    // [get_magic_quotes_runtime](https://www.php.net/manual/en/function.get-magic-quotes-runtime.php)
+                    echo ini_get("magic_quotes_runtime") ? "true" : "false", PHP_EOL;
+                    echo get_magic_quotes_runtime()  ? "true" : "false", PHP_EOL;
+
+                    // [strip_tags](https://www.php.net/manual/en/function.strip-tags)
+                    $link = '<button style="padding: 3px;">Click</button> <a href="https://github.com/vsfdqfpdpg" target="_blink">Github 仓库</a>';
+                    echo strip_tags($link, "<button></button>").PHP_EOL;
+
+                ```
+
+                * Replace part of a string
+                ``` php 
+                <?php
+                    // [str-replace](https://www.php.net/manual/en/function.str-replace.php)
+                    $string = "github repo: https://github.com/vsfdqfpdpg";
+                    echo str_replace("g", "G", $string).PHP_EOL;
+                    echo str_replace(["g", "h", "r"], ["G", "H", "R"], $string).PHP_EOL;
+
+                    $original = ["https://www.php.net", "https://github.com"];
+                    $replaced = str_replace("h", "H", $original, $count);
+                    print_r($replaced);
+                    echo $count.PHP_EOL;
+
+                    // [strtr](https://www.php.net/manual/en/function.strtr.php)
+                    $string = "github repo: https://github.com/vsfdqfpdpg";
+                    echo strtr($string, "github", "gitlab").PHP_EOL;
+
+                    echo strtr($string, ["g"=> "G", "h" => "H"]).PHP_EOL;
+                ```
+
+                * Compare two strings
+                ``` php 
+                <?php 
+                    // [strcmp](https://www.php.net/manual/en/function.strcmp.php)
+
+                    echo strcmp("https://github.com/vsfdqfpdpg","HTtps://github.com/vsfdqfpdpg").PHP_EOL;
+
+                    echo strcasecmp("https://github.com/vsfdqfpdpg","HTtps://github.com/vsfdqfpdpg").PHP_EOL;
+
+                    echo strcmp("10","2").PHP_EOL;
+
+                    echo strnatcmp("10","2").PHP_EOL;
+
+                    echo strncmp("1001", "1002", 3).PHP_EOL;
+
+                    // [similar-text](https://www.php.net/manual/en/function.similar-text.php)
+                    echo similar_text("1234", "524", $v).PHP_EOL;
+                    echo $v.PHP_EOL;
+                ```
+                

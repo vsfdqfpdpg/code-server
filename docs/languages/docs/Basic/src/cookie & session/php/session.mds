@@ -1,0 +1,93 @@
+
+            === "Session"
+                * [session](https://www.php.net/manual/en/book.session.php){: target=_blink} 
+                * [use-trans-sid](https://www.php.net/manual/en/session.configuration.php#ini.session.use-trans-sid)  
+                * [session.gc-divisor](https://www.php.net/manual/en/session.configuration.php#ini.session.gc-divisor)
+                * [session.gc-maxlifetime](https://www.php.net/manual/en/session.configuration.php#ini.session.gc-maxlifetime)
+                ``` php
+                <?php
+                    session_start();
+
+                    session_unset(); // 卸载内存中的数据, session_id 还存在
+                    session_destroy(); // 把session所对应的文件删除 session_id 不存在
+                    setcookie(session_name(), "", 1, "/"); // 删除cookie, session保存在根目录下
+
+                    echo session_id(), PHP_EOL;
+                    echo session_name(), PHP_EOL;
+                    echo session_save_path(), PHP_EOL;
+                    echo SID, PHP_EOL;    
+
+
+                    // session.use_only_cookies 当浏览器禁止cookie后, 解析地址栏里的session_name() 为session_id
+                    // session.use-trans-sid 当cookie禁用后自动为超链接添加sessionId参数    
+                    // session.gc-divisor 生产环境设置成 1000
+                    // url_rewriter.tags     
+                ```
+
+                ``` php 
+                <?php 
+                    session_start();
+                    echo session_name(), PHP_EOL;                    
+                    echo session_save_path(), PHP_EOL;
+                    echo session_id(), PHP_EOL;
+                    echo SID, PHP_EOL;  
+                ```
+
+                ``` php
+                <?php
+                    // 分层保存到各个目录, 要在session_start之前执行, 还需要先创建分层的目录
+                    $dir = "0123456789abcdefghijklmnopqrstuvwxyz";
+                    for ($i = 0; $i < strlen($dir); $i++) {
+                        for ($j = 0; $j < strlen($dir); $j++) {
+                            $dirname = "./tmp/" . $dir[$i] . "/" . $dir[$j];
+                            if (!file_exists($dirname)) {
+                                mkdir($dirname, 0755, true);
+                            }
+                        }
+                    }
+                    // session分2层, 保存在tm 目录下 
+                    // session.save_path
+                    session_save_path("2;./tmp");
+                    session_start();
+                    $_SESSION['repo'] = "https://github.com/vsfdqfpdpg";
+                    echo session_id(), PHP_EOL;
+
+                    //PHPSESSIONID = s5ontkqds05uv8sp0mdcbv1bg4 
+                    // session 文件保存在 ./tmp/s/5 目录下
+                ```
+                ``` php 
+                <?php
+                    // session_set_cookie_params
+                    ob_start();
+                    // ini_set("session.save_handler","user");
+
+                    function open($savePath , $sessionName){
+                        echo __FUNCTION__." is called. ".PHP_EOL;
+                        return true;
+                    }
+                    function close(){
+                        echo __FUNCTION__." is called. ".PHP_EOL;
+                        return true;
+                    }
+                    function read($sessionId ){
+                        echo __FUNCTION__." is called. ".PHP_EOL; 
+                        return "";                       
+                    }
+                    function write($sessionId , $data ){
+                        echo __FUNCTION__." is called. ".PHP_EOL;    
+                        return true;                    
+                    }
+                    function destroy($sessionId ){
+                        echo __FUNCTION__." is called. ".PHP_EOL;
+                        return true;
+                    }
+                    function gc($lifetime){
+                        echo __FUNCTION__." is called. ".PHP_EOL; 
+                        return true;                       
+                    }
+
+                    session_set_save_handler("open","close","read","write","destroy","gc");
+                    session_start();
+                ```
+
+                

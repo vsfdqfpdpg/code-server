@@ -1,0 +1,134 @@
+
+            * scandir, glob, is_dir, rmdir
+            ``` php
+            <?php
+                mkdir("temp/template", 0755, true);
+
+                print_r(scandir("."));
+                echo PHP_EOL;
+
+                function scandir_recursive($path){
+                    static $count = 0;
+                    $dirs = scandir($path);
+                    foreach($dirs as $v){
+                        if($v != "." && $v != ".."){
+                            if(is_dir("$path/$v")){
+                                echo "scandir_recursive find directory $v ", PHP_EOL;
+                                scandir_recursive("$path/$v");
+                            }else{
+                                echo "scandir_recursive find file $path/$v", PHP_EOL;
+                                $count += filesize("$path/$v");
+                            }
+                        }
+                    }
+                    return $count;
+                }
+
+                echo scandir_recursive(".", 0), PHP_EOL;
+
+                print_r(glob("./*"));
+
+                function glob_recursive($path, $type, $count) {
+                    $dirs = glob("$path/$type");
+                    foreach($dirs as $v){
+                        if(is_dir($v)){
+                            echo "glob_recursive find directory $v", PHP_EOL;
+                            $count = glob_recursive($v, $type, $count);
+                        }else{
+                            echo "glob_recursive find file $v", PHP_EOL;
+                            $count += filesize($v);
+                        }
+                    }
+                    return $count;
+                }
+
+                echo glob_recursive(".", "*", 0), PHP_EOL;
+
+                rmdir("temp/template");
+
+                rename("temp","template");
+
+                rmdir("template");
+
+                echo is_dir(__FILE__) ? "yes" : "no" , PHP_EOL; 
+            ```
+
+            * dir
+            ``` php 
+            <?php
+                $dir = dir("..");
+                print_r($dir);
+
+                while(($file = $dir->read()) !== false){
+                    echo $file, PHP_EOL;
+                }
+
+                $dir->rewind();
+
+                echo PHP_EOL;
+
+                while(($file = $dir->read()) !== false){
+                    echo $file, PHP_EOL;
+                }
+
+                $dir->close();
+            ```
+
+            * opendir, readdir, closedir
+            ``` php 
+            <?php
+            array_map(function($v, $args){
+                $path = "temp/".$v."/".date("Y-m-d");
+                !is_dir($path) && mkdir($path, $args[0], $args[1]);
+                touch("$path/".date("Y-m-d").".txt");
+                touch("$path/".date("Y-m-d").".php");
+            }, range('a','h'), array_fill(0, count(range('a','h')), [0755, true]));
+
+            // array_map("unlink",glob("temp/*"));
+
+            function rmdir_reclusive_opendir($path, $type){
+                $dir = opendir($path);
+                while(($file = readdir($dir)) !== false){
+                    $filename = $path. "/". $file;
+                    if($file != '.' && $file != ".."){
+                        if(is_dir($filename)){
+                            rmdir_reclusive_opendir($filename, $type);   
+                        }else if(is_file($filename) && substr(strrchr($filename, "."), 1) == $type){
+                            unlink($filename);
+                        }else{
+                            echo substr(strrchr($filename, "."), 1), PHP_EOL;
+                        }
+                    }
+                }
+                closedir($dir);
+                !$type && rmdir($path);
+            }
+
+            rmdir_reclusive_opendir("temp","txt");
+            rmdir_reclusive_opendir("temp","php");
+            // rmdir_reclusive_opendir("temp", null);
+
+            array_map(function($v, $args){
+                $path = "temp/".$v."/".date("Y-m-d");
+                !is_dir($path) && mkdir($path, $args[0], $args[1]);
+                touch("$path/".date("Y-m-d").".txt");
+            }, range('a','h'), array_fill(0, count(range('a','h')), [0755, true]));
+
+            function rmdir_reclusive_glob($path, $type){
+                $dirs = glob("$path/*");
+                foreach($dirs as $v){
+                    if(is_dir($v)){
+                        rmdir_reclusive_glob($v, $type);
+                    }else if(is_file($v) && substr(strrchr($v,"."), 1) == $type){
+                        unlink($v);
+                    }else{
+                        echo substr(strrchr($v, "."), 1), PHP_EOL;
+                    }
+                }
+                !$type && rmdir($path);
+            }
+
+            rmdir_reclusive_glob("temp","php");
+            rmdir_reclusive_glob("temp","txt");
+            rmdir_reclusive_glob("temp", null);
+            ```

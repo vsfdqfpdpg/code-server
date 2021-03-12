@@ -1,0 +1,6 @@
+
+        === "Cookie"
+            {% include "Basic/src/cookie & session/javascript/cookie.mds" %}
+
+        === "Session"
+            {% include "Basic/src/cookie & session/javascript/session.mds" %}

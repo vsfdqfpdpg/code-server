@@ -1,0 +1,153 @@
+
+            === "Jpeg"
+                ``` php
+                <?php
+                    // gif 256 bit 支持透明, 保存多幅图像数据, 无损压缩
+                    // jpeg 有损压缩, 不支持透明
+                    // png 无损压缩， 支持真彩色, 透明
+
+                    $logo = getimagesize("logo.png");
+                    print_r($logo);
+                    echo PHP_EOL;
+
+                    echo image_type_to_extension($logo[2]), PHP_EOL;
+                    echo image_type_to_mime_type($logo[2]), PHP_EOL;
+
+
+                    $image = imagecreatefrompng("logo.png");
+                    echo imagesy($image), PHP_EOL;
+                    echo imagesx($image), PHP_EOL;
+                 
+
+                ```
+
+                ``` php
+                <?php
+                    header("content-type: image/gif");
+                    $gif = imagecreate(600, 600);
+                    imagecolorallocate($gif, 255,0,0);
+
+                    imagegif($gif);
+                    imagedestroy($gif);
+
+                   // echo imagecolorstotal($gif), PHP_EOL;
+                ```
+
+                ``` php 
+                <?php 
+                    header("content-type: image/jpeg");
+                    $jpg = imagecreatetruecolor(300, 300);
+                    imagejpeg($jpg);
+                    imagedestroy($jpg);
+
+                ```
+
+                ``` php 
+                <?php 
+                    header("content-type: image/gif");
+                    $gif = imagecreate(500, 200);
+                    imagecolorallocate($gif, 255,0,0);
+                    imagegif($gif);
+                    imagedestroy($gif);
+
+                ```
+
+                ``` php 
+                <?php 
+                    header("content-type: image/jpeg");
+                    $jpg = imagecreatetruecolor(300, 300);
+                    $logo = imagecreatefrompng("favicon.png");
+                    $red = imagecolorallocate($jpg, 255 ,0, 0);
+                    $alpha = imagecolorallocatealpha($jpg, 0, 0, 255, 127);
+                    imagefill($jpg, 0, 0, $alpha);
+
+                    imagecopy($jpg, $logo, 0, 0, 0, 0, 300, 300);
+                    imagejpeg($jpg);
+                    imagedestroy($jpg);
+                ```
+
+                ``` php 
+                <?php
+                    $img = imagecreatetruecolor(500, 300);
+                    $green = imagecolorallocate($img, 0, 250, 0);
+                    imagefill($img, 110 , 20, $green);
+                    header("content-type: image/jpeg");
+                    imagejpeg($img);
+                    imagedestroy($jpg);
+                ```
+
+                ``` php 
+                <?php
+                    $img = imagecreatefromjpeg("green.jpg");
+                    $green = imagecolorallocate($img, 200, 122,0);
+                    imagefill($img, 10, 10, $green);
+
+                    $border = imagecolorat($img, 100, 20);
+                    imagefilltoborder($img, 0, 0, $border, $green);
+
+                    header("content-type: image/jpeg");
+                    imagejpeg($img);
+                    imagedestroy($jpg);
+
+                ```
+
+
+                ``` php
+                <?php
+                    header("content-type: image/png");
+
+                    $filename = "favicon.png";
+                    $imageInfo = getimagesize($filename);
+                    $base = image_type_to_extension($imageInfo[2]);
+
+                    switch($base){
+                        case '.gif':
+                            $img = imagecreatefromgif($filename);
+                            break;
+                        case '.jpeg':
+                            $img = imagecreatefromjpeg($filename);
+                            break;
+                        case '.png':
+                            $img = imagecreatefrompng($filename);
+                            break;
+                        default:
+                            die($filename." is not supported type.");
+                    }
+
+                    imagepng($img);
+                    imagedestroy($img);
+                ```
+
+                ``` php
+                <?php
+                    $filename = "favicon.png";
+                    $imageInfo = getimagesize($filename);
+                    $base = substr(strrchr($imageInfo["mime"],"/"),1);
+                    eval('$img = imagecreatefrom'.$base.'($filename);');
+                    header("content-type: image/jpeg");
+                    imagejpeg($img);
+                    imagedestroy($img);
+                ```
+
+                ``` php 
+                <?php
+                    header("content-type: image/jpeg");
+                    $str = file_get_contents("https://developer.mozilla.org/favicon114.png");
+                    $img = imagecreatefromstring( $str);
+                    imagejpeg($img);
+                    imagedestroy($img);
+
+                ```
+
+                ``` php 
+                <?php
+                    $img = imagecreatetruecolor(500, 500);
+
+                    $title = imagecreatefrompng("favicon.png");
+                    imagesettile($img, $title);
+                    imagefill($img, 0, 0, IMG_COLOR_TILED);
+
+                    header("Content-type: image/jpeg");
+                    imagejpeg($img);
+                    imagedestroy($img);
+                ```
