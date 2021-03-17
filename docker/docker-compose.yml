@@ -1,0 +1,30 @@
+version: "3.8"
+services:
+  vscode:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args: 
+      - SPRING_BOOT_CLI_URL=https://repo.spring.io/release/org/springframework/boot/spring-boot-cli/2.3.6.RELEASE/spring-boot-cli-2.3.6.RELEASE-bin.tar.gz
+      - GO_URL=https://studygolang.com/dl/golang/go1.15.4.linux-amd64.tar.gz
+      - NODE_URL=https://deb.nodesource.com/setup_14.x
+      - PHP_VERSION=7.4
+      - PYTHON_VERSION=3.7
+      - PHPUNIT_URL=https://phar.phpunit.de/phpunit-9.phar
+    image: vscode
+    restart: always
+    ports: 
+      - "443:8080"
+      - "3000:3000"
+      - "5000:5000"
+      - "5500:5500"
+      - "8000:8000"
+      - "9000:9000"
+    environment: 
+      - PASSWORD=${PASSWORD}
+    volumes: 
+      - ./project:/home/coder/project
+      - ./code-server:/home/coder/.config/code-server
+      - ./code-server/docker_volumes/go:/home/coder/go
+      - ./code-server/docker_volumes/extensions:/home/coder/.local/share/code-server
+      - ./code-server/docker_volumes/virtualenvs:/home/coder/Envs

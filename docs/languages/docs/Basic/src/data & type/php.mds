@@ -1,0 +1,27 @@
+
+        === "String"
+            {% include "Basic/src/data & type/php/string.mds" %}
+
+        === "Numeric"
+            {% include "Basic/src/data & type/php/numeric.mds" %}
+
+        === "Decimal"
+            {% include "Basic/src/data & type/php/decimal.mds" %}
+
+        === "Array"
+            {% include "Basic/src/data & type/php/array.mds" %}
+
+        === "Object"
+            {% include "Basic/src/data & type/php/object.mds" %}
+
+        === "Boolean"
+            {% include "Basic/src/data & type/php/boolean.mds" %}
+
+        === "Null"
+            {% include "Basic/src/data & type/php/null.mds" %}
+
+        === "Callback"
+            {% include "Basic/src/data & type/php/callback.mds" %}
+
+        === "Resource"
+            {% include "Basic/src/data & type/php/resource.mds" %}

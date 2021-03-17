@@ -37,53 +37,43 @@
 [onlinegdb](https://www.onlinegdb.com/)   
 [onecompiler](https://onecompiler.com/java)   
 [awesome-online-ide](https://github.com/styfle/awesome-online-ide#full-ide)   
-
+[javaweb](https://www.javaweb.shop/)   
+[Python-100-Days](https://github.com/jackfrued/Python-100-Days)   
 
 ``` php
-<?php
-    $section = "regex";
-    $sections = ['cheat sheet','functions', 'common'];
-
-    $root = dirname(getcwd()).DIRECTORY_SEPARATOR."languages/docs/Basic/src";
-
-    $languages = ['php', 'java', 'python', 'javascript', 'go'];
-
-    $sectionPath= $root. DIRECTORY_SEPARATOR. $section;
-    !is_dir($sectionPath) && mkdir($sectionPath);
-
-    $result = array_map(function($value) use($sectionPath, $sections){
-        $languagePath = $sectionPath. DIRECTORY_SEPARATOR. $value;
-        !is_dir($languagePath) && mkdir($languagePath);
-
-        $language = $languagePath.".mds";
-
-        $partialContent = '';
-        foreach($sections as $section){
-            $partial = $languagePath. DIRECTORY_SEPARATOR. "$section.mds";
-            $partialFilePath = explode("languages/docs/", $partial)[1];
-            $str = "\n".str_pad("",8," ").'=== "'.ucfirst($section).'"'."\n".str_pad("",12," ");            
-            $partialContent .= $str.'{'.'% include "'.$partialFilePath.'" %}'."\n";
-            if(!file_exists($partial)){
-                $str = "\n".str_pad("", 12," ").'=== "'.ucfirst($section).'"'."\n".str_pad("",16," ");
-                $str .= "``` ${value}\n ".str_pad("",20," ")." ${value} \n".str_pad("",16," ")."```";
-                file_put_contents($partial, $str);
-            }
-        }
-        
-        file_put_contents($language, $partialContent);
-
-        $mainFilePath = explode("languages/docs/", $language)[1];
-        $str = str_pad("",4," ").'=== "'.ucfirst($value).'"'."\n".str_pad("",8," ");
-        return $str.'{'.'% include "'.$mainFilePath.'" %}'."\n";  
-
-    }, $languages);
-
-    $sectionRoot = dirname($root). DIRECTORY_SEPARATOR. ucwords($section).'.md';
-    $sectionRootContent = '!!! data "'.ucwords($section).'"'."\n".implode("\n",$result);
-    file_put_contents($sectionRoot, $sectionRootContent);    
+    <?php
+        echo "Hello world!";
 ```
+
+* Test
+
+    === "index.php"
+
+        ``` php
+        <?php
+            include "section.php";
+            $section = new Section();
+            $section->say();
+
+        ```
+
+    === "section.php"
+
+        ``` php
+        <?php
+            class Section {
+                public function say() {
+                    echo __METHOD__." is called. ".PHP_EOL;
+                }
+            }
+        ```
 
 ## Window 2008 r2 install powershell
 [powershell](https://docs.microsoft.com/en-us/powershell/scripting/windows-powershell/wmf/setup/install-configure?view=powershell-7.1)   
 ```
+```
+
+```
+getEventListeners($0)
+findEventHandlers("click", "#clickThis");
 ```

@@ -1,0 +1,28 @@
+
+        === "String"
+            {% include "Basic/src/data & type/javascript/string.mds" %}
+
+        === "Numeric"
+            {% include "Basic/src/data & type/javascript/numeric.mds" %}
+
+        === "Decimal"
+            {% include "Basic/src/data & type/javascript/decimal.mds" %}
+
+        === "Array"
+            {% include "Basic/src/data & type/javascript/array.mds" %}
+
+        === "Object"
+            {% include "Basic/src/data & type/javascript/object.mds" %}
+
+        === "Boolean"
+            {% include "Basic/src/data & type/javascript/boolean.mds" %}
+
+        === "Null"
+            {% include "Basic/src/data & type/javascript/null.mds" %}
+
+        === "Callback"
+            {% include "Basic/src/data & type/javascript/callback.mds" %}
+
+
+        === "Resource"
+            {% include "Basic/src/data & type/javascript/resource.mds" %}

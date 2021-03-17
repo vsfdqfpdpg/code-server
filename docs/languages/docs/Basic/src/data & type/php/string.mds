@@ -1,0 +1,55 @@
+
+            === "Char"
+                * Create a section
+
+                    === "index.php"
+
+                        ``` php
+                        <?php
+                            include "section.php";
+                            $section = new Section();
+                            $section->say();
+
+                        ```
+                        
+                    === "section.php"
+
+                        ``` php
+                        <?php
+                            class Section {
+                                public function say() {
+                                    echo __METHOD__." is called. ".PHP_EOL;
+                                }
+                            }
+                        ```
+                
+                * Upload
+
+                    === "index.php"
+
+                        ``` php
+                        <?php
+
+                            echo "upload";
+
+                        ```
+                        
+                    === "section.php"
+
+                        ``` php
+                        <?php
+                            class Upload {
+
+                            }
+                        ```
+
+            === "String"
+                ``` php
+                <?php
+                    echo "HongKong"; 
+                ```
+
+            === "Test"
+                ``` php
+                php 
+                ```

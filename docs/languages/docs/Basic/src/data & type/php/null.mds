@@ -1,0 +1,11 @@
+
+            === "Null"
+                ``` php
+                <?php
+                    echo null; 
+                ```
+
+            === "Not null"
+                ``` php
+                php 
+                ```

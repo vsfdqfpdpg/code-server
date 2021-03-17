@@ -1,0 +1,28 @@
+
+        === "String"
+            {% include "Basic/src/data & type/python/string.mds" %}
+
+        === "Numeric"
+            {% include "Basic/src/data & type/python/numeric.mds" %}
+
+        === "Decimal"
+            {% include "Basic/src/data & type/python/decimal.mds" %}
+
+        === "Array"
+            {% include "Basic/src/data & type/python/array.mds" %}
+
+        === "Object"
+            {% include "Basic/src/data & type/python/object.mds" %}
+
+        === "Boolean"
+            {% include "Basic/src/data & type/python/boolean.mds" %}
+
+        === "Null"
+            {% include "Basic/src/data & type/python/null.mds" %}
+
+        === "Callback"
+            {% include "Basic/src/data & type/python/callback.mds" %}
+
+
+        === "Resource"
+            {% include "Basic/src/data & type/python/resource.mds" %}

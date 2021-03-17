@@ -1,0 +1,183 @@
+
+            === "Pyramid"
+                ``` java
+                public class Star {
+                    public static void main(String[] args) {
+                        for (int i =1; i<=5; i++){
+                            for(int j =1; j<= 5- i; j++){
+                                System.out.print(" ");
+                            }
+                            for(int k =1; k<= 2*i -1; k++){
+                                System.out.print("★");
+                            }
+                            for(int j =1; j<= 5- i; j++){
+                                System.out.print(" ");
+                            }
+                            System.out.printf("\n");
+                        }
+                    }
+                }
+                ```
+
+                ``` java
+                public class Star {
+                    public static void main(String[] args) {
+                        for (int i = 5; i > 0; i--){
+                            
+                            for(int j =1; j<= 5- i; j++){
+                                System.out.print(" ");
+                            }
+                            for(int k =1; k<= 2*i -1; k++){
+                                System.out.print("★");
+                            }
+                            for(int j =1; j<= 5- i; j++){
+                                System.out.print(" ");
+                            }
+                            System.out.printf("\n");
+                        }
+                    }
+                }
+                ```
+
+                ``` java
+                public class Star {
+                    public static void main(String[] args) {
+                        for (int i = 5; i > 0; i--){
+                            for(int k =0; k<= i -1; k++){
+                                System.out.print("★");
+                            }
+                            for(int j =0; j<= 5- i; j++){
+                                System.out.print(" ");
+                            }
+                            System.out.printf("\n");
+                        }
+                    }
+                }
+                ```
+
+            === "9*9"
+                ``` java
+                public class NineMultipleNine {
+                    public static void main(String[] args){
+                        for(int i =1; i <= 9; i++){
+                            for (int j =1; j<= i; j++){
+                                System.out.printf("%d * %d = %2s ",j,i,i*j);
+                            }
+                            System.out.printf("\n");
+                        }
+                    }
+                }
+                ```
+            
+            === "Pascal's triangle"
+                * [打印杨辉三角 直角三角形](https://cloud.tencent.com/developer/article/1061514){target="_blink"}   
+                ``` java
+                public class PascalTriangle {
+                    public static void main(String[] args){
+                        int [][] arr = new int[8][8];
+                        for(int i =0; i < 8;i ++){
+                            arr[i][0] = 1;
+                            arr[i][i] = 1;
+                        }
+
+                        for(int i =1; i < arr.length; i ++){
+                            for(int j =1; j <= i; j++){
+                                arr[i][j] = arr[i-1][j-1] + arr[i-1][j];
+                            }
+                        }
+
+                        for(int i =0; i< arr.length;i++){
+                            for(int j = 0; j <=i;j++){
+                                System.out.printf("%4s", arr[i][j]);
+                            }
+                            System.out.println();
+                        }
+                    }
+                }
+                ```
+                * 等腰三角形
+                ``` java
+                public class PascalTriangle{
+                    public static void main(String[] args) {
+                        int n = 8;
+                        int[][] arr = new int[8][n*2-1];
+
+                        for(int i =0;i < arr.length;i++){
+                            arr[i][n-i-1] = 1;
+                            arr[i][n+i-1] = 1;
+                        }
+
+                        for(int i =1; i < arr.length; i ++){
+                            for(int j = 1; j < n*2-1; j++){
+                                if(j >= n -i && j <= n + i-2){
+                                    arr[i][j] = arr[i-1][j-1] + arr[i-1][j] ;
+                                }
+                            }
+                        }
+
+                        for(int i =0; i < arr.length;i++){
+                            for(int j = 0; j < n*2-1; j++){
+                                if(arr[i][j] == 0){
+                                    System.out.printf("   ");
+                                }else{
+                                    System.out.printf("%3d", arr[i][j]);
+                                }
+                                
+                            }
+                            System.out.println();
+                        }
+                    }
+                }
+                ```
+
+            === "Chessboard"
+                ``` java
+                public class Chessboard{
+                    public static void main(String[] args) {
+                        for (int i =0; i<=8; i++){
+                            for(int j =1; j<=8; j++){
+                                String block = (i + j) % 2 == 0 ? "◻" : "◼";
+                                System.out.printf(block);
+                            }
+                            System.out.println();
+                        }
+                    }
+                }
+                ```
+
+            === "Matrix"
+                ``` java
+                public class Matrix{
+                    public static void main(String[] args) {
+                        int length = 8;
+                        int value = 1;
+                        int row = 0;
+                        int col = 0;
+                        int[][] arr = new int[length][length];
+
+                        for(int i =0; i< length * length; i++) {
+                                arr[row][col] = value;
+                                if(col < length -1 && row <= col){
+                                    col++;
+                                }else if(col == length -1  && row <length-1){
+                                    row++;
+                                }
+                                else if(col > 0 && row >= col){
+                                    col--;
+                                }else if(col == 0 && row -1 > 0){
+                                    row--;
+                                }
+
+                                value++;
+                        }
+
+                        for(int i=0; i< length; i++){
+                            for(int j=0; j< length; j++){
+                                System.out.printf("%3s", arr[i][j]);
+                            }
+                            System.out.println();
+                        }
+
+                    }
+                }
+                ```

@@ -1,0 +1,3 @@
+
+        === "Graph"
+            {% include "Example/src/interest/go/graph.mds" %}

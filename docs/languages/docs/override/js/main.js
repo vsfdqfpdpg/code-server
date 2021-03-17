@@ -75,6 +75,46 @@ function hexToBase64(str) {
   );
 }
 
+const actionHandler = (e, item, callback) => {
+  let loading = document.createElement('div');
+  loading.classList = 'lds-dual-ring';
+  let result = e.target.closest('pre').querySelector('.md-result');
+  result.classList = 'md-result middle';
+  result.innerHTML = '';
+
+  let languageType = 'unknown type';
+  let codeContext = null;
+
+  result.appendChild(loading, item.target);
+  let multipleFiles = e.target.closest('li > .tabbed-set');
+  if (multipleFiles) {
+    let labels = Array.from(multipleFiles.querySelectorAll('label')).map((item) => item.innerText);
+    let contents = Array.from(multipleFiles.querySelectorAll('code')).map((item, key) => {
+      if (key === 0) {
+        let filtered = Array.from(item.classList).filter((i) => i.indexOf('language') !== -1);
+        if (filtered.length > 0) {
+          languageType = filtered[0].replace('language-', '');
+        }
+      }
+      return item.innerText;
+    });
+
+    codeContext = labels.map((label, key) => {
+      return { filename: label, content: contents[key] };
+    });
+  } else {
+    let target = e.target.closest('span[class*="twemoji"]').dataset.apiTarget;
+    let code = document.querySelector(target);
+    let filtered = Array.from(code.classList).filter((i) => i.indexOf('language') !== -1);
+    if (filtered.length > 0) {
+      languageType = filtered[0].replace('language-', '');
+    }
+    codeContext = code.innerText;
+  }
+  let actionType = e.target.closest('span[class*="twemoji"]').dataset.type;
+  callback(JSON.stringify({ type: languageType, code: codeContext, action: actionType }), result);
+};
+
 const runApi = () => {
   let codes = document.querySelectorAll('pre code');
   Array.from(codes)
@@ -84,49 +124,68 @@ const runApi = () => {
       resultDiv.classList = 'md-result middle';
       item.parentElement.insertBefore(resultDiv, item.nextSibling);
 
+      let download = document.createElement('span');
+      download.classList = 'twemoji md-download';
+      download.title = 'Download';
+      download.dataset.type = 'download';
+      download.innerHTML =
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 6a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6c0-1.11.89-2 2-2h6l2 2h8m-.75 7H16V9h-2v4h-3.25L15 17.25"></path></svg>';
+      download.dataset.apiTarget = `#__code_${key} > code`;
+      item.parentElement.insertBefore(download, item);
+      download.addEventListener('click', (e) => {
+        actionHandler(e, item, function (body, result) {
+          fetch('http://localhost:5000', {
+            method: 'post',
+            headers: {
+              'Content-Type': 'application/json;charset=UTF-8',
+            },
+            body: body,
+          })
+            .then((data) => data.blob())
+            .then((data) => {
+              // https://stackoverflow.com/questions/32545632/how-can-i-download-a-file-using-window-fetch
+              let file = window.URL.createObjectURL(data);
+              window.location.assign(file);
+              result.innerHTML = '';
+            })
+            .catch((e) => {
+              console.log(e);
+            });
+        });
+      });
+
       let button = document.createElement('span');
       button.classList = 'twemoji md-play';
       button.title = 'Run';
+      button.dataset.type = 'run';
       button.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8 5.14v14l11-7-11-7z"></path></svg>';
       button.dataset.apiTarget = `#__code_${key} > code`;
       item.parentElement.insertBefore(button, item);
       button.addEventListener('click', (e) => {
-        let loading = document.createElement('div');
-        loading.classList = 'lds-dual-ring';
-        let result = e.target.closest('pre').querySelector('.md-result');
-        result.classList = 'md-result middle';
-        result.innerHTML = '';
-        result.appendChild(loading, item.target);
-        let target = e.target.closest('.md-play').dataset.apiTarget;
-        let code = document.querySelector(target);
-        let languageType = 'unknown type';
-        let filtered = Array.from(code.classList).filter((i) => i.indexOf('language') !== -1);
-        if (filtered.length > 0) {
-          languageType = filtered[0].replace('language-', '');
-        }
-        console.log();
-        fetch('http://localhost:5000', {
-          method: 'post',
-          headers: {
-            'Content-Type': 'application/json;charset=UTF-8',
-          },
-          body: JSON.stringify({ type: languageType, code: code.innerText }),
-        })
-          .then((data) => data.json())
-          .then((data) => {
-            resultDiv.classList = 'md-result';
-            if (data.mimeType && data.mimeType.startsWith('image')) {
-              let img = document.createElement('img');
-              img.src = data.msg;
-              result.innerHTML = '';
-              result.appendChild(img);
-            } else {
-              result.innerHTML = data.msg;
-            }
+        actionHandler(e, item, function (body, result) {
+          fetch('http://localhost:5000', {
+            method: 'post',
+            headers: {
+              'Content-Type': 'application/json;charset=UTF-8',
+            },
+            body: body,
           })
-          .catch((e) => {
-            console.log(e);
-          });
+            .then((data) => data.json())
+            .then((data) => {
+              resultDiv.classList = 'md-result';
+              if (data.mimeType && data.mimeType.startsWith('image')) {
+                let img = document.createElement('img');
+                img.src = data.msg;
+                result.innerHTML = '';
+                result.appendChild(img);
+              } else {
+                result.innerHTML = data.msg;
+              }
+            })
+            .catch((e) => {
+              console.log(e);
+            });
+        });
       });
     });
 };

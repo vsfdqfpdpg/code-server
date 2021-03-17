@@ -1,0 +1,26 @@
+
+            === "Char"
+                ``` php
+                <?php
+                    echo "HongKong"; 
+                ```
+
+            === "String"
+                ``` php
+                php 
+                ```
+
+            === "Test"
+                ``` php
+                php 
+                ```
+
+            === "Float"
+                ``` php
+                php 
+                ```
+
+            === "Double"
+                ``` php
+                php 
+                ```

@@ -1,6 +1,6 @@
-.md-play {
+.md-play,
+.md-download {
   position: absolute;
-  right: 1.5rem;
   top: 0.4rem;
   cursor: pointer;
   z-index: 1;
@@ -9,12 +9,23 @@
   color: var(--md-default-fg-color--lightest);
 }
 
-:hover > .md-play {
+.md-play {
+  right: 1.5rem;
+}
+
+.md-download {
+  right: 2.7rem;
+}
+
+:hover > .md-play,
+:hover > .md-download {
   color: var(--md-default-fg-color--light);
 }
 
 .md-play:focus,
-.md-play:hover {
+.md-play:hover,
+.md-download:focus,
+.md-download:hover {
   color: var(--md-accent-fg-color);
 }
 
