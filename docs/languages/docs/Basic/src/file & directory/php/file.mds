@@ -1,0 +1,373 @@
+
+            * disk_total_space, disk_free_space
+            * basename, dirname, file_exists, filetype, getcwd
+            * rename, filesize, touch, unlink
+            * is_executable, is_file, is_readable, is_writable
+            ``` php 
+            <?php
+
+                echo round(disk_total_space(".") / pow(1024, 3), 2), PHP_EOL;
+                echo round(disk_free_space(".") / pow(1024, 3), 2), PHP_EOL;
+
+                echo basename(__FILE__, ".php"), PHP_EOL;
+                echo dirname(__FILE__), PHP_EOL;
+
+                echo file_exists(__FILE__) ? "yes" : "no" , PHP_EOL;
+
+                echo filetype(__DIR__), PHP_EOL;                               
+
+                echo getcwd(), PHP_EOL;
+
+                echo filesize(__FILE__), PHP_EOL;
+
+                touch("temp.php");
+
+                unlink("temp.php");
+
+                array_map("unlink", glob("*.doc"));
+
+                echo is_executable(__FILE__) ? "yes" : "no" , PHP_EOL;
+
+                echo is_readable(__FILE__) ? "yes" : "no" , PHP_EOL;
+
+            ```
+
+            * fopen [rwaxbt+], rewind, fread, fwrite, fclose, file
+            * ftell, fseek, flock
+            ``` php 
+            <?php
+                $filename = "temp.txt";
+                touch($filename);
+
+                $file = fopen($filename, "r+");
+                fwrite($file, "Github repo: https://github.com/vsfdqfpdpg");
+
+                // current script is not affected
+                flock($file, LOCK_SH);
+                fwrite($file, " Github repo: https://www.baidu.com");
+                flock($file, LOCK_UN);
+
+                echo ftell($file), PHP_EOL;
+                fseek($file, -10, SEEK_END);
+
+                $content = fread($file, filesize($filename));
+                echo $content, PHP_EOL;
+
+                fseek($file, -10, SEEK_END);
+                fpassthru($file);
+                echo PHP_EOL;
+
+                rewind($file);
+
+                $content = fread($file, filesize($filename));
+                echo $content, PHP_EOL;
+
+                fclose($file);
+
+                unlink($filename);
+
+                
+                            
+            ```
+
+            * read remote file
+            ``` php 
+            <?php 
+                $baidu = fopen("https://ipecho.net","r");
+                while($row = fgets($baidu)){
+                    echo $row;
+                }
+                fclose($baidu);   
+
+                $ip = file("https://ipecho.net/plain");
+                print_r($ip); 
+            ```
+
+            * echo image
+            ```  {.php data-play="false"}
+            <?php
+                $query = "log.png";
+                $file = "upload" . DIRECTORY_SEPARATOR . date("Y-m-d") . DIRECTORY_SEPARATOR . $query;
+
+                header("Content-type: image/png");
+
+                if (file_exists($file)) {
+                    $img = fopen($file, "rb");
+                    echo fread($img, filesize($file));
+                    fclose($file);
+                }        
+            ```
+
+            * download file
+            ```  {.php data-play="false"}
+            <?php
+                $query = "Regular Expression Pocket Reference, 2nd Edition.pdf";
+                $file = "upload" . DIRECTORY_SEPARATOR . date("Y-m-d") . DIRECTORY_SEPARATOR . $query;
+                $filename = urlencode(basename($file));
+
+                if (file_exists($file)) {
+                    header("Content-type: application/octet-stream");
+                    header("Content-Disposition: attachment; filename=${filename}");
+                    header("Accept-range:bytes");
+                    header("Accept-length:" . filesize($file));
+                    readfile($file);
+                } else {
+                    echo $file . " is not exist.";
+                }
+            ```
+
+            * upload file
+
+                === "upload.html"
+
+                    ``` {.html data-play="false"}
+                    <!DOCTYPE html>
+                    <html lang="en">
+                    <head>
+                        <meta charset="UTF-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <title>Upload file</title>
+                        <style>
+                            .multiple{
+                                width: 600px;    
+                                border: 1px solid #ccc;
+                                padding: 10px        
+                                
+                            }
+                            .multiple input,.single input {
+                                width: 100%;
+                                padding: 2px 0;
+                            }
+
+                            .multiple button,.single button {
+                                margin-top: 8px;
+                            }
+
+                            .single {
+                                margin-top: 10px;
+                                width: 600px;
+                                border: 1px solid #ccc;
+                                padding: 10px 
+                            }
+                        </style>
+                    < /head>
+                    <body>
+                        <form class="multiple" action="./upload.php" method="post" enctype="multipart/form-data">
+                            <input type="hidden" name="MAX_FILE_SIZE" value="2097152">
+                            <input type="file" name="image[]" id="image"> <br>
+                            <input type="file" name="image[]" id="image"> <br>
+                            <input type="file" name="image[]" id="image"> <br>
+                            <input type="file" name="image[]" id="image"> <br>
+                            <button type="submit">Upload</button>
+                        </form>
+
+                        <form class="single" action="./upload.php" method="post" enctype="multipart/form-data">
+                            <input type="hidden" name="MAX_FILE_SIZE" value="2097152">
+                            <input type="file" name="image" id="image"> <br>
+                            <button type="submit">Upload</button>
+                        </form>
+
+                    </body>
+                    </html>
+                    ```
+
+                === "upload.php"
+
+                    ``` {.php data-play="false"}
+                    <?php
+                        error_reporting(E_ALL);
+
+                        class UploadFileException extends Exception
+                        {
+                            public function __construct($code)
+                            {
+                                $message = $this->getErrorMessage($code);
+                                parent::__construct($message, $code);
+                            }
+
+                            private function getErrorMessage($code)
+                            {
+                                switch ($code) {
+                                    case UPLOAD_ERR_INI_SIZE:
+                                        $message = "The uploaded file exceeds the upload_max_filesize directive in php.ini";
+                                        break;
+                                    case UPLOAD_ERR_FORM_SIZE:
+                                        $message = "The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form";
+                                        break;
+                                    case UPLOAD_ERR_PARTIAL:
+                                        $message = "The uploaded file was only partially uploaded";
+                                        break;
+                                    case UPLOAD_ERR_NO_FILE:
+                                        $message = "No file was uploaded";
+                                        break;
+                                    case UPLOAD_ERR_NO_TMP_DIR:
+                                        $message = "Missing a temporary folder";
+                                        break;
+                                    case UPLOAD_ERR_CANT_WRITE:
+                                        $message = "Failed to write file to disk";
+                                        break;
+                                    case UPLOAD_ERR_EXTENSION:
+                                        $message = "File upload stopped by extension";
+                                        break;
+
+                                    default:
+                                        $message = "Unknown upload error";
+                                        break;
+                                }
+                                return $message;
+                            }
+                        }
+
+                        function handleUpload($file)
+                        {
+                            if ($file["error"] === UPLOAD_ERR_OK) {
+                                $path = dirname(__FILE__) . DIRECTORY_SEPARATOR . "upload" . DIRECTORY_SEPARATOR . date("Y-m-d");
+                                !is_dir($path) && mkdir($path, 0755, true);
+
+                                if (is_uploaded_file($file["tmp_name"])) {
+                                    $filename = $path . DIRECTORY_SEPARATOR . $file["name"];
+                                    if (!move_uploaded_file($file["tmp_name"], $filename)) {
+                                        echo "Move uploaded file failed.";
+                                    } else {
+                                        return [
+                                            "file" => $filename,
+                                            "path" => str_replace(dirname(__FILE__), ".", $filename),
+                                            "size" => $file["size"],
+                                            "ctime" => date("Y-m-d H:i:s", filectime($filename))
+                                        ];
+                                    }
+                                } else {
+                                    echo "File is not uploaded file";
+                                }
+                            } else {
+                                try {
+                                    throw new UploadFileException($file['error']);
+                                } catch (UploadFileException $e) {
+                                    echo $e->getMessage();
+                                }
+                            }
+                        }
+
+                        if (count($_FILES["image"]['name']) > 1) {
+
+                            $keys = array_keys($_FILES["image"]);
+
+                            $success = array_filter($_FILES["image"]["error"], function ($v) {
+                                return $v === UPLOAD_ERR_OK;
+                            });
+
+                            foreach (array_keys($success) as $index) {
+                                $temp = [];
+                                foreach ($keys as $key) {
+                                    $temp[$key] =  $_FILES["image"][$key][$index];
+                                }
+                                $result[] = handleUpload($temp);
+                            }
+                        } else {
+                            $result = [handleUpload($_FILES["image"])];
+                        }
+
+
+                        $columns = array_reduce($result, function ($accumulate, $current) {
+                            return $accumulate .= "<tr>
+                            <td> <a href=\"${current['path']}\"> " . basename($current['path']) . "</a></td>
+                            <td>${current['size']}</td>
+                            <td>${current['ctime']}</td>
+                        </tr>";
+                        }, "");
+
+                        $table = <<<EOL
+                        <table>
+                            <tr>
+                                <th>name</th>
+                                <th>size</th>
+                                <th>upload time</th>
+                            </tr>
+                            $columns    
+                        </table>
+                        EOL;
+
+
+                        echo $table;
+
+                    ```
+
+            * fgetc, fgets, fgetss
+            * feof
+            ``` {.php data-play="false"} 
+            <?php  
+                $file = "log.svg";
+                $svg = fopen($file, "rb");
+                while(!feof($svg)){
+                    echo fgets($svg);
+                }
+                fclose($svg);
+            ```
+
+            * file_get_contents, file_put_contents
+            * set_include_path
+            ``` php 
+            <?php
+                $string = "中2文字符";
+                function sub($string, $length)
+                {
+                    $new = "";
+                    for ($i = 0; $i < $length; $i++) {
+                        if (ord(substr($string, $i, 1)) > 0xa0) {
+                            $new .= substr($string, $i, 3);
+                            $i += 2;
+                        } else {
+                            $new .= substr($string, $i, 1);
+                        }
+                    }
+                    return $new;
+                }
+
+                $first = sub($string, 5);
+                $second = sub($string, 12);
+                echo $first, PHP_EOL;
+                echo substr($string, strlen($first), strlen($second) - strlen($first)), PHP_EOL;
+            ```
+
+            * copy, rename
+            * filectime, filemtime, fileatime, clearstacache
+            * pathinfo, realpath
+            ``` php 
+            <?php
+                date_default_timezone_set("PRC");
+                copy("log.svg", "log.txt");
+                rename("log.txt", "log.php");
+                unlink("log.php");
+                echo date("Y-m-d H:i:s", filectime("log.svg")), PHP_EOL;
+                echo date("Y-m-d H:i:s", filemtime("log.svg")), PHP_EOL;
+                echo date("Y-m-d H:i:s", fileatime("log.svg")), PHP_EOL;
+
+                print_r(pathinfo("log.svg"));
+                echo PHP_EOL;
+
+                echo realpath("log.svg"), PHP_EOL;
+            ```
+
+            * tempnam, tmpfile
+            ``` php 
+            <?php
+                $tempFile =  tempnam(".", "");
+                echo $tempFile, PHP_EOL;
+                unlink($tempFile);
+
+                $file = tmpfile();
+                fwrite($file, "Github repo: https://github.com/vsfdqfpdpg");
+                rewind($file);
+                $content = fread($file, 1024);
+                echo $content, PHP_EOL;
+
+                register_shutdown_function(function() use($file) {
+                    if(is_resource($file)) {
+                        echo get_resource_type($file), PHP_EOL;
+                        fclose($file);
+                    }
+                    echo "Shutdown.", PHP_EOL;
+                });
+
+            ```
+        

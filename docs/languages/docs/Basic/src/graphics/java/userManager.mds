@@ -1,0 +1,445 @@
+
+            * User Manager 
+
+                === "src/main/Main.java"
+                ``` java
+                package main;
+
+                import frame.Login;
+
+                public class Main {
+                    public static void main(String[] args) {
+                        new Login();
+                    }
+                }
+                ```
+                
+                === "src/frame/Login.java"
+                ``` java
+                package frame;
+
+                import util.Config;
+                import util.FileOperation;
+                import util.GUIUtil;
+
+                import javax.swing.*;
+                import java.awt.*;
+                import java.awt.event.ActionEvent;
+                import java.awt.event.ActionListener;
+                import java.awt.event.KeyEvent;
+                import java.awt.event.KeyListener;
+
+                public class Login extends JFrame implements ActionListener, KeyListener {
+                    protected Icon welcome = new ImageIcon("");
+                    protected JLabel lbWelcome = new JLabel(welcome);
+                    protected JLabel lbAccount = new JLabel("请输入账号:");
+                    protected JTextField tfAccount = new JTextField(10);
+                    protected JLabel lbPassword = new JLabel("请输入秘密:");
+                    protected JPasswordField pfPassword = new JPasswordField(10);
+                    protected JButton btLogin = new JButton("登陆");
+                    protected JButton btRegister = new JButton("注册");
+                    protected JButton btExit = new JButton("退出");
+
+                    public Login() {
+                        super("登陆");
+                        this.setLayout(new FlowLayout());
+                        this.add(this.lbWelcome);
+                        this.add(this.lbAccount);
+                        this.add(this.tfAccount);
+                        this.add(this.lbPassword);
+                        this.add(this.pfPassword);
+                        this.add(this.btLogin);
+                        this.add(this.btRegister);
+                        this.add(this.btExit);
+                        this.setSize(240, 180);
+                        this.tfAccount.addKeyListener(this);
+                        this.pfPassword.addKeyListener(this);
+                        this.btLogin.addActionListener(this);
+                        this.btRegister.addActionListener(this);
+                        this.btExit.addActionListener(this);
+                        GUIUtil.toCenter(this);
+                        this.setFocusable(true);
+                    }
+
+
+                    private void login() {
+                        String account = this.tfAccount.getText();
+                        String password = String.valueOf(this.pfPassword.getPassword());
+                        FileOperation.getInfoByAccount(account);
+                        if (Config.account == null || !Config.password.equals(password)) {
+                            JOptionPane.showMessageDialog(this, "登陆失败!");
+                            return;
+                        }
+                        JOptionPane.showMessageDialog(this, "登陆成功!");
+                        this.dispose();
+                        new Operation();
+                    }
+
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        if (this.btLogin.equals(e.getSource())) {
+                            this.login();
+                        } else if (this.btRegister.equals(e.getSource())) {
+                            this.dispose();
+                            new Register();
+                        } else {
+                            JOptionPane.showMessageDialog(this, "谢谢光临!");
+                        }
+                    }
+
+                    @Override
+                    public void keyTyped(KeyEvent e) {
+                    }
+
+                    @Override
+                    public void keyPressed(KeyEvent e) {
+                        if (e.getKeyCode() == 10) {
+                            this.login();
+                        }
+                    }
+
+                    @Override
+                    public void keyReleased(KeyEvent e) {
+                    }
+                }
+
+                ```
+
+                === "src/frame/Modify.java"
+                ``` java
+                package frame;
+
+                import util.Config;
+                import util.FileOperation;
+                import util.GUIUtil;
+
+                import javax.swing.*;
+                import java.awt.*;
+                import java.awt.event.ActionEvent;
+                import java.awt.event.ActionListener;
+
+                public class Modify extends JDialog implements ActionListener {
+                    protected JLabel lbMsg = new JLabel("您的账号为: ");
+                    protected JLabel lbAccount = new JLabel(Config.account);
+                    protected JLabel lbPassword = new JLabel("请输入您的秘密:");
+                    protected JPasswordField pfPassword = new JPasswordField(Config.password, 10);
+                    protected JLabel lbConfirm = new JLabel("输入确认秘密:");
+                    protected JPasswordField pfConfirm = new JPasswordField(Config.password, 10);
+                    protected JLabel lbName = new JLabel("请修改你的姓名:");
+                    protected JTextField tfName = new JTextField(Config.name, 10);
+                    protected JLabel lbDepartment = new JLabel("请修改你的部门:");
+                    protected JComboBox<String> department = new JComboBox<>();
+                    protected JButton btModify = new JButton("修改");
+                    protected JButton btExit = new JButton("关闭");
+
+                    public Modify(JFrame frame) {
+                        super(frame, true);
+                        this.setLayout(new GridLayout(6, 2));
+                        this.add(this.lbMsg);
+                        this.add(this.lbAccount);
+                        this.add(this.lbPassword);
+                        this.add(this.pfPassword);
+                        this.add(this.lbConfirm);
+                        this.add(this.pfConfirm);
+                        this.add(this.lbName);
+                        this.add(this.tfName);
+                        this.add(this.lbDepartment);
+                        this.add(this.department);
+                        this.department.addItem("财务部");
+                        this.department.addItem("行政部");
+                        this.department.addItem("客户服务部");
+                        this.department.addItem("销售部");
+                        this.department.setSelectedItem(Config.department);
+                        this.add(this.btModify);
+                        this.add(this.btExit);
+                        this.setSize(240, 200);
+                        this.btModify.addActionListener(this);
+                        this.btExit.addActionListener(this);
+                        GUIUtil.toCenter(this);
+
+                    }
+
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        if (this.btModify.equals(e.getSource())) {
+                            String password = String.valueOf(this.pfPassword.getPassword());
+                            String confirm = String.valueOf(this.pfConfirm.getPassword());
+                            if (!password.equals(confirm)) {
+                                JOptionPane.showMessageDialog(this, "两个秘密不相同!");
+                                return;
+                            }
+
+                            String name = this.tfName.getText();
+                            String department = (String) this.department.getSelectedItem();
+                            Config.password = password;
+                            Config.name = name;
+                            Config.department = department;
+                            FileOperation.update(Config.account, password, name, department);
+                            JOptionPane.showMessageDialog(this, "修改成功!");
+                        } else {
+                            this.dispose();
+                        }
+                    }
+                }
+
+                ```
+
+                === "src/frame/Operation.java"
+                ``` java
+                package frame;
+
+                import util.Config;
+                import util.GUIUtil;
+
+                import javax.swing.*;
+                import java.awt.*;
+                import java.awt.event.ActionEvent;
+                import java.awt.event.ActionListener;
+
+                public class Operation extends JFrame implements ActionListener {
+                    protected JLabel msg = new JLabel("选择如下操作:");
+                    protected JButton btShow = new JButton("显示详细信息");
+                    protected JButton btModify = new JButton("修改个人资料");
+                    protected JButton btExit = new JButton("退出");
+
+                    public Operation() {
+                        super("当前登陆: " + Config.account);
+                        this.setLayout(new GridLayout(4, 1));
+                        this.add(this.msg);
+                        this.add(this.btShow);
+                        this.add(this.btModify);
+                        this.add(this.btExit);
+                        this.setSize(300, 250);
+                        GUIUtil.toCenter(this);
+                        this.btShow.addActionListener(this);
+                        this.btModify.addActionListener(this);
+                        this.btExit.addActionListener(this);
+                    }
+
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        if (this.btShow.equals(e.getSource())) {
+                            String msg = "您的详细资料为:\n " ;
+                            msg += "账号: " + Config.account + "\n";
+                            msg += "姓名: " + Config.name + "\n";
+                            msg += "部门: " + Config.department + "\n";
+                            JOptionPane.showMessageDialog(this,msg);
+                        } else if (this.btModify.equals(e.getSource())) {
+                            new Modify(this);
+                        } else {
+                            JOptionPane.showMessageDialog(this, "谢谢光临!");
+                            System.exit(0);
+                        }
+                    }
+                }
+
+                ```
+
+                === "src/frame/Register.java"
+                ``` java
+                package frame;
+
+                import jdk.nashorn.internal.scripts.JO;
+                import sun.rmi.runtime.Log;
+                import util.Config;
+                import util.FileOperation;
+                import util.GUIUtil;
+
+                import javax.swing.*;
+                import java.awt.*;
+                import java.awt.event.ActionEvent;
+                import java.awt.event.ActionListener;
+
+                public class Register extends JFrame implements ActionListener {
+                    protected JLabel lbAccount = new JLabel("请输入你的账号:");
+                    protected JTextField tfAccount = new JTextField(10);
+                    protected JLabel lbPassword = new JLabel("请输入你的秘密:");
+                    protected JPasswordField pfPassword = new JPasswordField(10);
+                    protected JLabel lbConfirm = new JLabel("请输入确认秘密:");
+                    protected JPasswordField pfConfirm = new JPasswordField(10);
+                    protected JLabel lbName = new JLabel("请输入你的姓名:");
+                    protected JTextField tfName = new JTextField(10);
+                    protected JLabel lbDept = new JLabel("请选择部门");
+                    protected JComboBox<String> department = new JComboBox<>();
+                    protected JButton btnRegister = new JButton("注册");
+                    protected JButton btnLogin = new JButton("登陆");
+                    protected JButton btnExit = new JButton("退出");
+
+                    public Register() {
+                        super("注册");
+                        this.setLayout(new FlowLayout());
+                        this.add(this.lbAccount);
+                        this.add(this.tfAccount);
+                        this.add(this.lbPassword);
+                        this.add(this.pfPassword);
+                        this.add(this.lbConfirm);
+                        this.add(this.pfConfirm);
+                        this.add(this.lbName);
+                        this.add(this.tfName);
+                        this.add(this.lbDept);
+                        this.add(this.department);
+                        this.department.addItem("财务部");
+                        this.department.addItem("行政部");
+                        this.department.addItem("客户服务部");
+                        this.department.addItem("销售部");
+                        this.add(this.btnRegister);
+                        this.add(this.btnLogin);
+                        this.add(this.btnExit);
+                        this.setSize(240, 220);
+                        GUIUtil.toCenter(this);
+
+                        this.btnRegister.addActionListener(this);
+                        this.btnLogin.addActionListener(this);
+                        this.btnExit.addActionListener(this);
+                    }
+
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        if (this.btnRegister.equals(e.getSource())) {
+                            String password = new String(this.pfPassword.getPassword());
+                            String confirm = new String(this.pfConfirm.getPassword());
+                            if (!password.equals(confirm)) {
+                                JOptionPane.showMessageDialog(this, "两次秘密不相同!");
+                                return;
+                            }
+                            String account = this.tfAccount.getText();
+                            FileOperation.getInfoByAccount(account);
+                            if (Config.account != null) {
+                                JOptionPane.showMessageDialog(this, "用户已经注册！");
+                                return;
+                            }
+                            String name = this.tfName.getText();
+                            String dept = (String) this.department.getSelectedItem();
+                            FileOperation.update(account, password, name, dept);
+                            JOptionPane.showMessageDialog(this, "注册成功!");
+                        } else if (this.btnLogin.equals(e.getSource())) {
+                            this.dispose();
+                            new Login();
+                        } else {
+                            JOptionPane.showMessageDialog(this, "谢谢光临");
+                            System.exit(0);
+                        }
+                    }
+                }
+
+                ```
+
+                === "src/util/Config.java"
+                ``` java
+                package util;
+
+                public class Config {
+                    public static String account;
+                    public static String password;
+                    public static String name;
+                    public static String department;
+                }
+
+                ```
+
+                === "src/util/FileOperation.java"
+                ``` java
+                package util;
+
+                import javax.swing.*;
+                import java.io.File;
+                import java.io.FileReader;
+                import java.io.PrintStream;
+                import java.util.Properties;
+
+                public class FileOperation {
+                    protected static String filename = "custom.inc";
+                    protected static Properties pps;
+
+                    static {
+                        pps = new Properties();
+                        FileReader reader = null;
+                        try {
+                            File file = new File(filename);
+                            if (!file.exists()) {
+                                if (file.createNewFile()) {
+                                    System.out.println(file.getAbsolutePath());
+                                }
+                            }
+                            reader = new FileReader(filename);
+                            pps.load(reader);
+                        } catch (Exception e) {
+                            JOptionPane.showMessageDialog(null, "文件操作异常");
+                            e.printStackTrace();
+                            System.exit(0);
+                        } finally {
+                            try {
+                                assert reader != null;
+                                reader.close();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                    protected static void list() {
+                        PrintStream ps = null;
+                        try {
+                            ps = new PrintStream(filename);
+                            pps.list(ps);
+                        } catch (Exception e) {
+                            JOptionPane.showMessageDialog(null, "文件操作异常");
+                            e.printStackTrace();
+                            System.exit(0);
+                        } finally {
+                            try {
+                                assert ps != null;
+                                ps.close();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                    public static void getInfoByAccount(String account) {
+                        String cusInfo = pps.getProperty(account);
+                        if (null != cusInfo) {
+                            String[] infos = cusInfo.split("#");
+                            Config.account = account;
+                            Config.password = infos[0];
+                            Config.name = infos[1];
+                            Config.department = infos[2];
+                        }
+                    }
+
+                    public static void update(String account, String password, String name, String department) {
+                        pps.setProperty(account, password + "#" + name + "#" + department);
+                        list();
+                    }
+                }
+
+                ```
+
+                === "src/util/GUIUtil.java"
+                ``` java
+                package util;
+
+                import javax.swing.*;
+                import java.awt.*;
+
+                public class GUIUtil {
+                    public static void toCenter(JFrame frame) {
+                        GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+                        Rectangle rec = env.getDefaultScreenDevice().getDefaultConfiguration().getBounds();
+                        frame.setLocation((int) (rec.getWidth() - frame.getWidth()) / 2, (int) (rec.getHeight() - frame.getHeight()) / 2);
+                        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                        frame.setResizable(false);
+                        frame.setVisible(true);
+                    }
+
+                    public static void toCenter(JDialog dialog) {
+                        GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+                        Rectangle rec = env.getDefaultScreenDevice().getDefaultConfiguration().getBounds();
+                        dialog.setLocation((int) (rec.getWidth() - dialog.getWidth()) / 2, (int) (rec.getHeight() - dialog.getHeight()) / 2);
+                        dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                        dialog.setResizable(false);
+                        dialog.setVisible(true);
+                    }
+                }
+
+                ```

@@ -1,0 +1,9 @@
+
+        === "Tcp"
+            {% include "Basic/src/socket/go/tcp.mds" %}
+
+        === "Udp"
+            {% include "Basic/src/socket/go/udp.mds" %}
+
+        === "Chat"
+            {% include "Basic/src/socket/go/chat.mds" %}

@@ -1,0 +1,153 @@
+
+            === "Chicken"
+                ``` java
+                public class Chicken{
+                    public static void main(String[] args){
+                        // 公鸡: 5
+                        // 母鸡: 3
+                        // 小鸡: 1/3
+                        int x,y,z;
+                        for(x=0; x <= 100; x++){
+                            for(y=0; y <= 100; y++){
+                                z = 100 - x -y;
+                                if(z > 0 && z % 3 == 0 && x * 5 + y * 3 + z/3 == 100){
+                                    System.out.printf("公鸡: %2d 母鸡: %2d 小鸡: %2d\n", x, y, z);
+                                }
+                            }
+                        }
+                    }
+                }
+                ```
+            
+            === "Stairs"
+                ``` java
+                public class Stairs{
+                    public static void main(String[] args){
+                        
+                    }
+                }
+                ```
+            
+            === "Coin"
+                ``` java
+                import java.util.ArrayList;
+                import java.util.List;
+                import java.util.Collections;
+
+                public class Coin{
+                    public static void main(String[] args){
+                        int count = 0;
+                        int  value[]  = new int[]{10, 5, 1};
+                        int number[]  = new int[]{2, 3, 4};
+                        List<String> list = new ArrayList<>();
+                        for(int i=0; i < 3; i++){
+                            for(int j =0; j < number[i]; j ++){
+                                list.add(value[i]+"");
+                            }
+                        }
+                        
+
+                        int change = 33;
+                        List<String> fetch = new ArrayList<>();
+                        for(int i =0 ; i < list.size(); i++){
+                            if(change >= Integer.parseInt((String)list.get(i))){
+                                fetch.add(list.get(i));
+                                change = change - Integer.parseInt((String)list.get(i));
+                                count++;
+                            }
+                        }
+
+                        System.out.println(fetch.size());
+
+                        int c[] = new int[3];
+                        for(int i =0; i<3; i++){
+                            c[i] = Collections.frequency(fetch, value[i] + "");
+                            System.out.printf("value: %d number: %d\n", value[i], c[i]);
+                        }
+
+                    }
+                }
+                ```
+            === "Accumulate"
+                ``` java
+                public class Accumulate{
+                    public static void main(String[] args){
+                        // 3+33+333
+                        int number = 3;
+                        int length = 3;
+
+                        int sum = 0;
+                        int bit = 1;
+                        int total = 0;
+                        for(int i =0; i<length; i++){
+                            sum = sum + number * bit;
+                            bit = bit * 10;
+                            total += sum;
+                        }
+
+                        System.out.println(total);
+                    }
+                }
+                ```
+            
+            === "ChickenAndRabbit"
+                ``` java
+                public class ChickenAndRabbit{
+                    public static void main(String[] args){
+                        // 孙子算经
+                        // head 35
+                        // foot 94
+                        int chicken, rabbit;
+                        // chicken + rabbit = 35
+                        // 2 * chicken + 4 * rabbit = 94
+                        // 2 * (35 - rabbit) + 4 * rabbit = 94
+                        rabbit = (94 - 70) / 2;
+                        chicken = 35 - rabbit;
+                        System.out.printf("Rabbit: %d\n", rabbit);
+                        System.out.printf("Chicken: %d", chicken);
+                        
+                    }
+                }
+                ```
+
+            === "Age"
+                ``` java
+                public class Age{
+                    public static void main(String[] args){
+                        System.out.println(age(5));
+                    }
+
+                    public static int age(int n){
+                        int c;
+                        if(n == 1){
+                            c = 10; // 递归出口
+                        }else{
+                            c = age(n-1) + 2;
+                        }
+                        return c;
+                    }
+                }
+                ```
+
+            === "ThreeBall"
+                ``` java
+                public class ThreeBall{
+                    public static void main(String[] args){
+                        threeBall(3, 3, 6, 8);
+                    }
+
+                    public static void threeBall(int red, int yellow, int green, int n){
+                        int i, j, k;
+                        System.out.println("\tRed\tYellow\tGreen");
+                        for(i = 0; i <= red; i++){
+                            for(j =0; j <= yellow; j++){
+                                for(k =0; k <= green; k++){
+                                    if(i + j + k == n){
+                                        System.out.printf("\t%d\t%d\t%d\n",i,j,k);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                ```

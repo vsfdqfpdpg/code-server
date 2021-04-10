@@ -1,0 +1,921 @@
+
+            === "Server"
+                * Server
+
+                    === "app/Server.java"
+                    ``` java
+                    package app;
+
+                    import vo.Customer;
+
+                    import javax.swing.*;
+                    import java.awt.*;
+                    import java.awt.event.ActionEvent;
+                    import java.awt.event.ActionListener;
+                    import java.io.IOException;
+                    import java.net.ServerSocket;
+                    import java.net.Socket;
+                    import java.util.Vector;
+
+                    public class Server extends JFrame implements Runnable {
+                        private Socket socket = null;
+                        private ServerSocket server = null;
+                        private Vector<ChatThread> clients = new Vector<>();
+                        private Vector<Customer> onlineUsers = new Vector<>();
+                        private JButton shutdown = new JButton("关闭服务器");
+                        private boolean canRun = true;
+
+                        public Server() throws IOException {
+                            this.setTitle("服务器");
+                            this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                            this.add(shutdown, BorderLayout.NORTH);
+                            shutdown.addActionListener(new ActionListener() {
+                                @Override
+                                public void actionPerformed(ActionEvent e) {
+                                    System.exit(0);
+                                }
+                            });
+
+                            this.setBackground(Color.yellow);
+                            this.setSize(300, 100);
+                            this.setVisible(true);
+                            server = new ServerSocket(9999);
+                            new Thread(this).start();
+                        }
+
+                        @Override
+                        public void run() {
+                            try{
+                                while (canRun){
+                                    socket = server.accept();
+                                    ChatThread ct = new ChatThread(socket, this);
+                                    ct.start();
+                                }
+                            } catch (IOException e) {
+                                canRun = false;
+                                try{
+                                    server.close();
+                                } catch (IOException ioException) {
+                                    ioException.printStackTrace();
+                                }
+                                e.printStackTrace();
+                            }
+                        }
+
+                        public Vector<ChatThread> getClients() {
+                            return clients;
+                        }
+
+                        public Vector<Customer> getOnlineUsers() {
+                            return onlineUsers;
+                        }
+                    }
+
+                    ```
+
+                    === "app/ChatThread.java" 
+                    ``` java
+                    package app;
+
+                    import jdk.nashorn.internal.runtime.regexp.joni.Config;
+                    import util.Conf;
+                    import util.FileOperation;
+                    import vo.Customer;
+                    import vo.Message;
+
+                    import java.io.IOException;
+                    import java.io.ObjectInputStream;
+                    import java.io.ObjectOutputStream;
+                    import java.net.Socket;
+
+                    public class ChatThread extends Thread {
+                        private Socket socket = null;
+                        private ObjectInputStream ois = null;
+                        private ObjectOutputStream oos = null;
+                        private Customer customer = null;
+                        private Server server;
+                        private boolean canRun = true;
+
+                        public ChatThread(Socket socket, Server server) throws IOException {
+                            this.socket = socket;
+                            this.server = server;
+                            oos = new ObjectOutputStream(socket.getOutputStream());
+                            ois = new ObjectInputStream(socket.getInputStream());
+                        }
+
+                        @Override
+                        public void run() {
+                            try {
+                                while (canRun) {
+                                    Message msg = (Message) ois.readObject();
+                                    String type = msg.getType();
+                                    if (type.equals(Conf.LOGIN)) {
+                                        this.handleLogin(msg);
+                                    } else if (type.equals(Conf.REGISTER)) {
+                                        this.handleRegister(msg);
+                                    } else if (type.equals(Conf.MESSAGE)) {
+                                        this.handleMessage(msg);
+                                    }
+                                }
+                            } catch (IOException | ClassNotFoundException e) {
+                                e.printStackTrace();
+                                this.handleLogout();
+                            }
+                        }
+
+                        private void handleMessage(Message msg) throws IOException {
+                            String to = msg.getTo();
+                            sendMessage(msg, to);
+                        }
+
+                        private void handleLogout() {
+                            Message logout = new Message();
+                            logout.setType(Conf.LOGOUT);
+                            logout.setContent(this.customer);
+                            server.getClients().remove(this);
+                            server.getOnlineUsers().remove(this.customer);
+                            try {
+                                sendMessage(logout, Conf.ALL);
+                                canRun = false;
+                                socket.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            server.setTitle("当前在线: " + server.getClients().size() + "  人");
+                        }
+
+                        private void handleRegister(Message msg) throws IOException {
+                            Customer register = (Customer) msg.getContent();
+                            String account = register.getAccount();
+                            Customer cus = FileOperation.getCustomByAccount(account);
+                            Message newMsg = new Message();
+                            if (cus != null) {
+                                newMsg.setType(Conf.REGISTER_FAIL);
+                            } else {
+                                String password = register.getPassword();
+                                String name = register.getName();
+                                String department = register.getDepartment();
+                                FileOperation.insertCustomer(account, password, name, department);
+                                newMsg.setType(Conf.REGISTER_SUCCESS);
+                                oos.writeObject(newMsg);
+                            }
+                            oos.writeObject(newMsg);
+                            canRun = false;
+                            socket.close();
+                        }
+
+                        private void handleLogin(Message msg) throws IOException {
+                            Customer login = (Customer) msg.getContent();
+                            String account = login.getAccount();
+                            String password = login.getPassword();
+                            Customer cus = FileOperation.getCustomByAccount(account);
+                            Message newMsg = new Message();
+                            if (cus == null || !cus.getPassword().equals(password)) {
+                                newMsg.setType(Conf.LOGIN_FAIL);
+                                oos.writeObject(newMsg);
+                                canRun = false;
+                                socket.close();
+                                return;
+                            }
+
+                            this.customer = cus;
+                            server.getClients().add(this);
+                            server.getOnlineUsers().add(this.customer);
+                            newMsg.setType(Conf.USER_LIST);
+                            newMsg.setContent(server.getOnlineUsers().clone());
+                            this.sendMessage(newMsg, Conf.ALL);
+                            server.setTitle("当前在线: " + server.getClients().size() + " 人");
+                        }
+
+                        private void sendMessage(Message newMsg, String to) throws IOException {
+                            for (ChatThread ct : server.getClients()) {
+                                if (ct.customer.getAccount().equals(to) || to.equals(Conf.ALL)) {
+                                    ct.oos.writeObject(newMsg);
+                                }
+                            }
+                        }
+
+                    }
+
+                    ```  
+
+                    === "main/Main.java"
+                    ``` java
+                    package main;
+
+                    import app.Server;
+
+                    import java.io.IOException;
+
+                    public class Main {
+                        public static void main(String[] args) throws IOException {
+                            new Server();
+                        }
+                    }
+
+                    ```
+
+                    === "util/Conf.java"
+                    ``` java
+                    package util;
+
+                    public class Conf {
+                        public static final String LOGIN = "LOGIN";
+                        public static final String REGISTER = "REGISTER";
+                        public static final String LOGIN_FAIL = "LOGIN_FAIL";
+                        public static final String USER_LIST = "USER_LIST";
+                        public static final String REGISTER_SUCCESS = "REGISTER_SUCCESS";
+                        public static final String REGISTER_FAIL = "REGISTER_FAIL";
+                        public static final String MESSAGE = "MESSAGE";
+                        public static final String LOGOUT = "LOGOUT";
+                        public static final String ALL = "ALL";
+                    }
+
+                    ```
+
+                    === "util/FileOperation.java"
+                    ``` java
+                    package util;
+
+                    import vo.Customer;
+
+                    import javax.swing.*;
+                    import java.io.*;
+                    import java.util.Properties;
+
+                    public class FileOperation {
+                        private static final String filename = "cus.inc";
+                        private static Properties pps;
+
+                        static {
+                            pps = new Properties();
+                            FileReader reader = null;
+
+                            try {
+                                File file = new File(filename);
+                                if (!file.exists()) {
+                                    file.createNewFile();
+                                }
+                                reader = new FileReader(filename);
+                                pps.load(reader);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                                JOptionPane.showMessageDialog(null, "文件操作异常");
+                                System.exit(0);
+                            }
+                        }
+
+                        private static void list() {
+                            PrintStream ps = null;
+                            try {
+                                ps = new PrintStream(filename);
+                                pps.list(ps);
+                            } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                                JOptionPane.showMessageDialog(null, "文件操作异常");
+                                System.exit(0);
+                            } finally {
+                                assert ps != null;
+                                ps.close();
+                            }
+                        }
+
+                        public static Customer getCustomByAccount(String account) {
+                            Customer customer = null;
+                            String cusInfo = pps.getProperty(account);
+                            if (cusInfo != null) {
+                                String[] infos = cusInfo.split("#");
+                                customer = new Customer();
+                                customer.setAccount(account);
+                                customer.setPassword(infos[0]);
+                                customer.setName(infos[1]);
+                                customer.setDepartment(infos[2]);
+                            }
+
+                            return customer;
+                        }
+
+                        public static void insertCustomer(String account, String password, String name, String department) {
+                            pps.setProperty(account, password + "#" + name + "#" + department);
+                            list();
+                        }
+                    }
+
+                    ```
+
+                    === "vo/Customer.java"
+                    ``` java
+                    package vo;
+
+                    import java.io.Serializable;
+
+                    public class Customer implements Serializable {
+
+                        private static final long serialVersionUID = -4272066354122649318L;
+
+                        private String account;
+                        private String password;
+                        private String name;
+                        private String department;
+
+                        public String getAccount() {
+                            return account;
+                        }
+
+                        public void setAccount(String account) {
+                            this.account = account;
+                        }
+
+                        public String getPassword() {
+                            return password;
+                        }
+
+                        public void setPassword(String password) {
+                            this.password = password;
+                        }
+
+                        public String getName() {
+                            return name;
+                        }
+
+                        public void setName(String name) {
+                            this.name = name;
+                        }
+
+                        public String getDepartment() {
+                            return department;
+                        }
+
+                        public void setDepartment(String department) {
+                            this.department = department;
+                        }
+                    }
+
+                    ```
+
+                    === "vo/Message.java"
+                    ``` java
+                    package vo;
+
+                    import java.io.Serializable;
+
+                    public class Message implements Serializable {
+                        private static final long serialVersionUID = -5884031715852065630L;
+
+                        private String type;
+                        private Object content;
+                        private String to;
+                        private String from;
+
+                        public String getType() {
+                            return type;
+                        }
+
+                        public void setType(String type) {
+                            this.type = type;
+                        }
+
+                        public Object getContent() {
+                            return content;
+                        }
+
+                        public void setContent(Object content) {
+                            this.content = content;
+                        }
+
+                        public String getTo() {
+                            return to;
+                        }
+
+                        public void setTo(String to) {
+                            this.to = to;
+                        }
+
+                        public String getFrom() {
+                            return from;
+                        }
+
+                        public void setFrom(String from) {
+                            this.from = from;
+                        }
+                    }
+
+                    ```
+
+            === "Client"
+                * Client
+
+                    === "app/ChatFrame.java"
+                    ``` java
+                    package app;
+
+                    import util.Conf;
+                    import vo.Customer;
+                    import vo.Message;
+
+                    import javax.swing.*;
+                    import java.awt.*;
+                    import java.awt.event.ActionEvent;
+                    import java.awt.event.ActionListener;
+                    import java.io.IOException;
+                    import java.io.ObjectInputStream;
+                    import java.io.ObjectOutputStream;
+                    import java.net.Socket;
+                    import java.util.Vector;
+
+                    public class ChatFrame extends JFrame implements ActionListener, Runnable {
+                        private Socket socket = null;
+                        private ObjectInputStream ois = null;
+                        private ObjectOutputStream oos = null;
+                        private boolean canRun = true;
+                        private String account;
+                        private JLabel lbUser = new JLabel("在线人员名单:");
+                        private List listUser = new List();
+                        private JLabel lbMsg = new JLabel("聊天记录:");
+                        private JTextArea areaMsg = new JTextArea();
+                        private JScrollPane sc = new JScrollPane(areaMsg);
+                        private JTextField tfMsg = new JTextField();
+                        private JButton send = new JButton("发送");
+                        private JPanel userPanel = new JPanel(new BorderLayout());
+                        private JPanel msgPanel = new JPanel(new BorderLayout());
+                        private JPanel userMsgPanel = new JPanel(new GridLayout(1, 2));
+                        private JPanel sendPanel = new JPanel(new BorderLayout());
+
+                        public ChatFrame(ObjectInputStream ois, ObjectOutputStream oos, Message receive, String account) {
+                            this.ois = ois;
+                            this.oos = oos;
+                            this.account = account;
+                            this.initFrame();
+                            this.initUserList(receive);
+                            new Thread(this).start();
+                        }
+
+                        private void initUserList(Message receive) {
+                            listUser.removeAll();
+                            listUser.add(Conf.ALL);
+                            listUser.select(0);
+                            Vector<Customer> userList = (Vector<Customer>) receive.getContent();
+                            for (Customer cus : userList) {
+                                listUser.add(cus.getAccount() + "," + cus.getName() + "," + cus.getDepartment());
+                            }
+                        }
+
+                        private void initFrame() {
+                            this.setTitle("当前在线: " + account);
+                            this.setBackground(Color.magenta);
+                            userPanel.add(lbUser, BorderLayout.NORTH);
+                            userPanel.add(listUser, BorderLayout.CENTER);
+                            userMsgPanel.add(userPanel);
+                            listUser.setBackground(Color.pink);
+
+                            msgPanel.add(lbMsg, BorderLayout.NORTH);
+                            msgPanel.add(sc, BorderLayout.CENTER);
+                            userMsgPanel.add(msgPanel);
+                            tfMsg.setBackground(Color.pink);
+
+                            sendPanel.add(tfMsg, BorderLayout.CENTER);
+                            sendPanel.add(send, BorderLayout.EAST);
+                            tfMsg.setBackground(Color.yellow);
+
+                            this.add(userMsgPanel, BorderLayout.CENTER);
+                            this.add(sendPanel, BorderLayout.SOUTH);
+
+                            send.addActionListener(this);
+                            this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                            this.setSize(300, 300);
+                            this.setVisible(true);
+
+                        }
+
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            try {
+                                Message msg = new Message();
+                                msg.setType(Conf.MESSAGE);
+                                msg.setContent(account + "说: " + tfMsg.getText());
+                                msg.setFrom(account);
+                                String toInfo = listUser.getSelectedItem();
+                                msg.setTo(toInfo.split(",")[0]);
+                                oos.writeObject(msg);
+                                tfMsg.setText("");
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                                JOptionPane.showMessageDialog(this, "消息发送异常");
+                            }
+                        }
+
+                        @Override
+                        public void run() {
+                            try {
+                                while (canRun) {
+                                    Message msg = (Message) ois.readObject();
+                                    if (msg.getType().equals(Conf.MESSAGE)) {
+                                        areaMsg.append(msg.getContent() + "\n");
+                                    } else if (msg.getType().equals(Conf.USER_LIST)) {
+                                        this.initUserList(msg);
+                                    } else if (msg.getType().equals(Conf.LOGOUT)) {
+                                        Customer cus = (Customer) msg.getContent();
+                                        listUser.remove(cus.getAccount() + "," + cus.getName() + "," + cus.getDepartment());
+                                    }
+                                }
+                            } catch (IOException | ClassNotFoundException e) {
+                                e.printStackTrace();
+                                canRun = false;
+                                JOptionPane.showMessageDialog(this, "对不起, 您被迫下线");
+                                System.exit(-1);
+                            }
+                        }
+                    }
+
+                    ```
+
+                    === "app/LoginFrame.java"
+                    ``` java
+                    package app;
+
+                    import main.Main;
+                    import util.Conf;
+                    import util.GUIUtil;
+                    import vo.Customer;
+                    import vo.Message;
+
+                    import javax.swing.*;
+                    import java.awt.*;
+                    import java.awt.event.ActionEvent;
+                    import java.awt.event.ActionListener;
+                    import java.io.IOException;
+                    import java.io.ObjectInputStream;
+                    import java.io.ObjectOutputStream;
+                    import java.net.Socket;
+
+                    public class LoginFrame extends JFrame implements ActionListener {
+                        private Icon welcome = new ImageIcon("welcome.png");
+                        private JLabel lbWelcome = new JLabel(welcome);
+                        private JLabel lbAccount = new JLabel("请输入账号");
+                        private JTextField tfAccount = new JTextField(10);
+                        private JLabel lbPassword = new JLabel("请输入密码");
+                        private JPasswordField pfPassword = new JPasswordField(10);
+                        private JButton login = new JButton("登陆");
+                        private JButton register = new JButton("注册");
+                        private JButton exit = new JButton("退出");
+                        private Socket socket = null;
+                        private ObjectOutputStream oos = null;
+                        private ObjectInputStream ois = null;
+
+                        public LoginFrame() {
+                            super("登陆");
+                            this.setLayout(new FlowLayout());
+                            this.add(lbWelcome);
+                            this.add(lbAccount);
+                            this.add(tfAccount);
+                            this.add(lbPassword);
+                            this.add(pfPassword);
+                            this.add(login);
+                            this.add(register);
+                            this.add(exit);
+                            this.setSize(240, 180);
+                            GUIUtil.toCenter(this);
+                            this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                            this.setResizable(false);
+                            this.setVisible(true);
+
+                            login.addActionListener(this);
+                            register.addActionListener(this);
+                            exit.addActionListener(this);
+                        }
+
+                        private void login() {
+                            String account = tfAccount.getText();
+                            Customer cus = new Customer();
+                            cus.setAccount(account);
+                            cus.setPassword(new String(pfPassword.getPassword()));
+                            Message msg = new Message();
+                            msg.setType(Conf.LOGIN);
+                            msg.setContent(cus);
+
+                            try {
+                                socket = new Socket(Main.serverIP, Main.port);
+                                oos = new ObjectOutputStream(socket.getOutputStream());
+                                ois = new ObjectInputStream(socket.getInputStream());
+                                oos.writeObject(msg);
+                                Message received = (Message) ois.readObject();
+                                String type = received.getType();
+                                if (type.equals(Conf.LOGIN_FAIL)) {
+                                    JOptionPane.showMessageDialog(this, "登陆失败.");
+                                    socket.close();
+                                    return;
+                                }
+                                JOptionPane.showMessageDialog(this, "登陆成功.");
+                                new ChatFrame(ois, oos, received, account);
+                                this.dispose();
+                            } catch (IOException | ClassNotFoundException e) {
+                                e.printStackTrace();
+                                JOptionPane.showMessageDialog(this, "网络连接异常");
+                                System.exit(-1);
+                            }
+                        }
+
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            if (e.getSource().equals(login)) {
+                                this.login();
+                            } else if (e.getSource().equals(register)) {
+                                this.dispose();
+                                new RegisterFrame();
+                            } else {
+                                JOptionPane.showMessageDialog(this, "谢谢光临");
+                                System.exit(0);
+                            }
+                        }
+                    }
+
+                    ```
+
+                    === "app/RegisterFrame.java"
+                    ``` java
+                    package app;
+
+                    import jdk.nashorn.internal.scripts.JO;
+                    import main.Main;
+                    import util.Conf;
+                    import util.GUIUtil;
+                    import vo.Customer;
+                    import vo.Message;
+
+                    import javax.swing.*;
+                    import java.awt.*;
+                    import java.awt.event.ActionEvent;
+                    import java.awt.event.ActionListener;
+                    import java.io.IOException;
+                    import java.io.ObjectInputStream;
+                    import java.io.ObjectOutputStream;
+                    import java.net.Socket;
+
+                    public class RegisterFrame extends JFrame implements ActionListener {
+                        private JLabel lbAccount = new JLabel("请输入你的账号");
+                        private JTextField tfAccount = new JTextField(10);
+                        private JLabel lbPassword = new JLabel("请输入你的秘密");
+                        private JPasswordField pfPassword = new JPasswordField(10);
+                        private JLabel lbConfirm = new JLabel("输入确认秘密");
+                        private JPasswordField pfConfirm = new JPasswordField(10);
+                        private JLabel lbName = new JLabel("请输入姓名");
+                        private JTextField tfName = new JTextField(10);
+                        private JLabel lbDepartment = new JLabel("请选择部门");
+                        private JComboBox<String> department = new JComboBox<>();
+                        private JButton register = new JButton("注册");
+                        private JButton login = new JButton("登陆");
+                        private JButton exit = new JButton("退出");
+                        private Socket socket = null;
+                        private ObjectOutputStream oos = null;
+                        private ObjectInputStream ois = null;
+
+                        public RegisterFrame() {
+                            super("注册");
+                            this.setLayout(new FlowLayout());
+                            this.add(lbAccount);
+                            this.add(tfAccount);
+                            this.add(lbPassword);
+                            this.add(pfPassword);
+                            this.add(lbConfirm);
+                            this.add(pfConfirm);
+                            this.add(lbName);
+                            this.add(tfName);
+                            this.add(lbDepartment);
+                            this.add(department);
+                            department.addItem("财务部");
+                            department.addItem("行政部");
+                            department.addItem("客户服务部");
+                            department.addItem("销售部");
+                            this.add(register);
+                            this.add(login);
+                            this.add(exit);
+                            this.setSize(240, 220);
+                            GUIUtil.toCenter(this);
+                            this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                            this.setResizable(false);
+                            this.setVisible(true);
+
+                            register.addActionListener(this);
+                            login.addActionListener(this);
+                            exit.addActionListener(this);
+                        }
+
+                        private void register() {
+                            Customer cus = new Customer();
+                            cus.setAccount(tfAccount.getText());
+                            cus.setPassword(new String(pfPassword.getPassword()));
+                            cus.setName(tfName.getText());
+                            cus.setDepartment((String) department.getSelectedItem());
+                            Message msg = new Message();
+                            msg.setType(Conf.REGISTER);
+                            msg.setContent(cus);
+                            try {
+                                socket = new Socket(Main.serverIP, Main.port);
+                                oos = new ObjectOutputStream(socket.getOutputStream());
+                                ois = new ObjectInputStream(socket.getInputStream());
+                                Message received = null;
+                                oos.writeObject(msg);
+                                received = (Message) ois.readObject();
+                                String type = received.getType();
+                                if (type.equals(Conf.REGISTER_FAIL)) {
+                                    JOptionPane.showMessageDialog(this, "注册失败");
+                                } else {
+                                    JOptionPane.showMessageDialog(this, "注册成功");
+                                }
+                                socket.close();
+                            } catch (IOException | ClassNotFoundException e) {
+                                e.printStackTrace();
+                                JOptionPane.showMessageDialog(this, "网络连接异常");
+                                System.exit(-1);
+                            }
+                        }
+
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            if (e.getSource().equals(register)) {
+                                String password = new String(pfPassword.getPassword());
+                                String confirm = new String(pfConfirm.getPassword());
+                                if (!password.equals(confirm)) {
+                                    JOptionPane.showMessageDialog(this, "两个密码不相同");
+                                    return;
+                                }
+                                this.register();
+                            } else if (e.getSource().equals(login)) {
+                                this.dispose();
+                                new LoginFrame();
+                            } else {
+                                JOptionPane.showMessageDialog(this, "谢谢光临");
+                                System.exit(0);
+                            }
+                        }
+                    }
+
+                    ```
+
+                    === "main/Main.java"
+                    ``` java
+                    package main;
+
+                    import app.LoginFrame;
+
+                    import java.io.FileReader;
+                    import java.io.IOException;
+                    import java.util.Properties;
+
+                    public class Main {
+                        public static String serverIP;
+                        public static int port;
+
+                        private static void loadConf() throws IOException {
+                            Properties pps = new Properties();
+                            pps.load(new FileReader("net.conf"));
+                            serverIP = pps.getProperty("serverIP");
+                            port = Integer.parseInt(pps.getProperty("port"));
+                        }
+
+                        public static void main(String[] args) throws IOException {
+                            loadConf();
+                            new LoginFrame();
+                        }
+                    }
+
+                    ```
+                    
+                    === "util/Conf.java"
+                    ``` java
+                    package util;
+
+                    public class Conf {
+                        public static final String LOGIN = "LOGIN";
+                        public static final String REGISTER = "REGISTER";
+                        public static final String LOGIN_FAIL = "LOGIN_FAIL";
+                        public static final String USER_LIST = "USER_LIST";
+                        public static final String REGISTER_SUCCESS = "REGISTER_SUCCESS";
+                        public static final String REGISTER_FAIL = "REGISTER_FAIL";
+                        public static final String MESSAGE = "MESSAGE";
+                        public static final String LOGOUT = "LOGOUT";
+                        public static final String ALL = "ALL";
+                    }
+
+                    ```
+
+                    === "util/GUIUtil.java"
+                    ``` java
+                    package util;
+
+                    import java.awt.*;
+
+                    public class GUIUtil {
+                        public static void toCenter(Component component) {
+                            GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+                            Rectangle rec = env.getDefaultScreenDevice().getDefaultConfiguration().getBounds();
+                            component.setLocation(((int) rec.getWidth() - component.getWidth()) / 2, ((int) rec.getHeight() - component.getHeight()) / 2);
+                        }
+                    }
+
+                    ```
+
+                    === "vo/Customer.java"
+                    ``` java
+                    package vo;
+
+                    import java.io.Serializable;
+
+                    public class Customer implements Serializable {
+
+                        private static final long serialVersionUID = -4272066354122649318L;
+
+                        private String account;
+                        private String password;
+                        private String name;
+                        private String department;
+
+                        public String getAccount() {
+                            return account;
+                        }
+
+                        public void setAccount(String account) {
+                            this.account = account;
+                        }
+
+                        public String getPassword() {
+                            return password;
+                        }
+
+                        public void setPassword(String password) {
+                            this.password = password;
+                        }
+
+                        public String getName() {
+                            return name;
+                        }
+
+                        public void setName(String name) {
+                            this.name = name;
+                        }
+
+                        public String getDepartment() {
+                            return department;
+                        }
+
+                        public void setDepartment(String department) {
+                            this.department = department;
+                        }
+                    }
+
+                    ```
+
+                    === "vo/Message.java"
+                    ``` java
+                    package vo;
+
+                    import java.io.Serializable;
+
+                    public class Message implements Serializable {
+                        private static final long serialVersionUID = -5884031715852065630L;
+
+                        private String type;
+                        private Object content;
+                        private String to;
+                        private String from;
+
+                        public String getType() {
+                            return type;
+                        }
+
+                        public void setType(String type) {
+                            this.type = type;
+                        }
+
+                        public Object getContent() {
+                            return content;
+                        }
+
+                        public void setContent(Object content) {
+                            this.content = content;
+                        }
+
+                        public String getTo() {
+                            return to;
+                        }
+
+                        public void setTo(String to) {
+                            this.to = to;
+                        }
+
+                        public String getFrom() {
+                            return from;
+                        }
+
+                        public void setFrom(String from) {
+                            this.from = from;
+                        }
+                    }
+
+                    ```
+
+                    === "net.conf"
+                    ```
+                    serverIP=127.0.0.1
+                    port=9999
+                    ```

@@ -17,6 +17,7 @@ class Go extends Language
             shell_exec("cd " . $sysTempPath . " && go mod init example.com");
         }
         $this->cmd = $this->executor . ' ' . $tmpfile . ' 2>&1';
+        $this->files[] = $tmpfile;
         $this->perform();
     }
 }

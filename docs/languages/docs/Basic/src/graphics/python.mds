@@ -1,0 +1,12 @@
+
+        === "Basic"
+            {% include "Basic/src/graphics/python/basic.mds" %}
+
+        === "Advanced"
+            {% include "Basic/src/graphics/python/advanced.mds" %}
+
+        === "Layout"
+            {% include "Basic/src/graphics/python/layout.mds" %}
+
+        === "Event"
+            {% include "Basic/src/graphics/python/event.mds" %}

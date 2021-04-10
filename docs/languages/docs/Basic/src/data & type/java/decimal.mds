@@ -1,25 +1,13 @@
 
-            === "Char"
-                ``` java
-                java 
-                ```
-
-            === "String"
-                ``` java
-                java 
-                ```
-
-            === "Test"
-                ``` java
-                java 
-                ```
-
-            === "Float"
-                ``` java
-                java 
-                ```
-
             === "Double"
                 ``` java
-                java 
+                import java.text.DecimalFormat;
+                import java.text.NumberFormat;
+
+                public class DoubleFormatTest{
+                    public static void main(String[] args){
+                        NumberFormat nf = new DecimalFormat("$, ###.##");
+                        System.out.println(nf.format(5678142.45));
+                    }
+                } 
                 ```

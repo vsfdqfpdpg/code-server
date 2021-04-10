@@ -1,25 +1,5 @@
 
-            === "Char"
-                ``` javascript
-                javascript 
-                ```
-
-            === "String"
-                ``` javascript
-                javascript 
-                ```
-
-            === "Test"
-                ``` javascript
-                javascript 
-                ```
-
             === "Float"
                 ``` javascript
-                javascript 
-                ```
-
-            === "Double"
-                ``` javascript
-                javascript 
+                // [floating-point_literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Grammar_and_types#floating-point_literals)
                 ```

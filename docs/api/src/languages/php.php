@@ -14,10 +14,11 @@ class Php extends Language
             foreach ($this->code as $key => $code) {
                 $filePath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . dirname($code['filename']);
                 !is_dir($filePath) && !mkdir($filePath, 0755, true);
-                file_put_contents($filePath . DIRECTORY_SEPARATOR . $code['filename'], $code['content']);
-                $this->files[] = $filePath;
+                $file = $filePath . DIRECTORY_SEPARATOR . $code['filename'];
+                file_put_contents($file, $code['content']);
+                $this->files[] = $file;
                 if ($key == 0) {
-                    $executeFile = $filePath . DIRECTORY_SEPARATOR . $code['filename'];
+                    $executeFile = $file;
                 }
             }
             $this->cmd = $this->executor . ' ' . $executeFile . ' 2>&1';

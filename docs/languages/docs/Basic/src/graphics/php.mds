@@ -1,0 +1,12 @@
+
+        === "Basic"
+            {% include "Basic/src/graphics/php/basic.mds" %}
+
+        === "Advanced"
+            {% include "Basic/src/graphics/php/advanced.mds" %}
+
+        === "Layout"
+            {% include "Basic/src/graphics/php/layout.mds" %}
+
+        === "Event"
+            {% include "Basic/src/graphics/php/event.mds" %}

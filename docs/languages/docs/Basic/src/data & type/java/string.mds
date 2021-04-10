@@ -1,15 +1,180 @@
 
             === "Char"
                 ``` java
-                java 
-                ```
+                // 1. java -d . Test.java 编译
+                // 2. jar cvf custom.jar package 打包
+                // 3. java -classpath custom.jar package.Test 运行
+                // javap java.lang.StringBuffer     list all methods from class
+                // jar xvf custom.jar 解压jar包
 
+                // javac -sourcepath . main/Main.java 根据入口文件编译
+                import java.nio.charset.Charset;
+
+
+                public class Test {
+                    public static void main(String[] args) {
+                        System.out.println(Charset.defaultCharset());
+                        System.out.println(System.getProperty("file.encoding"));
+
+                        int decimal = 65;
+                        int octal = 0101;
+                        int hexadecimal = 0x41;
+                        int binary = 0b1000001;
+
+                        int[] numbers = {decimal, octal, hexadecimal, binary};
+                        // [Character.toString](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/lang/Character.html#toString())
+                        // Generate a single-byte string from a number
+                        for(int i : numbers){
+                            System.out.println((char)i + " = > " + (char)i + " = > " + String.valueOf(i));
+                        }
+
+                        // Convert the first byte of a string to a value between 0 and 255
+                        System.out.println((int)'A' + " => " + Integer.valueOf('A'));
+
+                        // Building a UTF-16 string from individual bytes
+                        char[] bytes = {55357, 56344};
+                        System.out.println(new String(bytes));
+
+                        // [String.charAt](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/lang/String.html#charAt(int))
+                        // Examining the individual bytes of a UTF-16 string
+                        String str = "🐘";
+                        for(int pos=0; pos < str.length(); pos++){
+                            int byteCode = str.charAt(pos);
+                            System.out.println("Byte " + pos + " of " + str + " has value => " + byteCode);
+                        }
+                        
+                        // A chinese character 
+                        System.out.println("中".length());
+
+                        str = "中";
+                        for(int pos=0; pos < str.length(); pos++){
+                            int byteCode = str.charAt(pos);
+                            // [Integer.toBinaryString](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/lang/Integer.html#toBinaryString(int))
+                            // Convert Decimal to Binary Using Integer.toBinaryString
+                            System.out.printf("Byte %d of %s has value %d => %s \n", pos, str, byteCode, Integer.toBinaryString(byteCode));
+                        }
+
+                        System.out.println("");
+
+                        try{
+                            byte[] b16 = "🐘".getBytes("UTF-16");
+                            for(int pos=0; pos < b16.length; pos++){
+                                int byteCode = b16[pos] & 0xff;
+                                System.out.printf("Byte %d of %s has value %d => %s \n", pos, "🐘", byteCode, Integer.toBinaryString(byteCode));
+                            }
+                        }
+                        catch(Exception e){
+                            //Handle exception here, most of the time you will just log it.
+                        }
+                        
+                    }
+                }                    
+                ```
+            
             === "String"
                 ``` java
-                java 
-                ```
+                public class Test {
+                    // [datatypes](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html)
 
-            === "Test"
+                    // [data strings](https://docs.oracle.com/javase/tutorial/java/data/strings.html)
+
+                    // [String](https://docs.oracle.com/javase/8/docs/api/java/lang/String.html)
+
+                    public static void main(String[] args){
+
+                        String greeting = "Hello world!";
+                        System.out.println(greeting);
+
+                        char[] helloArray = { 'h', 'e', 'l', 'l', 'o', '.' };
+                        String helloString = new String(helloArray);
+                        System.out.println(helloString);
+
+                        System.out.printf("Hello %s!%n", "World");
+
+                        String str = "Chinese";
+                        // 返回某位置的字符
+                        System.out.println("The first letter of " + str + " is '" + str.charAt(1) + "'");
+                        // 连接某个字符串，返回连接后的结果， 效果和+类似
+                        System.out.println( str + " conccat china " + "is '" + str.concat(" China") + "'");
+                        // 判断字符串是否以某串结尾
+                        System.out.println(str + " if end with 'se' => " + str.endsWith("se"));
+                        // 判断字符串是否以某串开头
+                        System.out.println(str + " if start with 'ch' => " + str.startsWith("ch"));
+                        // 判断字符串内容是否相等
+                        System.out.println(str + " is equals 'chinese' => " + str.equals("chinese"));
+                        // 判断字符串内容是否相等，不区分大小写
+                        System.out.println(str + " is equals 'chinese' ingnore case => " + str.equalsIgnoreCase("chinese"));
+                        // 根据默认字符集转换成字节数组
+                        for(Byte b : str.getBytes()){
+                            System.out.print(b + " ");
+                        }
+                        System.out.println();
+                        // 转换为字符数组
+                        for(char c : str.toCharArray()){
+                            System.out.print(c + " ");
+                        }
+                        System.out.println();
+                        // 返回字符串在串中的位置                        
+                        System.out.println("The letter 'i' first postion in "+ str + " "+ str.indexOf('i'));                        
+                        System.out.println("The letter 'es' first postion in "+ str + " "+ str.indexOf("es"));
+                        // 返回字符串的长度
+                        System.out.println("The length of "+ str + " is " + str.length());
+                        // 替换字符串
+                        System.out.println("Replace the letter 'e' with 'E' in "+ str+ " "+ str.replace("e", "E"));
+                        // 截取某段字符串
+                        System.out.println("Get letter from postion 2 to 5 from "+ str + " is '" + str.substring(1, 4)+ "'");
+                        // 全部大写
+                        System.out.println("Convert to uppercase => " + str.toUpperCase());
+                        // 全部小写
+                        System.out.println("Convert to lowercase => " + str.toLowerCase());
+                        // 去掉两边的空格
+                        String strWithWhitespace = " some letter with whitespace.    ";
+                        System.out.println("Remove both side whitespace from str: "+ strWithWhitespace.trim());
+
+                        // 将各种类型转换为字符串
+                        System.out.println(String.valueOf(true));
+                        System.out.println(String.valueOf(1));
+                        System.out.println(String.valueOf(1.2));
+                        System.out.println(String.valueOf('a'));
+                        System.out.println(String.valueOf("false"));
+                    }
+                }
+                ```
+            
+            === "StringBuffer"
                 ``` java
-                java 
+                public class StringBufferTest{
+                    public static void main(String[] args){
+                        // 实例化一个StringBuffer
+                        StringBuffer sb = new StringBuffer("Hello world!");
+                        System.out.println("The content of sb is '" + sb + "'");
+                        // 在字符串末尾添加各种类型
+                        sb.append(" China ");
+                        System.out.println("After append 'china' the content of sb is '" + sb + "'");
+                        sb.append(Math.PI);
+                        System.out.println("After append 'PI' the content of sb is '" + sb + "'");
+                        // 删除某一段字符串
+                        sb.delete(2, 5);
+                        System.out.println("After deleting string from position 2 to 5 is '" + sb + "'");
+                        // 删除字符
+                        sb.deleteCharAt(1);
+                        System.out.println("After deleting char from position 1 is '" + sb + "'");
+                        // 返回某位置的字符
+                        System.out.println("Get char from sb at position 0 is " + sb.charAt(0));
+                        // 替换某个位置的字符
+                        sb.setCharAt(0, 'C');
+                        System.out.println("After replacing cahr at postion 0 is " + sb);
+                        // 在某个位置添加各个类型
+                        sb.insert(2, "🐘");
+                        System.out.println("After insert 🐘 the content is '" + sb + "'");
+                        // 转换为字符串
+                        System.out.println("The content of sb is '"+ sb.toString() + "'");
+                        // 包含的字符数
+                        System.out.println("The length of sb is '" +sb.length() + "'");
+                        // 字符串反转
+                        sb.reverse();
+                        System.out.println("After reverse sb is '"+ sb +"'");
+
+                    }
+                }
                 ```

@@ -1,6 +1,0 @@
-        
-        === "File"
-            {% include "Basic/src/file and directories/php/file.mds" %}    
-
-        === "Directory"
-            {% include "Basic/src/file and directories/php/directory.mds" %}  

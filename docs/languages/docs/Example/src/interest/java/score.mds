@@ -1,0 +1,112 @@
+
+            === "Greatest"
+                ``` java
+                public class GreatestCommonDivisor{
+                    public static void main(String[] args){
+                        int t ;
+                        t = gcd(12, 8);
+                        System.out.println(t);
+                    }
+
+                    public static int gcd(int a, int b){
+                        int temp;
+                        if(a < b){
+                            temp = a;
+                            a = b;
+                            b = temp;
+                        }
+
+                        while(b != 0){
+                            temp = a % b;
+                            a = b;
+                            b = temp;
+                        }
+                        return a;
+                    }
+                }
+                ```
+            
+            === "Lowest"
+                ``` java
+                public class LowestCommonDivisor {                    
+                    public static void main(String[] args){
+                        int low = lcd(new int[]{8, 6, 9});
+                        System.out.println(low);
+                    }
+
+                    public static int minIndex(int[] num){
+                        int min, index;
+                        index = 0;
+                        min = num[0];
+                        for(int i = 1; i <3; i++){
+                            if(num[i] < min){
+                                min = num[i];
+                                index = i;
+                            }
+                        }
+                        return index;
+                    }
+
+                    public static boolean allSame(int[] num){
+                        boolean flag = false;
+                        int count = 0;
+                        for(int i = 0; i < 2; i++){
+                            if(num[i] == num[i+1]){
+                                count++;
+                            }
+                        }
+
+                        if(count == 2){
+                            flag = true;
+                        }
+                        return flag;
+                    }
+
+                    public static int lcd(int[] num){
+                        int t1;
+                        int t2;
+                        int t3;
+                        int index;
+
+                        t1 = num[0];
+                        t2 = num[1];
+                        t3 = num[2];
+
+                        while(!allSame(num)){
+                            for(int i=0; i <3; i++){
+                                System.out.printf("%2d ", num[i]);
+                            }
+                            System.out.println();
+
+                            index = minIndex(num);
+
+                            switch(index){
+                                case 0:
+                                    num[0] = num[0] + t1;
+                                    break;
+                                case 1:
+                                    num[1] = num[1] + t2;
+                                    break;
+                                case 2:
+                                    num[2] = num[2]  + t3;
+                                    break;
+                            }                            
+                        }
+
+                        for(int i=0; i <3; i++){
+                            System.out.printf("%2d ", num[i]);
+                        }
+                        System.out.println();
+                        return num[0];
+                    }
+                }
+                ```
+            
+            === "Compare"
+                ``` java
+                public class Compare{
+                    public static void main(String[] args){
+                        
+                    }
+                }
+                ```

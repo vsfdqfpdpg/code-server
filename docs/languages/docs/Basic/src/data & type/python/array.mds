@@ -1,30 +1,38 @@
 
-            === "Char"
+            === "List"
                 ``` python
-                python 
+                ## [Standard Generic Collections](https://docs.python.org/3/library/stdtypes.html#standard-generic-collections)
+
+                ## [Sequence Types — list, tuple, range](https://docs.python.org/3/library/stdtypes.html#sequence-types-list-tuple-range)
+
+                for i in range(3):
+                    print(i)
+                print(list(range(10)))
+                print(list(range(0, -10, -1)))
+                
                 ```
 
-            === "String"
+            === "Set"
                 ``` python
-                python 
+                ## [Set Types — set, frozenset](https://docs.python.org/3/library/stdtypes.html#set-types-set-frozenset)
                 ```
-
-            === "Test"
+            
+            === "Dict"
                 ``` python
-                python 
-                ```
+                ## [Mapping Types — dict](https://docs.python.org/3/library/stdtypes.html#mapping-types-dict)
 
-            === "Iterator"
-                ``` python
-                python 
-                ```
+                a = dict(one=1, two=2, three=3)
+                b = {'one': 1, 'two': 2, 'three': 3}
+                c = dict(zip(['one', 'two', 'three'], [1, 2, 3]))
+                d = dict([('two', 2), ('one', 1), ('three', 3)])
+                e = dict({'three': 3, 'one': 1, 'two': 2})
+                f = dict({'one': 1, 'three': 3}, two=2)
+                print(a == b == c == d == e == f)
+                print(a)
+                print(list(a))
+                print(a.keys())
+                for i in a.keys():
+                    print(i)
+                print(a.values())
 
-            === "Sort"
-                ``` python
-                python 
-                ```
-
-            === "Manipulate"
-                ``` python
-                python 
                 ```

@@ -1,26 +1,15 @@
 
-            === "Char"
+            === "Integer"
                 ``` php
                 <?php
-                    echo "HongKong"; 
-                ```
+                    // [integer](https://www.php.net/manual/en/language.types.integer.php)
 
-            === "String"
-                ``` php
-                php 
-                ```
+                    $decimal =  123456789123456789;       // (decimal, base 10)
+                    $octal   =  0777777777777;           // (octal, base 8)
+                    $hex     =  0x123456789ABCDEF;        // (hexadecimal, "hex" or base 16)
+                    $binary =  0b11101001010101010101;   // (binary, base 2)
 
-            === "Test"
-                ``` php
-                php 
-                ```
-
-            === "Definition"
-                ``` php
-                php 
-                ```
-
-            === "Convert"
-                ``` php
-                php 
-                ```
+                    foreach([$decimal,$octal, $hex, $binary] as $value){
+                        echo $value.PHP_EOL;
+                    }
+                ``` 

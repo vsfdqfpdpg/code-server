@@ -1,0 +1,9 @@
+
+        === "Operator"
+            {% include "Basic/src/control & flow/go/operator.mds" %}
+
+        === "Control"
+            {% include "Basic/src/control & flow/go/control.mds" %}
+
+        === "Loop"
+            {% include "Basic/src/control & flow/go/loop.mds" %}

@@ -1,0 +1,6 @@
+
+        === "File"
+            {% include "Basic/src/file & directory/php/file.mds" %}
+
+        === "Directory"
+            {% include "Basic/src/file & directory/php/directory.mds" %}

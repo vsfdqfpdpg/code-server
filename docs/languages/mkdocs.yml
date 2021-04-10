@@ -41,3 +41,6 @@ extra_javascript:
 extra_css:
   - //unpkg.com/@highlightjs/cdn-assets@10.5.0/styles/vs.min.css
   - override/css/main.css
+
+extra:
+  unit_price: 500.00

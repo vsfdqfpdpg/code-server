@@ -5,7 +5,7 @@ namespace Languages;
 class Python extends Language
 {
     protected $extension = '.py';
-    private $executor = "python3 -u";
+    private $executor = "PYTHONIOENCODING=utf-8 python3 -u";
 
     public function run()
     {

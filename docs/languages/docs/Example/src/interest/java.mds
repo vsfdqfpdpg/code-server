@@ -1,3 +1,18 @@
 
         === "Graph"
             {% include "Example/src/interest/java/graph.mds" %}
+        
+        === "Math"
+            {% include "Example/src/interest/java/math.mds" %}
+
+        === "Integer"
+            {% include "Example/src/interest/java/integer.mds" %}
+        
+        === "Prime"
+            {% include "Example/src/interest/java/prime.mds" %}
+        
+        === "Equation"
+            {% include "Example/src/interest/java/equation.mds" %}
+
+        === "Score"
+            {% include "Example/src/interest/java/score.mds" %}

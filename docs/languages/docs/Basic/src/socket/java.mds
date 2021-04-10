@@ -1,0 +1,9 @@
+
+        === "Tcp"
+            {% include "Basic/src/socket/java/tcp.mds" %}
+
+        === "Udp"
+            {% include "Basic/src/socket/java/udp.mds" %}
+
+        === "Chat"
+            {% include "Basic/src/socket/java/chat.mds" %}

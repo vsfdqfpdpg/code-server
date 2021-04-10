@@ -1,30 +1,12 @@
 
-            === "Char"
+            === "Array"
                 ``` go
-                go 
-                ```
-
-            === "String"
-                ``` go
-                go 
-                ```
-
-            === "Test"
-                ``` go
-                go 
-                ```
-
-            === "Iterator"
-                ``` go
-                go 
-                ```
-
-            === "Sort"
-                ``` go
-                go 
-                ```
-
-            === "Manipulate"
-                ``` go
-                go 
+                package main
+                import "fmt"
+                func main() {
+                    coral := []string{"blue coral", "staghorn coral", "pillar coral"}
+                    for i,s := range coral {
+                        fmt.Println(i,s)
+                    }
+                }
                 ```

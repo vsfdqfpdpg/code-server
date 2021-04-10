@@ -1,25 +1,67 @@
 
-            === "Char"
+            === "Numeric"
                 ``` java
-                java 
+                public class Test {  
+                    public static void main(String args[]) { 
+
+                        long decimal = 123456789123456789L;
+                        long octal = 0777777777777L;
+                        long hex = 0x123456789ABCDEFL;
+                        long binary = 0b11101001010101010101L;
+                    
+                        long[] numbers = {decimal,octal, hex, binary};
+
+                        for(long i : numbers){
+                            System.out.println(i);
+                        }
+                    } 
+                }
                 ```
 
-            === "String"
+            === "Math"
                 ``` java
-                java 
+                public class MathTest{
+                    public static void main(String[] args){
+                        // 自然对数e
+                        System.out.println("E => " + Math.E);
+                        // 圆周率PI
+                        System.out.println("PI => " + Math.PI);
+                        // 计算绝对值
+                        System.out.println("abs(-12) => " + Math.abs(-12));
+                        // 向上取整
+                        System.out.println("ceil(-2.3) => " + Math.ceil(-2.3));
+                        // 向下取整
+                        System.out.println("floor(2.3) => " + Math.floor(2.3));
+                        // 获取最大值
+                        System.out.println("max(1, 2) => " + Math.max(1, 2));
+                        // 获取最小值
+                        System.out.println("min(1, 2) => " + Math.min(1, 2));
+                        // 开平方
+                        System.out.println("sqrt(16) => " + Math.sqrt(16));
+
+                        // 求一个弧度的正弦
+                        System.out.println("sin(PI) => " + Math.sin(Math.PI));
+                        // 求一个弧度的余弦
+                        System.out.println("cos(PI) => " + Math.cos(Math.PI));
+                        // 求一个弧度的正切
+                        System.out.println("tan(PI) => " + Math.tan(Math.PI));
+
+                        // 角度转弧度
+                        System.out.println("弧度PI对应的角度是: " + Math.toDegrees(Math.PI));
+                        // 弧度转角度
+                        System.out.println("角度180度对应的弧度是: " + Math.toRadians(180));
+                    }
+                }
                 ```
 
-            === "Test"
+            === "Rndom"
                 ``` java
-                java 
-                ```
-
-            === "Definition"
-                ``` java
-                java 
-                ```
-
-            === "Convert"
-                ``` java
-                java 
+                public class RandomTest{
+                    public static void main(String[] args){
+                        // 产生0-10的随机整数
+                        System.out.println((int)(Math.random() * 10));
+                        // 产生10-20的随机整数
+                        System.out.println((int)(Math.random() * 10) + 10);
+                    }
+                }
                 ```

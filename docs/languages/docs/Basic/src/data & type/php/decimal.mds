@@ -1,26 +1,29 @@
 
-            === "Char"
+            ===  "Float"
                 ``` php
                 <?php
-                    echo "HongKong"; 
-                ```
+                    // [float](https://www.php.net/manual/en/language.types.float.php)
+                    $a = 1.234; 
+                    $b = 1.2e3; 
+                    $c = 7E-10;
+                    $d = 1_234.567; // as of PHP 7.4.0
+                    echo $a.PHP_EOL;
+                    echo $b.PHP_EOL;
+                    echo $c.PHP_EOL;
+                    echo $d.PHP_EOL;
 
-            === "String"
-                ``` php
-                php 
-                ```
+                    // check precision
+                    $a = 1.23456789;
+                    $b = 1.23456780;
+                    $epsilon = 0.00001;
 
-            === "Test"
-                ``` php
-                php 
-                ```
+                    if(abs($a-$b) < $epsilon) {
+                        echo "true".PHP_EOL;
+                    }
 
-            === "Float"
-                ``` php
-                php 
-                ```
-
-            === "Double"
-                ``` php
-                php 
+                    $x = 8 - 6.4;  // which is equal to 1.6 which is not really 1.6, but 1.599999.. and var_dump shows it to you as being 1.6
+                    $y = 1.6;
+                    var_dump(round($x, 2) == round($y, 2)); // this is true
+                    var_dump($x == $y); // is not true
+                    
                 ```

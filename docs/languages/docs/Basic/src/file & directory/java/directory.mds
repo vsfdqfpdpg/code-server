@@ -1,0 +1,18 @@
+
+            === "Directory"
+                ``` java
+                import java.io.File;
+
+                public class DirectoryTest{
+                    public static void main(String[] args){
+                        File file = new File(".");
+                        if(file.exists() && file.isDirectory()){
+                            for(File f: file.listFiles()){
+                                System.out.println(f.getAbsolutePath());
+                            }
+                        }else{
+                            System.out.println("file is not a directory.");
+                        }
+                    }
+                } 
+                ```

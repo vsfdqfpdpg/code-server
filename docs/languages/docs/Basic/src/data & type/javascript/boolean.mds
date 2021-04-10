@@ -1,5 +1,37 @@
 
             === "Boolean"
                 ``` javascript
-                javascript 
+                // [boolean_type](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#boolean_type)
+
+                // [Global_Objects/Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)
+
+                let x = new Boolean(false);
+                if (x) {
+                    // Any object of which the value is not undefined or null, including a Boolean object whose value is false,
+                    // evaluates to true when passed to a conditional statement.
+                    console.log(x);
+                    console.log("this code is executed");
+                }
+
+                let y = false;
+                console.log(y);
+                if (y) {
+                    console.log("this code is not executed");
+                }
+
+                let values = [
+                    new Boolean(false),
+                    new Boolean(""),
+                    new Boolean(null),
+                    new Boolean(NaN),
+                    new Boolean(0),
+                    new Boolean(-0),
+                    new Boolean(undefined),
+                    new Boolean(-1),
+                    new Boolean([]),
+                    new Boolean('false')
+                ];
+                for(i of values){
+                    console.log(i);
+                }
                 ```

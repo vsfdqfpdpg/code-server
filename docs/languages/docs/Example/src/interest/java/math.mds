@@ -1,0 +1,229 @@
+   
+            === "Black Friday"
+                ``` java
+                import java.text.SimpleDateFormat;
+                import java.util.Calendar;
+                import java.util.GregorianCalendar;
+
+                public class BlackFriday {
+                    public static void main(String[] args) {
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd E");
+                        Calendar cal = Calendar.getInstance();
+                        int year = 1990;
+                        int k = 0;
+                        while(k < 33){
+                            for(int i=0; i < 12; i++){
+                                cal.set(year, i, 13);
+                                if(5 == cal.get(Calendar.DAY_OF_WEEK) -1){
+                                    System.out.println(sdf.format(cal.getTime()));
+                                }
+                            }
+                            k++;
+                            year++;
+                        }
+                    }
+                }
+                ```
+
+            === "Tax"
+                ``` java 
+                public class PersonalIncomeTax {
+                    public static void main(String[] args){
+                        int salary[] = {0, 500, 2000, 5000, 20000, 40000, 60000, 80000, 100000};
+                        int rate[] = {5, 10, 15, 20, 25, 30, 40, 45};
+
+                        int tax = 0;
+                        int index = 0;
+                        int base = 10000 - 3500;
+                        for(int i=0; i< salary.length; i++){
+                            if(base < salary[i]){
+                                index = i;
+                                break;
+                            }
+                        }
+
+                        System.out.println("Level: " + index);
+                        for(int i =0; i < index -1; i++){
+                            tax = tax + (int) ((salary[i+1] - salary[i]) * rate[i] * 0.01);
+                        }
+                        System.out.println(tax);
+
+                        tax = tax + (int)((base - salary[index -1]) * rate[index -1] * 0.01);
+                        System.out.println(tax);
+                    }
+                }
+                ```
+            
+            === "Save Money"
+                ``` java
+                public class SaveMoney{
+                    public static final double MONEYRATE = 0.0171;
+                    public static void main(String[] args){
+                        double money[] = new double[48];
+                        money[47] = 1000;
+                        System.out.printf("48 月剩余存款为: %.2f\n", money[47]);
+                        for(int i=47; i > 0; i--){
+                            money[i -1] = 1000 + money[i] / (1 + MONEYRATE/12);
+                            System.out.printf("%d 月剩余存款为: %.2f\n",i, money[i-1]);
+                        }
+                    }
+                }
+                ```
+
+            === "Score"
+                ``` java
+                public class Score{
+                    public static void main(String[] args){
+                        int max = 0;
+                        int min = 100;
+                        int sum = 0;
+                        int scores[] = {80, 70, 60, 90, 80, 60, 70, 50, 90, 70};
+                        for(int i =0; i < scores.length; i ++){
+                            sum += scores[i];
+                            if(scores[i] > max) max = scores[i];
+                            if(scores[i] < min) min = scores[i];
+                        }
+                        System.out.printf("Max: %d, Min: %d\n", max, min);
+                        System.out.printf("Total %d , average: %d\n",sum, (sum - max -min)/8);
+                    }
+                }
+                ```
+
+            === "Hit and run"
+                ``` java
+                public class HitAndRun{
+                    public static void main(String[] args){
+                        int t;
+                        for(int i =0; i < 10; i++){
+                            for(int j = 0; j < 10; j++){
+                                if(i != j){
+                                    t = i *1000 + i * 100 + j *10 + j;
+                                    for(int k=30; k < 100; k++){
+                                        if(k == Math.sqrt(t)){
+                                            System.out.println("Card number: " + k * k);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                ```
+            
+            === "Candy"
+                ``` java
+                import java.util.Arrays;
+
+                public class Candy{
+                    public static void main(String[] args){
+                        int candy[] = {10, 2, 8, 22, 16, 4, 10, 6, 14, 20};
+                        int times = 0;
+                        while(isSameLambala(candy) == false){
+                            int last = candy[candy.length-1];
+                            for(int i = candy.length -1 ; i >0;i--){
+                                candy[i] = candy[i] /2 + candy[i-1]/2;
+                            }
+                            candy[0] = candy[0] /2 + last /2;
+                            times++;
+                            System.out.printf("This is %d time and result is ", times);
+                            show(candy);
+
+                            for(int i=0; i < candy.length; i++){
+                                if(candy[i] % 2 !=0 ){
+                                    candy[i] += 1;
+                                }
+                            }
+                        }
+
+                        System.out.printf("The number of total times is %d \n", times);
+                        System.out.printf("Everyone has %d candy", candy[0]);
+                    }
+
+                    private static boolean isSameLambala(int[] arr){
+                        return Arrays.stream(arr).allMatch(s -> s == arr[0]);
+                    }
+
+                    private static boolean isSame(int[] arr){
+                        int n =0;
+                        boolean same = false;
+                        for(int i =0; i < arr.length -1; i++){
+                            if(arr[i] == arr[i+1]){
+                                n++;
+                            }
+                            if(n == arr.length-1){
+                                same = true;
+                            }
+                        }
+                        return same;
+                    }
+
+                    private static void show(int[] arr){
+                        for(int i=0; i < arr.length;i++){
+                            System.out.printf("%2d ", arr[i]);
+                        }
+
+                        System.out.println();
+                    }
+                }
+                ```
+            
+            === "Seven "
+                ``` java
+                public class SevenBuketOfFish{
+                    public static void main(String[] args){
+                        int[][] fishman = new int[3][3];
+                        for(int i=1; i <=3; i++){
+                            fishman[0][0] = i;
+                            fishman[0][1] = (int) ((3.5 - i) / 0.5);
+                            fishman[0][2] = 7 - fishman[0][1] - fishman[0][0];
+
+                            for(int j =1; j<=3; j++){
+                                if(j < i) continue;
+                                fishman[1][0] = j;
+                                fishman[1][1] = (int) ((3.5 - j) / 0.5);
+                                fishman[1][2] = 7 - fishman[1][1] - fishman[1][0];
+
+                                for(int n =1; n<=3; n++){
+                                    if(n < j || i +j +n !=7) continue;
+                                    fishman[2][0] = n;
+                                    fishman[2][1] = (int) ((3.5 - n) / 0.5);
+                                    fishman[2][2] = 7 - fishman[2][1] - fishman[2][0];
+
+                                    for(int m=0; m < 3; m++){
+                                        System.out.printf("%d: %d %d %d\n",m, fishman[m][0],fishman[m][1],fishman[m][2]);
+                                    }
+                                    System.out.println();
+                                    
+                                }
+                            }
+                        }
+                    }                
+                }
+                ```
+
+            === "Polynomial"
+                ``` java
+                import java.text.DecimalFormat;
+                public class Polynomial{
+                    public static void main(String[] args){
+                        double result;
+                        DecimalFormat df = new DecimalFormat("0.0000000E000");
+                        double[] coefficient = {-15.0, -7.0, 7.0, 2.0, -3.0, 7.0, 3.0};
+                        double[] x = {-2.0, -0.5, 1.0, 2.0, 3.7, 4.0};
+                        for(int i=0; i < x.length; i++){
+                            result = polynomial(coefficient, 7, x[i]);
+                            System.out.println("x=" + x[i]+ " p(x) "+ df.format(result));
+                        }
+
+                    }
+
+                    public static double polynomial(double[] coefficient, int n, double x){
+                        double result;
+                        result = coefficient[n-1];
+                        for(int i= n-2; i >=0; i--){
+                            result = result * x + coefficient[i];
+                        }
+                        return result;
+                    }
+                }
+                ```

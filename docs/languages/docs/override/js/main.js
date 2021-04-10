@@ -79,7 +79,7 @@ const actionHandler = (e, item, callback) => {
   let loading = document.createElement('div');
   loading.classList = 'lds-dual-ring';
   let result = e.target.closest('pre').querySelector('.md-result');
-  result.classList = 'md-result middle';
+  result.classList = 'md-result';
   result.innerHTML = '';
 
   let languageType = 'unknown type';
@@ -115,10 +115,9 @@ const actionHandler = (e, item, callback) => {
   callback(JSON.stringify({ type: languageType, code: codeContext, action: actionType }), result);
 };
 
-const runApi = () => {
+const runDownload = () => {
   let codes = document.querySelectorAll('pre code');
   Array.from(codes)
-    .filter((item) => !item.dataset.play)
     .forEach((item, key) => {
       let resultDiv = document.createElement('div');
       resultDiv.classList = 'md-result middle';
@@ -134,7 +133,7 @@ const runApi = () => {
       item.parentElement.insertBefore(download, item);
       download.addEventListener('click', (e) => {
         actionHandler(e, item, function (body, result) {
-          fetch('http://localhost:5000', {
+          fetch(window.location.protocol + "//" + window.location.hostname + ':5000', {
             method: 'post',
             headers: {
               'Content-Type': 'application/json;charset=UTF-8',
@@ -153,17 +152,28 @@ const runApi = () => {
             });
         });
       });
+    });
+};
+
+const runApi = () => {
+  let codes = document.querySelectorAll('pre code');
+  Array.from(codes)
+    .filter((item) => !item.dataset.play)
+    .forEach((item, key) => {
+      let resultDiv = document.createElement('div');
+      resultDiv.classList = 'md-result';
+      item.parentElement.insertBefore(resultDiv, item.nextSibling);
 
       let button = document.createElement('span');
       button.classList = 'twemoji md-play';
       button.title = 'Run';
       button.dataset.type = 'run';
       button.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8 5.14v14l11-7-11-7z"></path></svg>';
-      button.dataset.apiTarget = `#__code_${key} > code`;
+      button.dataset.apiTarget = `#${item.parentElement.id} > code`;
       item.parentElement.insertBefore(button, item);
       button.addEventListener('click', (e) => {
         actionHandler(e, item, function (body, result) {
-          fetch('http://localhost:5000', {
+          fetch(window.location.protocol + "//" + window.location.hostname + ':5000', {
             method: 'post',
             headers: {
               'Content-Type': 'application/json;charset=UTF-8',
@@ -178,7 +188,18 @@ const runApi = () => {
                 img.src = data.msg;
                 result.innerHTML = '';
                 result.appendChild(img);
-              } else {
+              } else if (data.mimeType && data.mimeType == "application/json") {
+                fetch(data.msg).then(res => res.json()).then(data => {
+                  result.innerHTML = JSON.stringify(data, null, 2);
+                })
+              } else if (data.mimeType && data.mimeType == "application/x-empty") {
+                result.innerHTML = "";
+              } else if (data.mimeType && data.mimeType == "text/html") {
+                fetch(data.msg).then(res => res.text()).then(data => {
+                  result.innerHTML = data;
+                })
+              }
+              else {
                 result.innerHTML = data.msg;
               }
             })
@@ -188,8 +209,10 @@ const runApi = () => {
         });
       });
     });
-};
+}
+
 window.onload = function () {
   runApi();
+  runDownload();
   copyInlineCode();
 };

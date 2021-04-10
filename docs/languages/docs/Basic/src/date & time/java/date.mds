@@ -1,5 +1,26 @@
 
             === "Date"
                 ``` java
-                      java 
+                import java.util.Date;
+                import java.util.Calendar;
+                import java.text.DateFormat;
+                import java.text.SimpleDateFormat;
+
+                public class DateTest{
+                    public static void main(String[] args){
+                        System.out.println("当前时间：" + new Date());
+                        Calendar cl = Calendar.getInstance();
+                        System.out.println("年: " + cl.get(Calendar.YEAR));
+                        System.out.println("月: " + cl.get(Calendar.MONTH));
+                        System.out.println("日: " + cl.get(Calendar.DAY_OF_MONTH));
+                        System.out.println("星期: " + cl.get(Calendar.DAY_OF_WEEK));
+                        System.out.println("时: " + cl.get(Calendar.HOUR));
+                        System.out.println("24小时: " + cl.get(Calendar.HOUR_OF_DAY));
+                        System.out.println("分: " + cl.get(Calendar.MINUTE));
+                        System.out.println("秒: " + cl.get(Calendar.SECOND));
+
+                        DateFormat df = new SimpleDateFormat("yyyy年MM月dd日 hh:mm:ss");
+                        System.out.println(df.format(new Date()));
+                    }
+                }
                 ```

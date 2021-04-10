@@ -1,11 +1,11 @@
 <?php
 header('Access-Control-Allow-Origin: *');
 
-header('Access-Control-Allow-Methods: GET, POST');
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 
 header("Access-Control-Allow-Headers: *");
 
-error_reporting(E_ALL);
+// error_reporting(E_ALL);
 
 require_once "./src/autoload.php";
 

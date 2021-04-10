@@ -147,28 +147,39 @@
 
             === "Matrix"
                 ``` java
+                
                 public class Matrix{
+                    static enum Direction {
+                        Right, Down, Left, Up;            
+                    }
                     public static void main(String[] args) {
                         int length = 8;
                         int value = 1;
                         int row = 0;
                         int col = 0;
                         int[][] arr = new int[length][length];
+                        Direction lastDirection = Direction.Right;
 
                         for(int i =0; i< length * length; i++) {
-                                arr[row][col] = value;
-                                if(col < length -1 && row <= col){
+                            arr[row][col] = value;
+                            lastDirection = findLastDirection(row, col, length, arr, lastDirection);
+                            switch(lastDirection){
+                                case Right:
                                     col++;
-                                }else if(col == length -1  && row <length-1){
+                                    break;
+                                case Down:
                                     row++;
-                                }
-                                else if(col > 0 && row >= col){
+                                    break;
+                                case Left:
                                     col--;
-                                }else if(col == 0 && row -1 > 0){
+                                    break;
+                                case Up:
                                     row--;
-                                }
-
-                                value++;
+                                    break;
+                                default:
+                                    System.out.println("Error");
+                            }         
+                            value++;
                         }
 
                         for(int i=0; i< length; i++){
@@ -179,5 +190,25 @@
                         }
 
                     }
+
+                    private static Direction findLastDirection(int row, int col, int length, int[][] arr, Direction direction){
+                        switch(direction){
+                            case Right:                      
+                                if(col == length -1 || arr[row][col+1] !=0) direction = Direction.Down;
+                                break;                            
+                            case Down: 
+                                if(row == length -1 || arr[row+1][col] !=0) direction = Direction.Left;
+                                break;                            
+                            case Left: 
+                                if(col == 0 || arr[row][col-1] !=0) direction = Direction.Up;
+                                break;                            
+                            case Up: 
+                                if(arr[row-1][col] != 0) direction = Direction.Right;
+                                break;
+                        }
+                        return direction;
+                    }
                 }
+
+                
                 ```

@@ -1,11 +1,11 @@
 
-            === "Null"
+            ===  "NULL"
                 ``` php
                 <?php
-                    echo null; 
-                ```
-
-            === "Not null"
-                ``` php
-                php 
+                    // [null](https://www.php.net/manual/en/language.types.null.php)
+                    $var = NULL;   
+                    var_dump($var);
+                    var_dump(is_null($var));
+                    var_dump(null == 0);
+                    var_dump(null === 0);
                 ```

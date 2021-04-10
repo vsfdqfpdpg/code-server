@@ -1,0 +1,6 @@
+
+        === "File"
+            {% include "Basic/src/file & directory/python/file.mds" %}
+
+        === "Directory"
+            {% include "Basic/src/file & directory/python/directory.mds" %}

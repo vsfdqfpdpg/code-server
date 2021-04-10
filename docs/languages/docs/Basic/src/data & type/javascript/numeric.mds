@@ -1,25 +1,18 @@
 
-            === "Char"
+            === "Numeric"
                 ``` javascript
-                javascript 
-                ```
+                // [number_type](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#number_type)
 
-            === "String"
-                ``` javascript
-                javascript 
-                ```
+                // [numeric_literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Grammar_and_types#numeric_literals)
 
-            === "Test"
-                ``` javascript
-                javascript 
-                ```
+                // [Global_Objects/Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)
 
-            === "Definition"
-                ``` javascript
-                javascript 
-                ```
+                let decimal =  123456789123456789;       // (decimal, base 10)
+                let octal   =  0o777777777777;           // (octal, base 8)
+                let hex     =  0x123456789ABCDEF;        // (hexadecimal, "hex" or base 16)
+                let binary  =  0b11101001010101010101;   // (binary, base 2)
 
-            === "Convert"
-                ``` javascript
-                javascript 
+                for(i of [decimal,octal,hex,binary]){
+                    console.log(i);
+                }
                 ```

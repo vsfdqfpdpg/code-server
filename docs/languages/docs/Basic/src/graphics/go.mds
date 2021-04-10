@@ -1,0 +1,12 @@
+
+        === "Basic"
+            {% include "Basic/src/graphics/go/basic.mds" %}
+
+        === "Advanced"
+            {% include "Basic/src/graphics/go/advanced.mds" %}
+
+        === "Layout"
+            {% include "Basic/src/graphics/go/layout.mds" %}
+
+        === "Event"
+            {% include "Basic/src/graphics/go/event.mds" %}

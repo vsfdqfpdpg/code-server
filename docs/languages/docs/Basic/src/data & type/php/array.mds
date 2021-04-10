@@ -1,31 +1,503 @@
 
-            === "Char"
-                ``` php
-                <?php
-                    echo "HongKong"; 
-                ```
+            * [Array Functions](https://www.php.net/manual/en/ref.array.php){: target=_blink }
+            * [array type](https://www.php.net/manual/en/language.types.array.php){: target=_blink }
+            ``` php
+            <?php
+                $array = $array = array(
+                    1    => "a",
+                    "1"  => "b",
+                    1.5  => "c",
+                    true => "d",
+                    100   => -100,
+                    -100  => 100,
+                    "multi" => array(
+                        "dimensional" => array(
+                            "array" => "foo"
+                        )
+                    )
+                );
+                print_r($array);
 
-            === "String"
-                ``` php
-                php 
-                ```
+                // Using the short array syntax
+                $array = [
+                    "foo" => "bar",
+                    "bar" => "foo",
+                ];
+                print_r($array);
 
-            === "Test"
-                ``` php
-                php 
-                ```
+                // Indexed arrays without key
+                $array = array("foo", "bar", "hello", "world");
+                print_r($array);
+            ``` 
 
-            === "Iterator"
-                ``` php
-                php 
-                ```
+            * each, list, reset, end, next, prev, current, key, count
+            ``` php
+            <?php
+                $links = [
+                    "https://github.com/vsfdqfpdpg",
+                     0,
+                    "https://www.youtube.com/channel/UCv9MXZ8cMh47mzBxFthTh8w"
+                ];
 
-            === "Sort"
-                ``` php
-                php 
-                ```
+                while($item = each($links)){
+                    list($key, $value) = $item;
+                    echo '$key => $value' . " => $key => $value ".PHP_EOL;
+                }
 
-            === "Manipulate"
-                ``` php
-                php 
-                ```
+                reset($links);
+
+                print_r(current($links));
+                echo PHP_EOL;
+
+                print_r(next($links));
+                echo PHP_EOL;
+
+                print_r(key($links));
+                echo PHP_EOL;
+
+                print_r(prev($links));
+                echo PHP_EOL;
+
+                end($links);
+
+                print_r(each($links));
+                echo PHP_EOL;
+
+                echo count($links).PHP_EOL;
+
+                list($first, $second) = [ "apple", "orange"];
+                echo '$first => $second' . " $first => $second ".PHP_EOL;
+            ```
+
+            * in_array, array_search, array_filter, array_key_exists, array_keys, array_values
+            * array_map, array_walk, array_walk_recursive
+            ``` php 
+            <?php 
+                $temp = [1, 2, 3, 4, "5"];
+                print_r(in_array(5, $temp, false));
+                echo PHP_EOL;
+
+                print_r(array_search("5", $temp));
+                echo PHP_EOL;
+
+                $fruits = ["pear" => 5, "apple"=> 3, "banana"=> 6];
+
+                $result = array_filter($fruits, function($v){
+                    return $v >= 5; 
+                });
+
+                print_r($result);
+                echo PHP_EOL;
+
+                echo array_key_exists("melon", $fruits) ? "true" : "false", PHP_EOL;
+                
+                print_r(array_keys($fruits, "3"));
+                echo PHP_EOL;
+
+                $keys = array_keys($fruits);
+                print_r($keys);
+                echo PHP_EOL;
+
+                $values = array_values($fruits);
+                print_r($values);
+                echo PHP_EOL;
+
+                echo '('. implode(",", $keys).') values (' . implode(",", $values).')'.PHP_EOL;
+
+                $result = array_map(function($v){
+                    return $v + 10;
+                }, $fruits);
+
+                print_r($result);
+                echo PHP_EOL;
+
+                $result = array_map(function($v){
+                    if($v > 3) {
+                        return $v;
+                    }
+                }, $fruits);
+
+                print_r($result);
+                echo PHP_EOL;
+
+                array_walk($fruits, function(&$v, $k, $amount){
+                    echo '$k => $v '. $k. ' => '. $v  .PHP_EOL;
+                    if($v <= 3){
+                        $v += $amount;
+                    }
+                }, 10);
+
+                print_r($fruits);
+                echo PHP_EOL;
+
+                $employees = [
+                    ["name" => "John", "salary" => 2000],
+                    ["name" => "Jane", "salary" => 3515],
+                    ["name" => "Michael", "salary" => 5650],
+                    ["name" => "Tom", "salary" => 1058]
+                ];
+                array_walk_recursive($employees, function(&$v, $k, $amount){
+                    if($k == "salary" && $v < 3000){
+                        $v += $amount;
+                    }
+                }, 500);
+
+                print_r($employees);
+            ```
+
+            * array_change_key_case, array_fill, array_flip, array_chunk, array_combine, range, array_splice, array_sum
+            ``` php 
+            <?php 
+                $input_array = array("FirSt" => 1, "SecOnd" => 4, "firSt" => 5);
+                print_r($input_array);
+                echo PHP_EOL;
+
+                print_r(array_change_key_case($input_array, CASE_UPPER));
+                echo PHP_EOL;
+
+                print_r(array_fill(30, 2, "https://github.com/vsfdqfpdpg"));
+                echo PHP_EOL;
+
+                print_r(array_flip($input_array));
+                echo PHP_EOL;
+
+                $temp = [ "apple" => 1, "pear" => 2, "banana" => 3, "orange"=> 4, "grape" => "5"];
+                print_r(array_chunk($temp, 2));
+                echo PHP_EOL;
+
+                print_r(array_chunk($temp, 2, true));
+                echo PHP_EOL;
+
+                print_r(array_combine([0,2,4],["watermelon", "lemon", "cherries"]));
+                echo PHP_EOL;
+
+                print_r(range(1,10,2));
+                echo PHP_EOL;
+
+                print_r(array_slice([1, 2, 3, 4, 5], 2, 2, true));
+                echo PHP_EOL;
+
+                $temp = [1, 2, 3, 4, 5];
+                print_r(array_splice($temp, 2));
+                echo PHP_EOL;
+
+                print_r(array_sum([1,2,3,4,5]));
+                echo PHP_EOL;
+
+            ```
+
+            * array_diff, array_diff_key, array_diff_assoc, array_diff_ukey, array_diff_uassoc
+            * array_intersect, array_intersect_key, array_intersect_assoc, array_intersect_ukey, array_intersect_uassoc
+            * array_udiff, array_udiff_assoc, array_udiff_uassoc
+            * array_uintersect, array_uintersect_assoc, array_uintersect_uassoc
+            ``` php 
+            <?php              
+                $fruits = [ 1 => "watermelon", 3 => "lemon", 5 => "cherries"];
+                $storage = [ 5 =>" apple", 2=> "lemon", 1 => "watermelon"];
+                print_r(array_diff($fruits, $storage));
+                echo PHP_EOL;
+
+                print_r(array_diff_key($fruits, $storage));
+                echo PHP_EOL;
+
+                print_r(array_diff_assoc($fruits, $storage));
+                echo PHP_EOL;
+
+                $result = array_diff_ukey($fruits, $storage, function($k1, $k2){
+                    if($k1 === $k2){
+                        return 0;
+                    }elseif($k1 >$k2){
+                        return 1;
+                    }else{
+                        return -1;
+                    }
+                });
+                print_r($result);
+                echo PHP_EOL;
+
+                print_r(array_intersect($fruits, $storage));
+                echo PHP_EOL;
+
+                print_r(array_intersect_key($fruits, $storage));
+                echo PHP_EOL;
+
+                print_r(array_intersect_assoc($fruits, $storage));
+                echo PHP_EOL;
+
+                $result = array_intersect_ukey($fruits, $storage, function($k1, $k2){
+                    if($k1 === $k2){
+                        return 0;
+                    }elseif($k1 > $k2){
+                        return 1;
+                    }else{
+                        return -1;
+                    }
+                });
+
+                print_r($result);
+                echo PHP_EOL;
+
+                $result = array_udiff($fruits, $storage, function($v1, $v2){
+                    if($v1 === $v2){
+                        return 0;
+                    }elseif($v1 > $v2){
+                        return 1;
+                    }else{
+                        return -1;
+                    }
+                });
+
+                print_r($result);
+                echo PHP_EOL;
+
+                $result = array_udiff_assoc($fruits, $storage, function($v1, $v2){
+                    if($v1 === $v2){
+                        return 0;
+                    }elseif($v1 > $v2){
+                        return 1;
+                    }else{
+                        return -1;
+                    }
+                });
+
+                print_r($result);
+                echo PHP_EOL;
+
+                $result = array_udiff_uassoc($fruits, $storage, function($v1, $v2){
+                    if($v1 === $v2){
+                        return 0;
+                    }elseif($v1 > $v2){
+                        return 1;
+                    }else{
+                        return -1;
+                    }
+                },function($k1, $k2){
+                    if($k1 === $k2){
+                        return 0;
+                    }elseif($k1 > $k2){
+                        return 1;
+                    }else{
+                        return -1;
+                    }
+                });
+                print_r($result);
+                echo PHP_EOL;
+
+                $result = array_uintersect($fruits, $storage, function($v1, $v2){
+                    if($v1 === $v2){
+                        return 0;
+                    }elseif($v1 > $v2){
+                        return 1;
+                    }else{
+                        return -1;
+                    }
+                });
+
+                print_r($result);
+                echo PHP_EOL;
+
+                $result = array_uintersect_assoc($fruits, $storage, function($k1, $k2){
+                    if($k1 === $k2){
+                        return 0;
+                    }elseif($k1 > $k2){
+                        return 1;
+                    }else{
+                        return -1;
+                    }
+                });
+
+                print_r($result);
+                echo PHP_EOL;
+
+                $result = array_uintersect_uassoc($fruits, $storage, function($v1, $v2){
+                    if($v1 === $v2){
+                        return 0;
+                    }elseif($v1 > $v2){
+                        return 1;
+                    }else{
+                        return -1;
+                    }
+                },function($k1, $k2){
+                    if($k1 === $k2){
+                        return 0;
+                    }elseif($k1 > $k2){
+                        return 1;
+                    }else{
+                        return -1;
+                    }
+                });
+
+                print_r($result);
+                echo PHP_EOL;
+            ```
+
+            * array_unique, array_merge, array_merge_recursive, array_unshift, array_shift, array_pop, array_push
+            ``` php 
+            <?php
+                $fruits = [ 1 => "watermelon", 3 => "lemon", 5 => "cherries"];
+                $storage = [ 5 =>" apple", 2=> "lemon", 1 => "watermelon"];
+
+                $temp = array_merge($fruits , $storage);
+
+                print_r(array_unique($temp));
+                echo PHP_EOL;
+
+                print_r(array_merge_recursive($fruits , $storage));
+                echo PHP_EOL;
+
+                array_unshift($fruits, "kiwi");
+                print_r($fruits);
+                echo PHP_EOL;
+
+                print_r(array_shift($fruits));
+                echo PHP_EOL;
+
+                print_r($fruits);
+                echo PHP_EOL;
+
+                print_r(array_pop($fruits));
+                echo PHP_EOL;
+
+                print_r($fruits);
+                echo PHP_EOL;
+
+                array_push($fruits, "durian");
+                print_r($fruits);
+                echo PHP_EOL;
+            ```
+
+            * [compact](https://www.php.net/manual/en/function.compact.php){: target=_blink }, [extract](https://www.php.net/manual/en/function.extract.php){: target=_blink }
+            ``` php 
+            <?php
+                $name = "John";
+                $age = 18;
+                $degree = "master";
+
+                print_r(compact(["name", "age", "degree"]));
+                echo PHP_EOL;
+
+                $fruits = ["pear" => 5, "apple"=> 3, "banana"=> 6];
+                print_r(extract($fruits));
+                echo PHP_EOL;
+                echo "pear => $pear, apple => $apple, banana => $banana".PHP_EOL;
+                echo PHP_EOL;
+
+
+            ```
+            * array_count_values, array_rand, array_pad, array_reverse, array_reduce
+            ``` php 
+            <?php 
+                $temp = [1,2,3,4,5,2,3,6,7,3,4,6,3,9,4];
+                print_r(array_count_values($temp));
+                echo PHP_EOL;
+
+                print_r($temp[array_rand($temp, 1)]);
+                echo PHP_EOL;
+
+                $temp = [1,2,3,4];
+                print_r(array_pad($temp, 6, 5));
+                echo PHP_EOL;
+
+                print_r(array_product($temp));
+                echo PHP_EOL;
+
+                print_r(array_reverse($temp));
+                echo PHP_EOL;
+
+                $result = array_reduce($temp, function($accumulate,$current){
+                    return $accumulate *= $current;
+                }, 1);
+
+                print_r($result);
+                echo PHP_EOL;
+            ```
+
+            * sort, natsort, shuffle, natcasesort,array_multisort
+            * usort, uasort, uksort
+            * asort, ksort, rsort, arsort, krsort
+            ``` php  
+            <?php
+                $temp = [1,2,4,5,2,3,9,4];
+                sort($temp);
+                print_r($temp);
+                echo PHP_EOL;
+
+                $temp = ["11", "2", "3", "4" ,"6", "22", "1"];
+                natsort($temp);
+                print_r($temp);
+                echo PHP_EOL;
+
+                shuffle($temp);
+                print_r($temp);
+                echo PHP_EOL;
+
+                $temp = ['a','b','c','d',"A","B","C","D"];
+                natcasesort($temp);
+                print_r($temp);
+                echo PHP_EOL;
+
+                $temp = [1,2,4,5,3,7];
+                array_multisort($temp,SORT_DESC);
+                print_r($temp);
+                echo PHP_EOL;
+
+                $temp = [5,4,7,1];
+                usort($temp,function($v1,$v2){
+                    if($v1 == $v2){
+                        return 0;
+                    }
+                    return $v1 > $v2 ? 1 : -1;
+                });
+                print_r($temp);
+                echo PHP_EOL;
+
+                $temp = ["3" => 5, "4" => 4,"2"=>7, "7" => 1];
+                uasort($temp,function($v1,$v2){
+                    if($v1 == $v2){
+                        return 0;
+                    }
+                    return $v1 > $v2 ? 1 : -1;
+                });
+                print_r($temp);
+                echo PHP_EOL;
+
+                $temp = ["3" => 5, "4" => 4,"2"=>7, "7" => 1];
+                uksort($temp,function($k1, $k2){
+                    if($k1 == $k2){
+                        return 0;
+                    }
+                    // 1 靠前 -1 靠后
+                    return $k1 > $k2 ? 1 : -1;
+                });
+                print_r($temp);
+                echo PHP_EOL;
+
+                $temp = ["3" => 5, "4" => 4,"2"=>7, "7" => 1];
+                asort($temp);
+                echo PHP_EOL;
+
+                $temp = ["3" => 5, "4" => 4,"2"=>7, "7" => 1];
+                ksort($temp);
+                echo PHP_EOL;
+
+                $temp = ["3" => 5, "4" => 4,"2"=>7, "7" => 1];
+                rsort($temp);
+                echo PHP_EOL;
+
+                $temp = ["3" => 5, "4" => 4,"2"=>7, "7" => 1];
+                krsort($temp);
+                echo PHP_EOL;
+
+            ```
+
+            * mysql pdo
+            ``` php 
+            <?php 
+                $dsn = "mysql:dbname=test;host=host.docker.internal";
+                try{
+                    $db = new PDO($dsn, "root", "abcd$9876");
+                    var_dump($db);
+                }catch(Exception $e){
+                    var_dump($e);
+                }
+            ```

@@ -1,0 +1,12 @@
+
+        === "Class"
+            {% include "Basic/src/reflection/go/class.mds" %}
+
+        === "Method"
+            {% include "Basic/src/reflection/go/method.mds" %}
+
+        === "Properties"
+            {% include "Basic/src/reflection/go/properties.mds" %}
+
+        === "Constructor"
+            {% include "Basic/src/reflection/go/constructor.mds" %}

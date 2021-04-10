@@ -1,0 +1,23 @@
+
+            === "Iterable"
+            ``` php
+            <?php
+                // [iterable](https://www.php.net/manual/en/language.types.iterable.php)
+                function bar(): iterable {
+                    return [1, 2, 3];
+                }
+
+                foreach(bar() as $value){
+                    echo $value.PHP_EOL;
+                }
+
+                function gen(): iterable {
+                    yield 1;
+                    yield 2;
+                    yield 3;
+                }
+
+                foreach(gen() as $value){
+                    echo $value.PHP_EOL;
+                }
+            ```

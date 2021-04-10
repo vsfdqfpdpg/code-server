@@ -1,5 +1,18 @@
 
             === "Boolean"
-                ``` php
-                php 
-                ```
+            ``` php
+            <?php
+                // [boolean](https://www.php.net/manual/en/language.types.boolean.php)
+                var_dump((bool) "");        // bool(false)
+                var_dump((bool) 1);         // bool(true)
+                var_dump((bool) -2);        // bool(true)
+                var_dump((bool) "foo");     // bool(true)
+                var_dump((bool) 2.3e5);     // bool(true)
+                var_dump((bool) array(12)); // bool(true)
+                var_dump((bool) array());   // bool(false)
+                var_dump((bool) "false");   // bool(true)
+                var_dump((bool) -1);        // bool(true)
+            ``` 
+
+            !!! warning
+                -1 is considered true, like any other non-zero (whether negative or positive) number!

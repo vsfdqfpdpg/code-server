@@ -1,0 +1,12 @@
+
+        === "Class"
+            {% include "Basic/src/reflection/php/class.mds" %}
+
+        === "Method"
+            {% include "Basic/src/reflection/php/method.mds" %}
+
+        === "Properties"
+            {% include "Basic/src/reflection/php/properties.mds" %}
+
+        === "Constructor"
+            {% include "Basic/src/reflection/php/constructor.mds" %}

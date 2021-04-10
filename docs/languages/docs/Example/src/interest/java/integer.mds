@@ -1,0 +1,196 @@
+
+            === "Non Repeat"
+                ``` java
+                public class NonRepeatNumber{
+                    public static void main(String[] args){
+                        int a,b,c;
+                        int count = 0;
+                        for(int i = 100; i <= 999; i++){
+                            a = i / 100;
+                            b = i / 10 % 10;
+                            c = i % 10;
+                            if(a != b && a != c && b !=c ){
+                                count++;
+                                System.out.print(i + " ");
+                                if(count % 10 == 0){
+                                    System.out.println();
+                                }
+                            }
+                        }
+                        System.out.println("\nCount: " + count);
+                    }
+                }
+                ```
+
+            === "Narcissus"
+                ``` java
+                public class Narcissus {
+                    public static void main(String[] args){
+                        int a,b,c;
+                        for(int i = 100; i <= 999; i++){
+                            a = i / 100;
+                            b = i % 100 / 10;
+                            c = i % 10;
+                            if((a*a*a + b*b*b + c*c*c) == i ){
+                                System.out.println(i);
+                            } 
+                        }
+                        System.out.printf("%d %d %d\n", 153 / 100, 153 % 100 / 10, 153 % 10);
+                    }
+                }
+                ```
+
+                ``` java
+                public class AnyNarcisus {
+                    public static void main(String[] args){
+                        for(int a = 100; a <= 99999; a++){
+                            if(check(a)){
+                                System.out.println(a);
+                            }
+                        }
+                    }
+
+                    public static boolean check(int num){
+                        int position, s = 0;
+                        int n = (num+"").length();
+                        for(int k=1; k <= n; k++){
+                            position = (int)(num / Math.pow(10, k-1)) % 10;
+                            s += Math.pow(position, n);
+                        }
+                        if( s == num){
+                            return true;
+                        }else{
+                            return false;
+                        }
+                    }
+                }
+                ```
+
+            === "Perfect Number"
+                ``` java
+                public class PerfectNumber{
+                    public static void main(String[] args){
+                        int i,j,sum;
+                        for(i=2; i < 10000; i++){
+                            sum = 0;
+                            for(j =1; j <= i/2; j++){
+                                if(i %j == 0){
+                                    sum = sum +j;
+                                }
+                            }
+                            if(sum ==i) print(i);
+                        }
+                    }
+
+                    public static void print(int n){
+                        int j;
+                        System.out.printf("%4s ", n);
+                        for(j=1; j <= n/2; j++){
+                            if(n %j == 0){
+                                System.out.print(j+ " ");
+                            }
+                        }
+                        System.out.println();
+                    }
+                }
+                ```
+
+            === "Amicable"
+                ``` java
+                public class Amicable{
+                    public static void main(String[] args){
+                        for(int i=2; i <= 100000; i++){
+                            int origin = getSum(i);
+                            if( origin > i){
+                                int sum = getSum(origin);
+                                if(i == sum){
+                                    System.out.printf("%5s %5s\n", origin, sum);
+                                }
+                            }
+                        }
+                    }
+
+                    public static int getSum(int num){
+                        int sum =1;
+                        int limit = (int)Math.sqrt(num);
+                        for(int i = 2; i <= limit; i++){
+                            if(num % i == 0) sum += i + num /i;
+                        }
+                        return sum;
+                    }
+                }
+                ```
+
+            === "Pythagoras"
+                ``` java
+                public class Pythagoras{
+                    public static void main(String[] args){
+                        long start = System.currentTimeMillis();
+                        for(int i=1; i < 1000; i++){
+                            for(int j = i+1; j < 1000; j++){
+                                for(int n = j +1; n < 1000; n++){
+                                    if((i*i + j*j) == n*n){
+                                        System.out.printf("%3s %3s %3s\n", i, j, n);
+                                    }
+                                }
+                            }
+                        }
+                        long end = System.currentTimeMillis();
+                        System.out.printf("%dms\n", end - start);
+                    }
+                } 
+                ```
+
+                ``` java
+                public class Pythagoras{
+                    public static void main(String[] args){
+                        long start = System.currentTimeMillis();
+                        for(int i=1; i < 1000 -2; i++){
+                            for(int j = i+1; j < 1000-1; j++){
+                                int sum = i*i + j*j;
+                                int c = (int)(Math.sqrt(sum));
+                                if( c*c == sum && c <= 1000){
+                                    System.out.printf("%3s %3s %3s\n", i, j, c);
+                                }
+                            }
+                        }
+                        long end = System.currentTimeMillis();
+                        System.out.printf("%dms\n", end - start);
+                    }
+                }
+                ```
+
+            ===  "Automorphic"
+                ``` java
+                public class Automorphic{
+                    public static void main(String[] args){
+                        for(int n=1; n < 10000; n++){
+                            String strToInteger = String.valueOf(n);
+                            String square  = String.valueOf(n*n);
+                            String last = square.substring(square.length() - strToInteger.length());
+                            if(last.equals(strToInteger)){
+                                System.out.printf("%s * %s = %s --> %s\n", strToInteger, strToInteger, square, strToInteger);
+                            }
+                        }
+                    }
+                }
+                ```
+            
+            === "Inverse order number"
+                ``` java
+                public class InverseOrderNumber{
+                    public static void main(String[] args){
+                        for(int i = 101; i  < 1000; i++){
+                            int a,b,c;
+                            a = i / 100;
+                            b = i / 10 % 10;
+                            c = i % 10;
+
+                            int inverse = c * 100 + b * 10 + a;
+                            if(i * inverse == 280021){
+                                System.out.printf("%d\n", i);
+                            }
+                        }
+                    }
+                }
+                ```

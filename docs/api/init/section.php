@@ -12,7 +12,7 @@ class Section
 
     public function __construct($basePath, $category, $name, $children)
     {
-        $this->basePath = realpath($basePath);
+        $this->basePath = $basePath;
         $this->category = ucwords($category);
         $this->name = $name;
         $this->children = $children;

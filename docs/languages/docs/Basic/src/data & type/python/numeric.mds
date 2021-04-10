@@ -1,25 +1,18 @@
 
-            === "Char"
-                ``` python
-                python 
-                ```
+            === "Numeric"
+                ```python
+                ## [numbers](https://docs.python.org/3/tutorial/introduction.html#numbers)
 
-            === "String"
-                ``` python
-                python 
-                ```
+                ## [Numeric literals](https://docs.python.org/3/reference/lexical_analysis.html#numeric-literals)
 
-            === "Test"
-                ``` python
-                python 
-                ```
+                ## [Numeric Types — int, float, complex](https://docs.python.org/3/library/stdtypes.html#numeric-types-int-float-complex)
 
-            === "Definition"
-                ``` python
-                python 
-                ```
+                decimal = 1_000_000_000_000_000
+                octal = 0o777777777777
+                hex   = 0x123456789ABCDEF
+                binary = 0b11101001010101010101
 
-            === "Convert"
-                ``` python
-                python 
+                for i in [decimal,octal, hex, binary]:
+                    print(i)
+                    
                 ```

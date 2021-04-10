@@ -1,0 +1,574 @@
+
+            === "Url"
+                ``` java
+                import javax.swing.*;
+                import java.io.BufferedReader;
+                import java.io.IOException;
+                import java.io.InputStream;
+                import java.io.InputStreamReader;
+                import java.net.URL;
+                import java.net.URLConnection;
+
+                public class UrlConnectTest extends JFrame {
+                    private URL url = null;
+                    private URLConnection uc = null;
+                    private JTextArea area = new JTextArea();
+                    private JScrollPane sc = new JScrollPane(area);
+
+                    public UrlConnectTest(String address) {
+                        this.setTitle(address);
+                        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                        this.add(this.sc);
+                        this.setSize(800, 600);
+                        this.setVisible(true);
+                        try {
+                            this.url = new URL(address);
+                            this.uc = this.url.openConnection();
+                            InputStream is = this.uc.getInputStream();
+                            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+                            String str;
+                            while ((str = reader.readLine()) != null) {
+                                this.area.append(str + "\n");
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    public static void main(String[] args) {
+                        String address = "https://www.qq.com/";
+                        new UrlConnectTest(address);
+                    }
+
+                }
+
+                ```
+            === "Single Client"
+                * Single Client
+
+                    === "Server.java"
+                    ``` java
+                    import javax.swing.*;
+                    import java.awt.*;
+                    import java.awt.event.ActionEvent;
+                    import java.awt.event.ActionListener;
+                    import java.io.*;
+                    import java.net.ServerSocket;
+                    import java.net.Socket;
+
+                    public class Server extends JFrame implements ActionListener, Runnable {
+                        protected JTextArea msgList = new JTextArea("以下是聊天记录\n");
+                        protected JTextField msg = new JTextField("请输入信息");
+                        protected JButton btn = new JButton("发送");
+                        private Socket socket = null;
+
+                        public Server() {
+                            this.setTitle("服务端");
+                            this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                            this.add(this.msgList, BorderLayout.CENTER);
+                            this.msgList.setBackground(Color.YELLOW);
+                            this.add(this.msg, BorderLayout.NORTH);
+                            this.add(this.btn, BorderLayout.SOUTH);
+                            this.btn.addActionListener(this);
+                            this.setSize(200, 300);
+                            this.setVisible(true);
+                            try {
+                                ServerSocket ss = new ServerSocket(9999);
+                                this.socket = ss.accept();
+                                new Thread(this).start();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        public static void main(String[] args) throws IOException {
+                            new Server();
+                        }
+
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            try {
+                                OutputStream os = this.socket.getOutputStream();
+                                PrintStream ps = new PrintStream(os);
+                                ps.println("服务器说: " + this.msg.getText());
+                            } catch (IOException err) {
+                                err.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void run() {
+                            try {
+                                while (true) {
+                                    InputStream is = this.socket.getInputStream();
+                                    BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+                                    String str = reader.readLine();
+                                    this.msgList.append(str + "\n");
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    ```
+
+                    === "Client.java"
+                    ``` java
+                    import javax.swing.*;
+                    import java.awt.*;
+                    import java.awt.event.ActionEvent;
+                    import java.awt.event.ActionListener;
+                    import java.io.*;
+                    import java.net.Socket;
+
+                    public class Client extends JFrame implements ActionListener, Runnable {
+                        private JTextArea magList = new JTextArea("以下是聊天信息:\n");
+                        private JTextField msg = new JTextField("请输入信息");
+                        private JButton btn = new JButton("发送");
+                        private Socket socket = null;
+
+                        public Client() {
+                            this.setTitle("客户端");
+                            this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                            this.add(this.magList, BorderLayout.CENTER);
+                            this.magList.setBackground(Color.YELLOW);
+                            this.add(this.msg, BorderLayout.NORTH);
+                            this.add(this.btn, BorderLayout.SOUTH);
+                            this.btn.addActionListener(this);
+                            this.setSize(200, 300);
+                            this.setVisible(true);
+
+                            try {
+                                this.socket = new Socket("127.0.0.1", 9999);
+                                new Thread(this).start();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        public static void main(String[] args) throws IOException {
+                            new Client();
+                        }
+
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            try {
+                                OutputStream os = socket.getOutputStream();
+                                PrintStream ps = new PrintStream(os);
+                                ps.println("客户端说: " + this.msg.getText());
+                            } catch (IOException err) {
+                                err.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void run() {
+                            try {
+                                while (true) {
+                                    InputStream is = this.socket.getInputStream();
+                                    BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+                                    String str = reader.readLine();
+                                    this.magList.append(str + "\n");
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                    ```
+
+            === "Multiple clients"
+                * Multiple Client
+
+                    === "Server.java"
+                    ``` java
+                    import javax.swing.*;
+                    import java.awt.*;
+                    import java.io.BufferedReader;
+                    import java.io.IOException;
+                    import java.io.InputStreamReader;
+                    import java.io.PrintStream;
+                    import java.net.ServerSocket;
+                    import java.net.Socket;
+                    import java.util.ArrayList;
+
+                    public class Server extends JFrame implements Runnable {
+                        private Socket socket = null;
+                        private ServerSocket server = null;
+                        private ArrayList<ChatThread> clients = new ArrayList<>();
+
+                        public Server() throws IOException {
+                            this.setTitle("服务端");
+                            this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                            this.setBackground(Color.yellow);
+                            this.setSize(200, 100);
+                            this.setVisible(true);
+                            this.server = new ServerSocket(9999);
+                            new Thread(this).start();
+                        }
+
+                        public static void main(String[] args) throws IOException {
+                            new Server();
+                        }
+
+                        @Override
+                        public void run() {
+                            try {
+                                while (true) {
+                                    this.socket = this.server.accept();
+                                    ChatThread chat = new ChatThread(this.socket);
+                                    this.clients.add(chat);
+                                    chat.start();
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        class ChatThread extends Thread {
+                            private BufferedReader reader = null;
+                            private PrintStream ps = null;
+
+
+                            public ChatThread(Socket socket) throws IOException {
+                                this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                                this.ps = new PrintStream(socket.getOutputStream());
+                            }
+
+                            public void run() {
+                                try {
+                                    while (true) {
+                                        String str = this.reader.readLine();
+                                        this.sendMessage(str);
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            private void sendMessage(String msg) {
+                                for (int i = 0; i < clients.size(); i++) {
+                                    ChatThread chat = clients.get(i);
+                                    chat.ps.println(msg);
+                                }
+                            }
+                        }
+                    }
+
+                    ```
+
+                    === "Client.java"
+                    ``` java
+                    import javax.swing.*;
+                    import java.awt.*;
+                    import java.awt.event.ActionEvent;
+                    import java.awt.event.ActionListener;
+                    import java.io.*;
+                    import java.net.Socket;
+                    import java.net.UnknownHostException;
+
+                    public class Client extends JFrame implements ActionListener, Runnable {
+                        private JTextArea msgList = new JTextArea("以下是聊天记录\n");
+                        private JTextField msg = new JTextField();
+                        private Socket socket = null;
+                        private String name = null;
+
+                        public Client() {
+                            this.setTitle("客户端");
+                            this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                            this.add(this.msgList, BorderLayout.CENTER);
+                            this.msgList.setBackground(Color.YELLOW);
+                            this.add(this.msg, BorderLayout.SOUTH);
+                            this.msg.addActionListener(this);
+                            this.setSize(280, 400);
+                            this.setVisible(true);
+                            this.name = JOptionPane.showInputDialog("请输入昵称");
+                            try {
+                                this.socket = new Socket("127.0.0.1", 9999);
+                                JOptionPane.showMessageDialog(this, "连接成功!");
+                                this.setTitle("客户端: " + this.name);
+                                new Thread(this).start();
+                            } catch (UnknownHostException e) {
+                                e.printStackTrace();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        public static void main(String[] args) {
+                            new Client();
+                        }
+
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            try {
+                                OutputStream os = this.socket.getOutputStream();
+                                PrintStream ps = new PrintStream(os);
+                                ps.println(this.name + "说: " + this.msg.getText());
+                                this.msg.setText("");
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void run() {
+                            try {
+                                while (true) {
+                                    InputStream is = this.socket.getInputStream();
+                                    BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+                                    String str = reader.readLine();
+                                    this.msgList.append(str + "\n");
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                    ```
+
+            === "Key game"
+                * Key Game 
+
+                    === "Server.java"
+                    ``` java
+                    import javax.swing.*;
+                    import java.awt.*;
+                    import java.io.BufferedReader;
+                    import java.io.IOException;
+                    import java.io.InputStreamReader;
+                    import java.io.PrintStream;
+                    import java.net.ServerSocket;
+                    import java.net.Socket;
+                    import java.util.ArrayList;
+
+                    public class Server extends JFrame implements Runnable {
+                        private Socket socket = null;
+                        private ServerSocket server = null;
+                        private ArrayList<ChatThread> clients = new ArrayList<>();
+
+                        public Server() throws IOException {
+                            this.setTitle("服务端");
+                            this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                            this.setBackground(Color.yellow);
+                            this.setSize(200, 100);
+                            this.setVisible(true);
+                            this.server = new ServerSocket(9999);
+                            new Thread(this).start();
+                        }
+
+                        @Override
+                        public void run() {
+                            try {
+                                while (true) {
+                                    this.socket = this.server.accept();
+                                    ChatThread chat = new ChatThread(this.socket);
+                                    this.clients.add(chat);
+                                    chat.start();
+                                }
+                            } catch (IOException e) {
+                                JOptionPane.showMessageDialog(this, "游戏异常退出.");
+                                e.printStackTrace();
+                                System.exit(0);
+                            }
+                        }
+
+                        class ChatThread extends Thread {
+                            private Socket socket = null;
+                            private BufferedReader reader = null;
+                            private PrintStream ps = null;
+                            private boolean canRun = true;
+
+                            public ChatThread(Socket socket) throws IOException {
+                                this.socket = socket;
+                                this.reader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+                                this.ps = new PrintStream(this.socket.getOutputStream());
+                            }
+
+                            @Override
+                            public void run() {
+                                try {
+                                    while (this.canRun) {
+                                        String str = this.reader.readLine();
+                                        this.sendMessage(str);
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    this.canRun = false;
+                                    clients.remove(this);
+                                }
+                            }
+
+                            private void sendMessage(String str) {
+                                for (ChatThread ct : clients) {
+                                    ct.ps.println(str);
+                                }
+                            }
+                        }
+
+                        public static void main(String[] args) throws IOException {
+                            new Server();
+                        }
+                    }
+    
+                    ```
+
+                    === "Client.java"
+                    ``` java
+                    import javax.swing.*;
+
+                    public class Client extends JFrame {
+                        private GamePanel gamePanel;
+
+                        public Client() {
+                            this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                            String name = JOptionPane.showInputDialog("输入昵称");
+                            this.setTitle(name);
+                            this.gamePanel = new GamePanel();
+                            this.add(this.gamePanel);
+                            this.gamePanel.setFocusable(true);
+                            this.setSize(this.gamePanel.getWidth(), this.gamePanel.getHeight());
+                            this.setResizable(false);
+                            this.setVisible(true);
+                        }
+
+                        public static void main(String[] args) {
+                            new Client();
+                        }
+                    }
+
+                    ```
+
+                    === "GamePanel.java"
+                    ``` java
+                    import javax.swing.*;
+                    import java.awt.*;
+                    import java.awt.event.ActionEvent;
+                    import java.awt.event.ActionListener;
+                    import java.awt.event.KeyEvent;
+                    import java.awt.event.KeyListener;
+                    import java.io.*;
+                    import java.net.Socket;
+                    import java.net.UnknownHostException;
+                    import java.util.Locale;
+                    import java.util.Random;
+
+                    public class GamePanel extends JPanel implements ActionListener, KeyListener, Runnable {
+                        private int life = 10;
+                        private char keyChar;
+                        private JLabel lbChar = new JLabel();
+                        private JLabel lbLife = new JLabel();
+                        private Socket socket = null;
+                        private Timer timer = new Timer(100, this);
+                        private Random random = new Random();
+                        private BufferedReader reader = null;
+                        private PrintStream ps = null;
+                        private boolean canRun = true;
+
+                        public GamePanel() {
+                            this.setLayout(null);
+                            this.setBackground(Color.DARK_GRAY);
+                            this.setSize(240, 320);
+
+                            this.add(this.lbLife);
+                            this.lbLife.setFont(new Font("黑体", Font.BOLD, 20));
+                            this.lbLife.setBackground(Color.yellow);
+                            this.lbLife.setForeground(Color.pink);
+                            this.lbLife.setBounds(0, 0, this.getWidth(), 20);
+
+                            this.add(this.lbChar);
+                            this.lbChar.setFont(new Font("黑体", Font.BOLD, 20));
+                            this.lbChar.setForeground(Color.yellow);
+                            this.init();
+                            this.addKeyListener(this);
+                            try {
+                                this.socket = new Socket("127.0.0.1", 9999);
+                                JOptionPane.showMessageDialog(this, "连接成功");
+                                InputStream is = this.socket.getInputStream();
+                                this.reader = new BufferedReader(new InputStreamReader(is));
+                                OutputStream os = this.socket.getOutputStream();
+                                this.ps = new PrintStream(os);
+                                new Thread(this).start();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                                JOptionPane.showMessageDialog(this, "游戏异常退出");
+                                System.exit(0);
+                            }
+                            this.timer.start();
+                        }
+
+                        public void init() {
+                            this.lbLife.setText("当前生命指: " + this.life);
+                            String str = String.valueOf((char) ('A' + this.random.nextInt(26)));
+                            this.lbChar.setText(str);
+                            this.lbChar.setBounds(this.random.nextInt(this.getWidth()), 0, 20, 20);
+                        }
+
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            if (this.lbChar.getY() >= this.getHeight()) {
+                                this.life--;
+                                this.checkFail();
+                            }
+                            this.lbChar.setLocation(this.lbChar.getX(), this.lbChar.getY() + 10);
+                        }
+
+                        @Override
+                        public void keyTyped(KeyEvent e) {
+
+                        }
+
+                        @Override
+                        public void keyPressed(KeyEvent e) {
+                            this.keyChar = e.getKeyChar();
+                            String key = String.valueOf(keyChar).toUpperCase();
+                            System.out.println(key);
+                            try {
+                                if (key.equals(this.lbChar.getText())) {
+                                    this.life += 2;
+                                    this.ps.println(-1);
+                                } else {
+                                    this.life--;
+                                }
+                                this.checkFail();
+                            } catch (Exception exception) {
+                                JOptionPane.showMessageDialog(this, "游戏异常退出");
+                                exception.printStackTrace();
+                                System.exit(0);
+                            }
+                        }
+
+                        @Override
+                        public void keyReleased(KeyEvent e) {
+
+                        }
+
+                        @Override
+                        public void run() {
+                            try {
+                                while (this.canRun) {
+                                    String str = this.reader.readLine();
+                                    int score = Integer.parseInt(str);
+                                    this.life += score;
+                                    this.checkFail();
+                                }
+                            } catch (IOException e) {
+                                this.canRun = false;
+                                JOptionPane.showMessageDialog(this, "游戏异常退出");
+                                e.printStackTrace();
+                            }
+                        }
+
+                        public void checkFail() {
+                            this.init();
+                            if (this.life <= 0) {
+                                this.timer.stop();
+                                JOptionPane.showMessageDialog(this, "生命值耗尽, 游戏失败");
+                                System.exit(0);
+                            }
+                        }
+                    }
+
+                    ```

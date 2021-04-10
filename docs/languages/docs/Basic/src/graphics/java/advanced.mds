@@ -1,0 +1,558 @@
+
+            === "Key"
+                ``` java
+                import javax.swing.*;
+                import java.awt.*;
+                import java.awt.event.KeyEvent;
+                import java.awt.event.KeyListener;
+
+                class KeyPanel extends JPanel implements KeyListener {
+                    protected Image img;
+                    protected int x = 0;
+                    protected int y = 0;
+                    protected int angle = 0;
+
+                    public KeyPanel() {
+                        this.img = Toolkit.getDefaultToolkit().createImage("test.jpg");
+                        this.addKeyListener(this);
+                    }
+
+                    public void paint(Graphics g) {
+                        Graphics2D g2 = (Graphics2D) g;
+                        g2.rotate(Math.toRadians(this.angle), (double) this.getWidth() / 2, (double) this.getHeight() / 2);
+                        g2.drawImage(this.img, this.x, this.y, this);
+                    }
+
+                    @Override
+                    public void keyTyped(KeyEvent e) {
+
+                    }
+
+                    @Override
+                    public void keyPressed(KeyEvent e) {
+                        int code = e.getKeyCode();
+                        switch (code) {
+                            case KeyEvent.VK_UP:
+                                this.y -= 5;
+                                break;
+                            case KeyEvent.VK_DOWN:
+                                this.y += 5;
+                                break;
+                            case KeyEvent.VK_LEFT:
+                                this.x -= 5;
+                                break;
+                            case KeyEvent.VK_RIGHT:
+                                this.x += 5;
+                                break;
+                            case KeyEvent.VK_ENTER:
+                                this.angle = (this.angle + 5) % 360;
+                                break;
+                        }
+                        this.repaint();
+                    }
+
+                    @Override
+                    public void keyReleased(KeyEvent e) {
+
+                    }
+                }
+
+                public class KeyImage extends JFrame {
+                    public KeyImage() {
+                        KeyPanel panel = new KeyPanel();
+                        panel.setFocusable(true);
+                        this.add(panel);
+                        this.setSize(600, 400);
+                        this.setVisible(true);
+                        GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+                        Rectangle rec = env.getDefaultScreenDevice().getDefaultConfiguration().getBounds();
+                        this.setLocation((rec.width - this.getWidth()) / 2, (rec.height - this.getHeight()) / 2);
+                        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    }
+
+                    public static void main(String[] args) {
+                        new KeyImage();
+                    }
+                }
+
+                ```
+            
+            === "Mouse"
+                ``` java
+                import javax.swing.*;
+                import java.awt.*;
+                import java.awt.event.MouseEvent;
+                import java.awt.event.MouseListener;
+                import java.awt.event.MouseMotionListener;
+
+                class MouseImagePanel extends JPanel implements MouseListener, MouseMotionListener {
+
+                    protected Image img;
+                    protected int x = 0;
+                    protected int y = 0;
+                    protected boolean canMove = false;
+                    protected int xPoint = 0;
+                    protected int yPoint = 0;
+
+                    public MouseImagePanel() {
+                        this.img = Toolkit.getDefaultToolkit().createImage("test.jpg");
+                        this.addMouseListener(this);
+                        this.addMouseMotionListener(this);
+                    }
+
+                    public void paint(Graphics g) {
+                        Graphics2D g2 = (Graphics2D) g;
+                        g2.setColor(this.getBackground());
+                        g2.fillRect(0, 0, this.getWidth(), this.getHeight());
+                        g2.drawImage(this.img, x, y, this);
+                    }
+
+
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mousePressed(MouseEvent e) {
+                        this.xPoint = e.getX() - this.x;
+                        this.yPoint = e.getY() - this.y;
+                        if (this.xPoint >= 0 && this.xPoint <= this.img.getWidth(this) && this.yPoint >= 0 && this.yPoint <= this.img.getHeight(this)) {
+                            this.canMove = true;
+                        }
+                    }
+
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+                        this.canMove = false;
+                    }
+
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseDragged(MouseEvent e) {
+                        if (this.canMove) {
+                            this.x = e.getX() - this.xPoint;
+                            this.y = e.getY() - this.yPoint;
+                        }
+                        this.repaint();
+                    }
+
+                    @Override
+                    public void mouseMoved(MouseEvent e) {
+
+                    }
+                }
+
+                public class MouseImage extends JFrame {
+                    public MouseImage() {
+                        this.add(new MouseImagePanel());
+                        this.setSize(600, 400);
+                        this.setVisible(true);
+                        GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+                        Rectangle rec = env.getDefaultScreenDevice().getDefaultConfiguration().getBounds();
+                        this.setLocation((rec.width - this.getWidth()) / 2, (rec.height - this.getHeight()) / 2);
+                        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    }
+
+                    public static void main(String[] args) {
+                        new MouseImage();
+                    }
+                }
+
+                ```
+
+            === "Video"
+                ``` java
+                import javax.imageio.ImageIO;
+                import javax.swing.*;
+                import java.awt.*;
+                import java.awt.event.ActionEvent;
+                import java.awt.event.ActionListener;
+                import java.awt.image.BufferedImage;
+                import java.io.File;
+                import java.io.IOException;
+
+                class VideoImagePanel extends JPanel implements Runnable, ActionListener {
+                    protected int left = 50;
+                    protected int top = 50;
+                    protected int d = 100;
+                    protected int direction = 1;
+                    protected Thread thread;
+                    protected boolean canRun = true;
+                    protected BufferedImage bi;
+                    protected Graphics2D g2;
+
+                    public VideoImagePanel() {
+                        this.thread = new Thread(this);
+                        this.thread.start();
+                    }
+
+                    public void paint(Graphics g) {
+                        if (this.bi == null) {
+                            this.bi = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_RGB);
+                            this.g2 = this.bi.createGraphics();
+                        }
+                        this.g2.setColor(this.getBackground());
+                        this.g2.fillRect(0, 0, this.getWidth(), this.getHeight());
+                        this.g2.setColor(Color.red);
+                        this.g2.fillOval(this.left, this.top, this.d, this.d);
+                        g.drawImage(this.bi, 0, 0, this);
+                    }
+
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        JButton btn = (JButton) e.getSource();
+                        String label = btn.getText();
+                        if (label.equals("暂停")) {
+                            btn.setText("继续");
+                            this.canRun = false;
+                            this.thread = null;
+                            try {
+                                File file = new File("video.gif");
+                                ImageIO.write(this.bi, "gif", file);
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+                        } else if (label.equals("继续")) {
+                            btn.setText("暂停");
+                            this.canRun = true;
+                            this.thread = new Thread(this);
+                            this.thread.start();
+                        }
+                    }
+
+                    @Override
+                    public void run() {
+                        while (this.canRun) {
+                            if (this.direction == 1) {
+                                this.top += 3;
+                                this.d--;
+                                if (this.top >= this.getHeight() - this.d) {
+                                    this.direction = 2;
+                                }
+                            }
+                            if (this.direction == 2) {
+                                this.top -= 3;
+                                this.d++;
+                                if (this.top <= 50) {
+                                    this.direction = 1;
+                                }
+                            }
+                            this.repaint();
+                            try {
+                                Thread.sleep(10);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }
+
+                public class VideoImage extends JFrame {
+                    public VideoImage() {
+                        VideoImagePanel vip = new VideoImagePanel();
+                        JButton btn = new JButton("暂停");
+                        this.add(vip);
+                        this.add(btn, BorderLayout.SOUTH);
+                        btn.addActionListener(vip);
+
+                        this.setSize(600, 400);
+                        this.setVisible(true);
+                        GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+                        Rectangle rec = env.getDefaultScreenDevice().getDefaultConfiguration().getBounds();
+                        this.setLocation((rec.width - this.getWidth()) / 2, (rec.height - this.getHeight()) / 2);
+                        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    }
+
+                    public static void main(String[] args) {
+                        new VideoImage();
+                    }
+                }
+
+                ```
+
+            === "Random Draw"
+                ``` java
+                import javax.swing.*;
+                import java.awt.*;
+                import java.util.Random;
+
+                class MyRandomPanel extends JPanel implements Runnable {
+                    private final Random random = new Random();
+
+                    public void paint(Graphics g) {
+                        int red = this.random.nextInt(256);
+                        int green = this.random.nextInt(256);
+                        int blue = this.random.nextInt(256);
+                        g.setColor(new Color(red, green, blue));
+
+                        int left = this.random.nextInt(this.getWidth());
+                        int top = this.random.nextInt(this.getHeight());
+                        int width = this.random.nextInt(this.getWidth() / 4);
+                        int height = this.random.nextInt(this.getHeight() / 4);
+                        g.fillArc(left, top, width, height, 0, 360);
+                    }
+
+                    @Override
+                    public void run() {
+                        while (true) {
+                            this.repaint();
+                            try {
+                                Thread.sleep(100);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }
+
+                public class RandomDraw extends JFrame {
+                    public RandomDraw() {
+                        MyRandomPanel rp = new MyRandomPanel();
+                        this.add(rp);
+                        this.setSize(600, 400);
+                        this.setVisible(true);
+                        this.setResizable(false);
+                        GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+                        Rectangle rec = env.getDefaultScreenDevice().getDefaultConfiguration().getBounds();
+                        this.setLocation((rec.width - this.getWidth()) / 2, (rec.height - this.getHeight()) / 2);
+                        new Thread(rp).start();
+                    }
+
+                    public static void main(String[] args) {
+                        new RandomDraw();
+                    }
+                }
+
+                ```
+            
+            === "Puzzle"
+                ``` java
+                import javax.swing.*;
+                import java.awt.*;
+                import java.awt.event.KeyEvent;
+                import java.awt.event.KeyListener;
+                import java.util.Arrays;
+                import java.util.Random;
+
+                class PuzzlePanel extends JPanel implements KeyListener {
+                    protected Image img;
+                    protected int edge;
+                    protected int[][] map = new int[4][4];
+                    protected boolean help = false;
+
+                    public PuzzlePanel(Image img) {
+                        for (int i = 0; i < map.length; i++) {
+                            for (int j = 0; j < map[i].length; j++) {
+                                map[i][j] = i * 10 + j;
+                            }
+                        }
+                        this.img = img;
+                        this.addKeyListener(this);
+                        this.initMap();
+                    }
+
+                    private void initMap() {
+                        Random random = new Random();
+                        int tmp, x1, y1, x2, y2;
+                        for (int i = 0; i < 100; i++) {
+                            x1 = random.nextInt(4);
+                            x2 = random.nextInt(4);
+                            y1 = random.nextInt(4);
+                            y2 = random.nextInt(4);
+                            tmp = this.map[x1][y1];
+                            this.map[x1][y1] = this.map[x2][y2];
+                            this.map[x2][y2] = tmp;
+                        }
+                    }
+
+                    public void paint(Graphics g) {
+                        this.edge = this.img.getWidth(this) / 4;
+                        g.setColor(Color.white);
+                        g.fillRect(0, 0, this.getWidth(), this.getHeight());
+                        for (int x = 0; x < 4; x++) {
+                            for (int y = 0; y < 4; y++) {
+                                if (this.map[x][y] != 33) {
+                                    int xSegment = this.map[x][y] / 10;
+                                    int ySegment = this.map[x][y] % 10;
+                                    g.drawImage(this.img, x * this.edge, y * this.edge,
+                                            x * this.edge + this.edge, y * this.edge + this.edge,
+                                            xSegment * this.edge, ySegment * this.edge,
+                                            xSegment * this.edge + this.edge, ySegment * this.edge + this.edge, this);
+                                }
+                            }
+                        }
+
+                        if (this.isSuccess()) {
+                            g.setColor(Color.black);
+                            g.drawString("顺利完成", this.getWidth() / 4, this.getHeight() - 20);
+                        }
+                        if (this.help) {
+                            g.drawImage(this.img, 0, 0, this);
+                        }
+                    }
+
+                    private boolean isSuccess() {
+                        for (int x = 0; x < 4; x++) {
+                            for (int y = 0; y < 4; y++) {
+                                int xSegment = this.map[x][y] / 10;
+                                int ySegment = this.map[x][y] % 10;
+                                if (xSegment != x || ySegment != y) {
+                                    return false;
+                                }
+                            }
+                        }
+                        return true;
+                    }
+
+                    public void swap(int xOf33, int yOf33, int xTarget, int yTarget) {
+                        int tmp = this.map[xTarget][yTarget];
+                        this.map[xTarget][yTarget] = 33;
+                        this.map[xOf33][yOf33] = tmp;
+                    }
+
+                    @Override
+                    public void keyTyped(KeyEvent e) {
+
+                    }
+
+                    @Override
+                    public void keyPressed(KeyEvent e) {
+                        int keyCode = e.getKeyCode();
+                        int xOf33 = -1, yOf33 = -1;
+                        for (int x = 0; x < 4; x++) {
+                            for (int y = 0; y < 4; y++) {
+                                if (this.map[x][y] == 33) {
+                                    xOf33 = x;
+                                    yOf33 = y;
+                                    break;
+                                }
+                            }
+                        }
+                        switch (keyCode) {
+                            case KeyEvent.VK_UP:
+                                if (yOf33 != 3) {
+                                    this.swap(xOf33, yOf33, xOf33, yOf33 + 1);
+                                }
+                                break;
+                            case KeyEvent.VK_DOWN:
+                                if (yOf33 != 0) {
+                                    this.swap(xOf33, yOf33, xOf33, yOf33 - 1);
+                                }
+                                break;
+                            case KeyEvent.VK_LEFT:
+                                if (xOf33 != 3) {
+                                    this.swap(xOf33, yOf33, xOf33 + 1, yOf33);
+                                }
+                                break;
+                            case KeyEvent.VK_RIGHT:
+                                if (xOf33 != 0) {
+                                    this.swap(xOf33, yOf33, xOf33 - 1, yOf33);
+                                }
+                                break;
+                            case KeyEvent.VK_ENTER:
+                                this.initMap();
+                                break;
+                            case KeyEvent.VK_F1:
+                                this.help = true;
+                                break;
+                            case KeyEvent.VK_ESCAPE:
+                                System.exit(0);
+                        }
+                        this.repaint();
+                    }
+
+                    @Override
+                    public void keyReleased(KeyEvent e) {
+                        int keyCode = e.getKeyCode();
+                        if (keyCode == KeyEvent.VK_F1) {
+                            this.help = false;
+                            this.repaint();
+                        }
+                    }
+                }
+
+                public class Puzzle extends JFrame {
+                    protected PuzzlePanel pp;
+
+                    public Puzzle() {
+                        Image img = Toolkit.getDefaultToolkit().createImage("test.jpg");
+                        this.pp = new PuzzlePanel(img);
+                        this.pp.setFocusable(true);
+                        this.add(this.pp);
+                        this.setSize(500, 500);
+                        this.setVisible(true);
+                        this.setResizable(false);
+                        GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+                        Rectangle rec = env.getDefaultScreenDevice().getDefaultConfiguration().getBounds();
+                        this.setLocation((rec.width - this.getWidth()) / 2, (rec.height - this.getHeight()) / 2);
+                        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    }
+
+                    public static void main(String[] args) {
+                        new Puzzle();
+                    }
+                }
+                ```
+
+            === "Draw"
+                ``` java
+                import javax.swing.*;
+                import java.awt.*;
+
+                class ImagePanel extends JPanel {
+                    protected Image img;
+
+                    public ImagePanel() {
+                        this.img = Toolkit.getDefaultToolkit().createImage("./test.jpg");
+                    }
+
+                    public void paint(Graphics g) {
+                        g.drawImage(this.img, 0, 0, this);
+                        g.drawImage(this.img, 10, 10, 50, 80, 0, 0, this.img.getWidth(this) / 2, this.img.getHeight(this) / 2, this);
+                        g.drawImage(this.img, 60, 70, 100, 100, this.img.getWidth(this) / 2, 0, this.img.getWidth(this), this.img.getHeight(this), this);
+
+                    }
+                }
+
+                class RotatePanel extends JPanel {
+                    protected Image img;
+
+                    public RotatePanel() {
+                        this.img = Toolkit.getDefaultToolkit().createImage("./test.jpg");
+                    }
+
+                    public void paint(Graphics g) {
+                        Graphics2D g2d = (Graphics2D) g;
+                        g2d.rotate(Math.PI / 2, (double) this.getWidth() / 2, (double) this.getHeight() / 2);
+                        g2d.drawImage(this.img, 20, 20, this);
+                    }
+                }
+
+                public class DrawImage extends JFrame {
+                    public DrawImage() {
+                        this.add(new ImagePanel());
+                        this.add(new RotatePanel());
+                        this.setSize(600, 400);
+                        this.setVisible(true);
+                        GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+                        Rectangle rec = env.getDefaultScreenDevice().getDefaultConfiguration().getBounds();
+                        this.setLocation((rec.width - this.getWidth()) / 2, (rec.height - this.getHeight()) / 2);
+                        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    }
+
+                    public static void main(String[] args) {
+                        new DrawImage();
+                    }
+                }
+
+                ```

@@ -1,0 +1,12 @@
+
+        === "Class"
+            {% include "Basic/src/reflection/python/class.mds" %}
+
+        === "Method"
+            {% include "Basic/src/reflection/python/method.mds" %}
+
+        === "Properties"
+            {% include "Basic/src/reflection/python/properties.mds" %}
+
+        === "Constructor"
+            {% include "Basic/src/reflection/python/constructor.mds" %}

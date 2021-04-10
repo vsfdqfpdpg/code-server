@@ -1,0 +1,365 @@
+
+            === "Prime"
+                ``` java
+                public class Prime{
+                    public static void main(String[] args){
+                        for(int i =2; i < 100; i++){
+                            if(test(i)){
+                                System.out.println(i);
+                            }
+                        }
+                    }
+
+                    public static boolean test(int number){
+                        boolean flag = true;
+                        for(int j=2; j <= Math.sqrt(number); j++){
+                            if(number % j == 0){
+                                flag = false;
+                                break;
+                            }
+                        }
+                        return flag;
+                    }
+                }
+                ```
+            
+                ``` java
+                import java.util.ArrayList;
+                import java.util.Date;
+                import java.util.List;
+
+                public class Prime{
+                    public static void main(String[] args){
+                        List<Integer> primes = getPrimes(100);
+
+                        for(int i =0; i < primes.size(); i++){
+                            Integer prime = primes.get(i);
+                            System.out.println(prime);
+                        }
+                    }
+
+                    private static List<Integer> getPrimes(int n){
+                        List<Integer> result = new ArrayList<Integer>();
+                        result.add(2);
+                        for(int i = 3; i <= n; i+= 2){
+                            if(!divisiable(i, result)){
+                                result.add(i);
+                            }
+                        }
+                        return result;
+                    }
+
+                    private static boolean divisiable(int n, List<Integer> primes){
+                        for(Integer prime : primes){
+                            if(n % prime == 0){
+                                return true;
+                            }
+
+                            if(prime >= Math.sqrt(n)){
+                                break;
+                            }
+                        }
+                        return false;
+                    }
+                }
+                ```
+            
+            === "Sibling prime"
+                ``` java
+                public class SiblingPrime{
+                    public static void main(String[] args){
+                        int a[] = new int[100];
+                        int i;
+                        int flag,n = 0;
+
+                        for(i=2; i <= 100; i++){
+                            flag = 1;
+                            for(int j=2; j<i; j++){
+                                if(i%j == 0) {
+                                    flag = 0;
+                                    break;
+                                }                                
+                            }
+                            if(flag == 1){
+                                a[n] = i;
+                                n++;
+                            }
+                        }
+
+                        for(i=0; i < n-1; i++){
+                            if(a[i+1] - a[i] == 2){
+                                System.out.printf("%2s %2s\n",a[i], a[i+1]);
+                            }
+                        }
+                    }
+                }
+                ```
+            
+            === "Cicada"
+                ``` java
+                public class Cicada{
+                    public static void main(String[] args){
+                        int k, d=0, t, i, j, a[] = new int[6];
+                        for(k=10001; k < 99999; k+=2){
+                            t = 0;
+                            for(j=3; j <= Math.sqrt(k); j+=2){
+                                if(k % j == 0){
+                                    t = 1;
+                                    break;
+                                }
+                            }
+                            if(t == 0){
+                                d = (k/10) % 1000;
+                                for(j=2; j <= Math.sqrt(d); j++){
+                                    if(d % j == 0){
+                                        t = 1;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if( t == 0){
+                                a[1] = k % 10;
+                                a[5] = k / 10000;
+                                a[2] = d % 10;
+                                a[4] = d / 100;
+                                a[3] = (d/10) % 10;
+                                for(i =1; i <=4 ; i++){
+                                    for(j=i+1; j<=5; j++){
+                                        if(a[i] == a[j]){
+                                            t = 1;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+
+                            if(t == 0){
+                                for(j =1; j<=5; j++){
+                                    if(a[j] % 2 ==0 || a[3] ==1 || a[3] ==9){
+                                        t =1;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if( t == 0){
+                                System.out.printf("%d \n", k);
+                            }
+                        }
+                    }
+                }
+                ```
+
+            === "Reversible"
+                ``` java
+                public class Reversible{
+                    public static void main(String[] args){
+                        int count = 1;
+                        for(int i =2; i<1000; i++){
+                            if(prime(i) && prime(reverePrime(i))){
+                                System.out.printf( count++ % 7 !=0 ? "%3d " : "%3d\n", i);
+                            }
+                        }
+                    }
+
+                    public static boolean prime(int n){
+                        boolean isPrime = true;
+                        if(n == 1 || n == 2) {
+                            return true;
+                        }
+
+                        for(int i= 2; i< Math.sqrt(n) +1; i+=1){
+                            if( n % i == 0){
+                                return false;
+                            }
+                        }
+
+                        if(isPrime){
+                            return true;
+                        }else{
+                            return false;
+                        }
+                    }
+
+                    public static int reverePrime(int i){
+                        int len = getNumberLength(i);
+                        int s = 0;
+                        for(int j = 1; j < len +1; j++){
+                            s += Math.pow(10, len-j) * getBit(i, j);
+                        }
+                        return s;
+                    }
+
+                    public static int getNumberLength(int n){
+                        int i = 1;
+                        while( n / 10 > 0){
+                            i++;
+                            n /= 10;
+                        }
+                        return i;
+                    }
+
+                    public static int getBit(int num, int i){
+                        if(i > getNumberLength(num) || i < 1){
+                            return -1;
+                        }
+                        return (num % ((int) Math.pow(10, i))) / (int) Math.pow(10, i-1);
+                    }
+                }
+                ```
+            
+            === "Palindrome"
+                ``` java
+                public class Palindrome{
+                    public static void main(String[] args){
+                        for(int i =2; i < 1000; i++){
+                            if(prime(i) && palindrome(i)){
+                                System.out.println(i);
+                            }
+                        }
+                    }
+
+                    public static boolean prime(int num){
+                        boolean isPrime = true;
+                        for(int i =2; i <= Math.sqrt(num); i++){
+                            if( num % i == 0){
+                                return false;
+                            }
+                        }
+                        return true;
+                    }
+
+                    public static String trans(int bk){
+                        int a = bk;
+                        String res = "";
+                        while(a != 0){
+                            int b = a % 10;
+                            res = b + res;
+                            a = a / 10;
+                        }
+                        return res;
+                    }
+
+                    public static boolean palindrome(int num){
+                        String str = trans(num);
+                        int ls = str.length();
+                        for(int i = 0; i < ls; i++){
+                            if(str.codePointAt(i) != str.codePointAt(ls -1 -i)){
+                                return false;
+                            }
+                        }
+                        return true;
+                    }
+                }
+                ```
+            
+            === "Square"
+                ``` java
+                public class SquarePalindrome{
+                    public static void main(String[] args){
+                        for(int i =2; i < 1000; i++){
+                            if(prime(i) && square(i*i)){
+                                System.out.printf("%d * %d = %d\n",i,i, i*i);
+                            }
+                        }
+                    }
+
+                    public static boolean prime(int num){
+                        boolean isPrime = true;
+                        for(int i = 2; i <= Math.sqrt(num); i++){
+                            if(num %i == 0){
+                                return false;
+                            }
+                        }
+                        return true;
+                    }
+
+                    public static String trans(int bk){
+                        int a = bk;
+                        String res = "";
+                        while(a != 0){
+                            int b = a % 10;
+                            res = b + res;
+                            a = a / 10;
+                        }
+                        return res;
+                    }
+
+                    public static boolean square(int num){
+                        String str = trans(num);
+                        int ls = str.length();
+                        for(int i =0; i < ls; i++){
+                            if(str.codePointAt(i) != str.codePointAt(ls -1 -i)){
+                                return false;
+                            }
+                        }
+                        return true;
+                    }
+                }
+                ```
+            
+            === "Mersenne"
+                ``` java
+                public class Mersenne{
+                    public static void main(String[] args){
+                        double t,m;
+                        int j,n;
+                        int x;
+                        int count=0;
+                        t =2;
+                        for(n=2; n<=50; n++){
+                            t = t*2;
+                            m = t -1;
+                            x =0;
+                            for(j = 3; j<Math.sqrt(m) +1; j+=2){
+                                if(m %j == 0){
+                                    x =1;
+                                    break;
+                                }
+                            }
+
+                            if( x==0){
+                                count = count +1;
+                                System.out.printf("2^%d-1 = %.0f \n", n, m);
+                            }
+                        }
+                    }
+                }
+                ```
+            
+            === "Goldbach"
+                ``` java
+                public class Goldbach{
+                    public static void main(String[] args){
+                        int count = 0;
+                        int s = 0;
+                        int n;
+                        int num = 1000;
+                        for(int i = 4; i <= num; i = i+=2){
+                            for(n =2; n <= i/2; n++){
+                                if(prime(n) && prime(i -n)){
+                                    System.out.printf("%3d = %2d + %3d    ", i, n, (i-n));
+                                    count++;
+                                    s++;
+                                    break;
+                                }                                
+                            }
+                            if(count % 5 == 0){
+                                System.out.println();
+                                count = 0;
+                            }
+                        }
+                        System.out.println(s);
+                    }
+
+                    public static boolean prime(int num){
+                        for(int i = 2; i <= (int)(Math.sqrt((double)num)); i++){
+                            if( num % i == 0){
+                                return false;
+                            }
+                        }
+                        return true;
+                    }
+                }
+                ```

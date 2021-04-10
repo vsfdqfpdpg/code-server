@@ -1,25 +1,27 @@
 
-            === "Char"
+            === "Object"
                 ``` javascript
-                javascript 
-                ```
+                // [objects](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#objects)
 
-            === "String"
-                ``` javascript
-                javascript 
-                ```
+                // [object_literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Grammar_and_types#object_literals)
 
-            === "Test"
-                ``` javascript
-                javascript 
-                ```
+                // [Global_Objects/Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)
 
-            === "Class"
-                ``` javascript
-                javascript 
-                ```
+                let car = { mode: "", name: "", brand:""}
+                console.log(car);
 
-            === "Interface"
-                ``` javascript
-                javascript 
+                // Functional Object
+                let Person = function(name) {
+                    this.name = name;
+                    this.canTalk = true;
+                };
+
+                Person.prototype.greet = function() {
+                    if (this.canTalk) {
+                        console.log('Hi, I am ' + this.name);
+                    }
+                };
+                let mike = new Person('Mike');
+                mike.greet();
+
                 ```

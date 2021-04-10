@@ -1,0 +1,40 @@
+
+            === "Label"
+                ``` go
+                go 
+                ```
+
+            === "Button"
+                ``` go
+                go 
+                ```
+
+            === "Input"
+                ``` go
+                go 
+                ```
+
+            === "Password"
+                ``` go
+                go 
+                ```
+
+            === "Textarea"
+                ``` go
+                go 
+                ```
+
+            === "Checkbox"
+                ``` go
+                go 
+                ```
+
+            === "Radio"
+                ``` go
+                go 
+                ```
+
+            === "Selection"
+                ``` go
+                go 
+                ```

@@ -1,10 +1,9 @@
 
-            === "Null"
+            === "NULL"
                 ``` javascript
-                javascript 
-                ```
+                // [null_type](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#null_type)
 
-            === "Not null"
-                ``` javascript
-                javascript 
+                // [Global_Objects/null](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null)
+
+                console.log(typeof null === 'object');
                 ```
